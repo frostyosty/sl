@@ -1,10 +1,12 @@
 {
-  "devDependencies": {
-    "esbuild": "^0.24.0",
-    "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "@libsql/client": "^0.14.0"
+    "version": 2,
+    "builds": [
+      { "src": "api/*.js", "use": "@vercel/node" },
+      { "src": "public/**/*", "use": "@vercel/static" }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "/api/$1.js" },
+      { "src": "/(.*)", "dest": "/public/$1" }
+    ]
   }
-}
+  
