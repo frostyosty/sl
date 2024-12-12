@@ -1,12 +1,12 @@
 {
-    "name": "canibarter",
+    "name": "sl",
     "version": "1.0.0",
     "type": "module",
     "description": "Cool website",
     "main": "public/index.html",
     "scripts": {
         "start": "serve -s public",
-        "build": "mkdir -p public api && cp index.html styles.css transactions-frontend.js demand-frontend.js supply-frontend.js donate-frontend.js vercel.json public/ && cp -r pictures public/pictures && cp -r api/*.js api/  && pip install -r requirements-vercel.txt"
+        "build": "mkdir -p public api && cp index.html styles.css index.js vercel.json public/ && cp -r pictures public/pictures && cp -r api/*.js api/  && pip install -r requirements-vercel.txt"
     },
     "dependencies": {
         "@libsql/client": "^0.14.0",
