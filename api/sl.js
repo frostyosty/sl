@@ -3,8 +3,8 @@ import { createClient } from '@libsql/client';
 // const fuzz = require('fuzzball');
 
 const db = createClient({
-    url: "libsql://canibartertransactions-frostyosty.turso.io",
-    authToken: process.env.CANIBARTER_TRANSACTIONS_AUTH_TOKEN
+    url: "libsql://sl-database-frostyosty.turso.io",
+    authToken: process.env.CANIBARTER_SL_AUTH_TOKEN
 });
 
 
