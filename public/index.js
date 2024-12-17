@@ -130,8 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // filter stuff
 
-// event listeners to the transaction table
-document.getElementById('transaction-table-body').addEventListener('click', (event) => {
+// event listeners to the entry table
+document.getElementById('entry-table-body').addEventListener('click', (event) => {
     const cell = event.target;
     const column = cell.cellIndex;
 
@@ -177,10 +177,10 @@ document.querySelectorAll('input[name="time-range"]').forEach(radio => {
     radio.addEventListener('change', () => updateFilters());
 });
 
-let debounceTimerForTransactionsItemFilter;
+let debounceTimerForEntriesItemFilter;
 document.getElementById('filter-item').addEventListener('input', () => {
-    clearTimeout(debounceTimerForTransactionsItemFilter);
-    debounceTimerForTransactionsItemFilter = setTimeout(() => updateFilters(), 300);
+    clearTimeout(debounceTimerForEntriesItemFilter);
+    debounceTimerForEntriesItemFilter = setTimeout(() => updateFilters(), 300);
 });
 
 document.getElementById('local-location').addEventListener('input', () => {
@@ -213,8 +213,8 @@ async function updateFilters() {
         queryParams.append('timeRange', timeRange);
         queryParams.append('location', location);
 
-        const transactionTable = document.querySelector("#transaction-table");
-        const tbody = document.getElementById("transaction-table-body");
+        const entryTable = document.querySelector("#entry-table");
+        const tbody = document.getElementById("entry-table-body");
         const spinner = document.createElement("div");
         spinner.classList.add("csf-spinner");
         spinner.innerHTML = `
@@ -228,19 +228,19 @@ async function updateFilters() {
         spinner.style.transform = "translate(-50%, -50%)";
         tbody.style.position = "relative";
         tbody.appendChild(spinner);
-        transactionTable.style.opacity = "0.5";
-        transactionTable.style.pointerEvents = "none";
+        entryTable.style.opacity = "0.5";
+        entryTable.style.pointerEvents = "none";
 
-        const response = await fetch(`/api/transactions?type=transactions-with-filters&${queryParams.toString()}`);
+        const response = await fetch(`/api/entries?type=entries-with-filters&${queryParams.toString()}`);
         if (!response.ok) throw new Error(`fetch failed with status: ${response.status}`);
 
-        const transactions = await response.json();
-        console.log("transactions fetched:", transactions);
+        const entries = await response.json();
+        console.log("entries fetched:", entries);
 
-        const hasTransactions = transactions.length > 0;
+        const hasEntries = entries.length > 0;
 
-        tbody.innerHTML = hasTransactions
-            ? transactions.map(tx => `
+        tbody.innerHTML = hasEntries
+            ? entries.map(tx => `
                 <tr>
                     <td>${tx.items_given.join(", ")}</td>
                     <td>${tx.items_received.join(", ")}</td>
@@ -248,22 +248,22 @@ async function updateFilters() {
                     <td>${tx.location}</td>
                 </tr>
             `).join("")
-            : "<tr><td colspan='4'>no transactions found for this filter.</td></tr>";
+            : "<tr><td colspan='4'>no entries found for this filter.</td></tr>";
 
-        document.querySelectorAll("#transaction-table th:nth-child(3), #transaction-table td:nth-child(3)")
+        document.querySelectorAll("#entry-table th:nth-child(3), #entry-table td:nth-child(3)")
             .forEach(cell => cell.style.display = "table-cell");
 
-        mergeTransactionTableCells('transaction-table-body', 2);
-        mergeTransactionTableCells('transaction-table-body', 3);
+        mergeEntryTableCells('entry-table-body', 2);
+        mergeEntryTableCells('entry-table-body', 3);
 
-        const totalTransactions = transactions.length;
-        console.log('total transactions:', totalTransactions);
-        const totalItemsGiven = transactions.reduce((sum, tx) => sum + tx.items_given.length, 0);
-        const itemOccurrences = item ? transactions.filter(tx =>
+        const totalEntries = entries.length;
+        console.log('total entries:', totalEntries);
+        const totalItemsGiven = entries.reduce((sum, tx) => sum + tx.items_given.length, 0);
+        const itemOccurrences = item ? entries.filter(tx =>
             tx.items_given.includes(item) || tx.items_received.includes(item)).length : 0;
-        const uniqueIPs = new Set(transactions.map(tx => tx.ip_address));
-        const desirability = totalTransactions > 0 ? (totalItemsGiven / totalTransactions).toFixed(2) : 0;
-        const rarity = totalTransactions > 0 && item ? (itemOccurrences / totalTransactions).toFixed(2) : 0;
+        const uniqueIPs = new Set(entries.map(tx => tx.ip_address));
+        const desirability = totalEntries > 0 ? (totalItemsGiven / totalEntries).toFixed(2) : 0;
+        const rarity = totalEntries > 0 && item ? (itemOccurrences / totalEntries).toFixed(2) : 0;
         const diversity = itemOccurrences > 0 ? (uniqueIPs.size / itemOccurrences).toFixed(2) : 0;
 
         document.getElementById('stats-desirability').innerText = desirability;
@@ -283,11 +283,11 @@ async function updateFilters() {
             }, index * 200);
         });
     } catch (error) {
-        console.error('error fetching transactions:', error);
+        console.error('error fetching entries:', error);
     } finally {
-        const transactionTable = document.querySelector("#transaction-table");
-        transactionTable.style.opacity = "1";
-        transactionTable.style.pointerEvents = "auto";
+        const entryTable = document.querySelector("#entry-table");
+        entryTable.style.opacity = "1";
+        entryTable.style.pointerEvents = "auto";
         const spinner = document.querySelector(".csf-spinner");
         if (spinner) spinner.remove();
     }
@@ -319,7 +319,7 @@ function formatDate(dateString) {
 // populate item filter dropdown
 async function populateItemFilter() {
     try {
-        const response = await fetch('/api/transactions?type=unique-items');
+        const response = await fetch('/api/entries?type=unique-items');
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
         const items = await response.json();
@@ -345,7 +345,7 @@ document.getElementById('filter-item').addEventListener('input', async (e) => {
     const query = e.target.value.toLowerCase();
     if (!query) return; // no input --> return
 
-    const suggestions = await fetch(`/api/transactions?type=unique-items-fuzzy&searchQuery=${encodeURIComponent(query)}`)
+    const suggestions = await fetch(`/api/entries?type=unique-items-fuzzy&searchQuery=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .catch(error => console.error('Error fetching suggestions:', error));
 
@@ -376,14 +376,14 @@ function toggleLocationDisplay() {
 document.getElementById('filter-location-toggle').addEventListener('change', toggleLocationDisplay);
 
 // get location from toggle/input
-const locationOfTransaction = document.getElementById('filter-location-toggle').checked
+const locationOfEntry = document.getElementById('filter-location-toggle').checked
     ? 'Global'
     : document.getElementById('local-location').value || 'Unknown';
 
 // UTILITY
 
 // prevent form submission on enter and trigger updateFilters instead
-document.getElementById('transaction-filters-form').addEventListener('keydown', function (e) {
+document.getElementById('entry-filters-form').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         e.preventDefault(); 
         updateFilters();
@@ -391,7 +391,7 @@ document.getElementById('transaction-filters-form').addEventListener('keydown', 
 });
 
 // merge cells in table - approach 1
-function mergeTransactionTableCells(tableBodyId, columnIndex) {
+function mergeEntryTableCells(tableBodyId, columnIndex) {
     const tbody = document.getElementById(tableBodyId);
     let lastCell = null;
     let rowSpan = 1;
