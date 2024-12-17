@@ -2,19 +2,18 @@ import stringSimilarity from 'string-similarity';
 import { createClient } from '@libsql/client';
 
 const db = createClient({
-    url: "libsql://canibartertransactions-frostyosty.turso.io",
-    authToken: process.env.CANIBARTER_TRANSACTIONS_AUTH_TOKEN
+    url: "libsql://sl-frostyosty.turso.io",
+    authToken: process.env.SL_AUTH_TOKEN
 });
 
-// utility: fuzzy match helper
-function getFuzzyMatch(input, key, candidates) {
-    const bestMatch = stringSimilarity.findBestMatch(input.toLowerCase(), candidates.map(item => item[key]?.toLowerCase() || ''));
-    return bestMatch.bestMatch.score >= 0.5 ? candidates[bestMatch.bestMatchIndex] : null;
-}
 
-// submit a new transaction
-async function submitTransaction(req, res) {
+// submit a new entry
+
+async function submitEntry(req, res) {
+    
     const { itemsGivenSubmission, itemsReceivedSubmission, tradeDateSubmission, locationSubmission } = req.body;
+
+    // capture ip address from requested
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
     if (!itemsGivenSubmission || !itemsReceivedSubmission || !tradeDateSubmission || !locationSubmission) {
@@ -22,8 +21,8 @@ async function submitTransaction(req, res) {
     }
 
     try {
-        await db.execute(
-            'INSERT INTO transactions (items_given, items_received, trade_date, location, ip_address) VALUES (?, ?, ?, ?, ?)',
+        const result = await db.execute(
+            'INSERT INTO entries (items_given, items_received, trade_date, location, ip_address) VALUES (?, ?, ?, ?, ?)',
             [
                 JSON.stringify(itemsGivenSubmission),
                 JSON.stringify(itemsReceivedSubmission),
@@ -32,45 +31,52 @@ async function submitTransaction(req, res) {
                 ipAddress
             ]
         );
-        res.status(200).json({ message: 'Transaction recorded successfully' });
+        res.status(200).json({ message: 'Entry recorded successfully' });
     } catch (error) {
-        console.error('[POST] Error submitting transaction:', error);
-        res.status(500).json({ message: 'Error submitting transaction' });
+        console.error('[POST] Error submitting entry:', error);
+        res.status(500).json({ message: 'Error submitting entry' });
     }
 }
 
-// get all transactions
-async function getTransactions(req, res) {
+
+
+
+
+
+// get all entries initially
+async function getEntries(req, res) {
     const { item, timeRange, location } = req.query;
-    console.log('getTransactions called with:', req.query);
+    console.log('getEntries called with:', req.query);
 
     try {
         let query = `
             SELECT items_given, items_received, trade_date, location, ip_address 
-            FROM transactions 
+            FROM entries 
             WHERE 1 = 1`;
         let params = [];
 
         // fuzz matching for item
         if (item?.trim()) {
+            console.log('Building query for item filter:', item);
             const allItems = (
                 await db.execute(`
                     SELECT DISTINCT value 
-                    FROM json_each((SELECT items_given FROM transactions UNION SELECT items_received FROM transactions))
+                    FROM json_each((SELECT items_given FROM entries UNION SELECT items_received FROM entries))
                 `)
             ).rows.map(row => row.value);
-
-            const closestMatchItem = stringSimilarity.findBestMatch(item.toLowerCase(), allItems.map(value => value.toLowerCase())).bestMatch.target;
+            const closestMatchItem = getFuzzyMatch(item, 'value', allItems);
+            console.log('Fuzzy matched item:', closestMatchItem);
             if (!closestMatchItem) {
                 console.error('No fuzzy match found for item:', item);
                 return res.status(400).json({ message: `No match found for item: ${item}` });
             }
-
             query += `
                 AND (
                     EXISTS (SELECT 1 FROM json_each(items_given) WHERE LOWER(value) = LOWER(?)) 
                     OR EXISTS (SELECT 1 FROM json_each(items_received) WHERE LOWER(value) = LOWER(?))
                 )`;
+            console.log('Generated SQL Query:', query);
+            console.log('Query Parameters:', params);   
             params.push(closestMatchItem, closestMatchItem);
         }
 
@@ -80,32 +86,32 @@ async function getTransactions(req, res) {
                 week: '-7 days',
                 month: '-1 month',
                 year: '-1 year',
-            }[timeRange] || '-7 days'; // default to '-7 days'
+            }[timeRange] || '-7 days'; // Default to '-7 days'
 
+            console.log('Time range offset:', dateOffset);
             query += ` AND trade_date >= DATE('now', ?)`;
             params.push(dateOffset);
         }
 
         // fuzz match for location
         if (location && location !== 'Global') {
-            const allLocations = (await db.execute(`SELECT DISTINCT location FROM transactions`)).rows.map(row => row.location);
-            const closestMatchLocation = stringSimilarity.findBestMatch(location.toLowerCase(), allLocations.map(loc => loc.toLowerCase())).bestMatch.target;
-
+            const allLocations = (await db.execute(`SELECT DISTINCT location FROM entries`)).rows.map(row => row.location);
+            const closestMatchLocation = getFuzzyMatch(location, 'location', allLocations);
             if (!closestMatchLocation) {
                 console.error('No fuzzy match found for location:', location);
                 return res.status(400).json({ message: `No match found for location: ${location}` });
             }
-
             query += ` AND location = ?`;
             params.push(closestMatchLocation);
         }
-
         // sorting and limit
         query += ' ORDER BY trade_date DESC LIMIT 100';
 
+        console.log('Query:', query);
+        console.log('Params:', params);
         const result = await db.execute(query, params);
 
-        const transactions = result.rows
+        const entries = result.rows
             .map(row => {
                 try {
                     return {
@@ -115,55 +121,62 @@ async function getTransactions(req, res) {
                     };
                 } catch (parseError) {
                     console.error('Error parsing JSON for row:', row, parseError);
-                    return null; // skip invalid rows
+                    return null; // skips invalid rows
                 }
             })
-            .filter(Boolean); // remove null rows
+            .filter(Boolean); // rm null rows
 
-        res.status(200).json(transactions);
+        res.status(200).json(entries);
     } catch (error) {
-        console.error('[GET] Error fetching transactions:', error);
-        res.status(500).json({ message: 'Error fetching transactions' });
+        console.error('[GET] Error fetching entries:', error);
+        res.status(500).json({ message: 'Error fetching entries' });
     }
 }
 
 
 
 
-// get transactions with filters
-async function getTransactionsWithFilters(req, res) {
+// get all entries with filters
+async function getEntriesWithFilters(req, res) {
     const { item, timeRange, location } = req.query;
-    console.log('getTransactionsWithFilters called with:', req.query);
-    console.log("Query string received by backend to be processed:", new URLSearchParams(req.query).toString());
+    console.log('getEntriesWithFilters called with:', req.query);
+    console.log("Query String received by backend to be processed:", new URLSearchParams(req.query).toString());
 
     try {
         let query = `
             SELECT items_given, items_received, trade_date, location, ip_address
-            FROM transactions
+            FROM entries
             WHERE 1 = 1
         `;
         let params = [];
 
-        // fuzzy matching for item
+
+        
         if (item?.trim()) {
             let allItems = [];
             try {
                 const itemsResult = await db.execute(`
                     SELECT DISTINCT value FROM json_each(
-                        (SELECT items_given FROM transactions UNION SELECT items_received FROM transactions)
+                        (SELECT items_given FROM entries UNION SELECT items_received FROM entries)
                     )
                 `);
                 allItems = itemsResult.rows.map(row => row.value).filter(Boolean); // ensure non-null values
             } catch (error) {
                 console.error('Error fetching all items for fuzzy matching:', error);
             }
-
-            const closestMatchItem = getFuzzyMatch(item, allItems);
+            let allLocations = [];
+            try {
+                const locationsResult = await db.execute(`SELECT DISTINCT location FROM entries`);
+                allLocations = locationsResult.rows.map(row => row.location).filter(Boolean); // ensure non-null values
+            } catch (error) {
+                console.error('Error fetching all locations for fuzzy matching:', error);
+            }            
+            const closestMatchItem = getFuzzyMatch(item, 'value', allItems);
             if (!closestMatchItem) {
                 console.error('No fuzzy match found for item:', item);
                 return res.status(400).json({ message: `No match found for item: ${item}` });
             }
-
+        
             query += `
                 AND (
                     EXISTS (SELECT 1 FROM json_each(items_given) WHERE LOWER(value) = LOWER(?))
@@ -172,41 +185,31 @@ async function getTransactionsWithFilters(req, res) {
             `;
             params.push(closestMatchItem, closestMatchItem);
         }
-
-        // handle timeRange
-        if (timeRange && timeRange !== 'all') {
+          if (timeRange && timeRange !== 'all') {
             if (timeRange === 'week') {
+                // determine start and end of the current week (e.g., Sunday-Saturday)
                 const now = new Date();
                 const dayOfWeek = now.getDay(); // Sunday = 0, Monday = 1, etc.
                 const startOfWeek = new Date(now.setDate(now.getDate() - dayOfWeek));
                 const endOfWeek = new Date(startOfWeek);
                 endOfWeek.setDate(startOfWeek.getDate() + 6);
-
                 query += ` AND trade_date BETWEEN ? AND ?`;
                 params.push(startOfWeek.toISOString().slice(0, 10), endOfWeek.toISOString().slice(0, 10));
             } else {
+                // other ranges (month/year), continue using DATE('now', offset)
                 const dateOffset = { month: '-1 month', year: '-1 year' }[timeRange];
                 query += ` AND trade_date >= DATE('now', ?)`;
                 params.push(dateOffset);
             }
         }
 
-        // fuzzy matching for location
         if (location && location !== 'Global') {
-            let allLocations = [];
-            try {
-                const locationsResult = await db.execute(`SELECT DISTINCT location FROM transactions`);
-                allLocations = locationsResult.rows.map(row => row.location).filter(Boolean);
-            } catch (error) {
-                console.error('Error fetching all locations for fuzzy matching:', error);
-            }
-
-            const closestMatchLocation = getFuzzyMatch(location, allLocations);
+            const allLocations = (await db.execute(`SELECT DISTINCT location FROM entries`)).rows.map(row => row.location);
+            const closestMatchLocation = getFuzzyMatch(location, 'location', allLocations);
             if (!closestMatchLocation) {
                 console.error('No fuzzy match found for location:', location);
                 return res.status(400).json({ message: `No match found for location: ${location}` });
             }
-
             query += ` AND location = ?`;
             params.push(closestMatchLocation);
         }
@@ -215,7 +218,7 @@ async function getTransactionsWithFilters(req, res) {
         console.log('Query:', query, 'Params:', params);
 
         const result = await db.execute(query, params);
-        const transactions = result.rows.map(row => {
+        const entries = result.rows.map(row => {
             try {
                 return {
                     ...row,
@@ -228,18 +231,36 @@ async function getTransactionsWithFilters(req, res) {
             }
         }).filter(Boolean);
 
-        res.status(200).json(transactions);
+        res.status(200).json(entries);
     } catch (error) {
-        console.error('[GET] Error fetching transactions:', error);
-        res.status(500).json({ message: 'Error fetching transactions' });
+        console.error('[GET] Error fetching entries:', error);
+        res.status(500).json({ message: 'Error fetching entries' });
     }
 }
 
-// get unique items
+
+// utility
+
+function getFuzzyMatch(input, field, possibleMatches) {
+    if (!input || !possibleMatches.length) {
+        console.warn(`No matches available for input: ${input}, field: ${field}`);
+        return null; // prevent errors
+    }
+    const scores = possibleMatches.map(item => ({
+        value: item,
+        score: stringSimilarity.compareTwoStrings(input.toLowerCase(), item.toLowerCase())
+    }));
+    scores.sort((a, b) => b.score - a.score);
+    return scores[0]?.value || input;
+}
+
+
+// getunique items
+
 async function getUniqueItems(req, res) {
     try {
         const result = await db.execute(`
-            SELECT DISTINCT items_given, items_received FROM transactions
+            SELECT DISTINCT items_given, items_received FROM entries
         `);
 
         const uniqueItems = new Set();
@@ -255,31 +276,16 @@ async function getUniqueItems(req, res) {
     }
 }
 
-// utility: fuzzy match helper
-function getFuzzyMatch(input, possibleMatches) {
-    if (!input || !possibleMatches.length) {
-        console.warn(`No matches available for input: ${input}`);
-        return null; // prevent errors
-    }
-    const scores = possibleMatches.map(item => ({
-        value: item,
-        score: stringSimilarity.compareTwoStrings(input.toLowerCase(), item.toLowerCase())
-    }));
-    scores.sort((a, b) => b.score - a.score);
-    return scores[0]?.value || input;
-}
-
-// Function to get unique items with fuzzy search
-async function csfGetUniqueItemsFuzzy(req, res) {
+async function getUniqueItemsFuzzy(req, res) {
     try {
-        const { 'csf-search-query': searchQuery } = req.query; // renamed for prefix consistency
+        const { searchQuery } = req.query; // searchQuery from query params
         
         if (!searchQuery) {
-            return res.status(400).json({ message: 'Missing search query: csf-search-query is required' }); // consistent error format
+            return res.status(400).json({ message: 'Search query is required' }); // error if no search query is provided
         }
 
         const result = await db.execute(`
-            SELECT DISTINCT items_given, items_received FROM csf-comment-section-transactions
+            SELECT DISTINCT items_given, items_received FROM entries
         `);
 
         const uniqueItems = new Set();
@@ -298,38 +304,41 @@ async function csfGetUniqueItemsFuzzy(req, res) {
             });
         });
 
-        res.status(200).json(Array.from(uniqueItems)); // return unique items as an array
+        res.status(200).json(Array.from(uniqueItems)); // unique items as array
     } catch (error) {
-        console.error('[GET] Error fetching unique items with fuzzy search:', error);
+        console.error('[GET] Error fetching unique items:', error);
         res.status(500).json({ message: 'Error fetching unique items' });
     }
 }
 
-// Main handler for API requests
-export default async function csfHandler(req, res) {
+
+
+export default async function handler(req, res) {
     if (req.method === 'GET') {
-        const { 'csf-type': type } = req.query; // renamed type for prefix consistency
+        const { type } = req.query;
 
-        console.log('[GET] Request received with type:', type);
+        console.log('GET request received with type:', type);
 
-        if (type === 'csf-unique-items') {
-            return csfGetUniqueItems(req, res);
-        } else if (type === 'csf-unique-items-fuzzy') {
-            return csfGetUniqueItemsFuzzy(req, res);
-        } else if (type === 'csf-transactions-with-filters') {
-            if (!req.query['csf-item'] && !req.query['csf-time-range'] && !req.query['csf-location']) {
-                return res.status(400).json({ message: 'Missing required filters: csf-item, csf-time-range, or csf-location must be provided' });
+        if (type === 'unique-items') {
+            return getUniqueItems(req, res);
+        } else if (type === 'unique-items-fuzzy') {
+            return getUniqueItemsFuzzy(req, res);
+        } else if (type === 'entries-with-filters') {
+            // query parameters are provided?
+            if (!req.query.item && !req.query.timeRange && !req.query.location) {
+                return res.status(400).json({ message: 'Missing required filters' });
             }
-            return csfGetTransactionsWithFilters(req, res);
-        } else if (type === 'csf-transactions') {
-            return csfGetTransactions(req, res);
+            return getEntriesWithFilters(req, res);
+        } else if (type === 'entries') {
+            return getEntries(req, res);
         } else {
-            return res.status(400).json({ message: 'Invalid csf-type parameter for GET request' });
+            res.status(400).json({ message: 'Invalid type parameter for GET request' });
         }
     } else if (req.method === 'POST') {
-        return csfSubmitTransaction(req, res);
+        return submitEntry(req, res);
     } else {
-        return res.status(405).json({ message: 'Method Not Allowed: Only GET and POST are supported' });
+        res.status(405).json({ message: 'Method Not Allowed' });
     }
 }
+
 
