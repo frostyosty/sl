@@ -128,18 +128,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-// FILTER STUFF
+// filter stuff
 
 // event listeners to the transaction table
 document.getElementById('transaction-table-body').addEventListener('click', (event) => {
     const cell = event.target;
     const column = cell.cellIndex;
-      if (column === 0 || column === 1) { // Items given or received columns
+
+    if (column === 0 || column === 1) { // items given or received columns
         const items = cell.innerText.split(',').map(item => item.trim());
-        // exact position of the click within the cell
-        const clickX = event.clientX - cell.getBoundingClientRect().left;
-        // text width for each item and determine clicked item
+        const clickX = event.clientX - cell.getBoundingClientRect().left; // click position in cell
         let cumulativeWidth = 0;
         const clickedItem = items.find(item => {
             const tempSpan = document.createElement('span');
@@ -154,15 +152,15 @@ document.getElementById('transaction-table-body').addEventListener('click', (eve
         });
 
         if (clickedItem) {
-            document.getElementById('filter-item').value = clickedItem; // Set the clicked item in the filter
+            document.getElementById('filter-item').value = clickedItem; // set clicked item in filter
             updateFilters();
         } else {
-            console.error("No item detected at clicked position.");
+            console.error("no item detected at clicked position.");
         }
-    } else if (column === 3) { 
+    } else if (column === 3) { // location column
         const location = cell.innerText.trim();
         const filterLocationToggle = document.getElementById('filter-location-toggle');
-        if (location !== "Global") {
+        if (location !== "global") {
             filterLocationToggle.checked = false;
             document.getElementById('local-location').value = location;
         } else {
@@ -172,37 +170,32 @@ document.getElementById('transaction-table-body').addEventListener('click', (eve
         toggleLocationDisplay();
         updateFilters();
     }
-    // updateFilters(); // these "updateFilters();" --> possibly done per below when change is detected TODO confirm
 });
 
-
-// Also update filters on any of the below
+// update filters on any change
 document.querySelectorAll('input[name="time-range"]').forEach(radio => {
     radio.addEventListener('change', () => updateFilters());
 });
 
 let debounceTimerForTransactionsItemFilter;
-document.getElementById('filter-item').addEventListener('input', (event) => {
+document.getElementById('filter-item').addEventListener('input', () => {
     clearTimeout(debounceTimerForTransactionsItemFilter);
-    debounceTimerForTransactionsItemFilter = setTimeout(() => {
-        updateFilters();
-    }, 300);
+    debounceTimerForTransactionsItemFilter = setTimeout(() => updateFilters(), 300);
 });
 
 document.getElementById('local-location').addEventListener('input', () => {
     const inputValue = document.getElementById('local-location').value;
     if (!inputValue.match(/^[a-zA-Z\s]*$/)) {
-        console.error('Invalid location input:', inputValue);
+        console.error('invalid location input:', inputValue);
         return;
     }
     updateFilters();
 });
 
 document.getElementById('filter-location-toggle').addEventListener('change', () => {
-    console.log("filter location clicked 1");
-    const globalTickBoxUpdateOnInput = document.getElementById('filter-location-toggle').checked;
-    const locationUpdateOnInput = document.getElementById('local-location');
-    if (globalTickBoxUpdateOnInput) locationUpdateOnInput.value = '';
+    const globalTickBox = document.getElementById('filter-location-toggle').checked;
+    const locationInput = document.getElementById('local-location');
+    if (globalTickBox) locationInput.value = '';
     updateFilters();
 });
 
@@ -211,9 +204,9 @@ async function updateFilters() {
         const item = document.getElementById('filter-item').value || null;
         const timeRange = document.querySelector('input[name="time-range"]:checked')?.value || "all";
         const locationToggle = document.getElementById('filter-location-toggle').checked;
-        const location = locationToggle ? "Global" : document.getElementById('local-location').value || "";
+        const location = locationToggle ? "global" : document.getElementById('local-location').value || "";
 
-        console.log("Filter details:", { item, timeRange, location });
+        console.log("filter details:", { item, timeRange, location });
 
         const queryParams = new URLSearchParams();
         if (item) queryParams.append('item', item);
@@ -223,7 +216,6 @@ async function updateFilters() {
         const transactionTable = document.querySelector("#transaction-table");
         const tbody = document.getElementById("transaction-table-body");
         const spinner = document.createElement("div");
-
         spinner.classList.add("csf-spinner");
         spinner.innerHTML = `
             <div class="csf-letter">C</div>
@@ -234,21 +226,16 @@ async function updateFilters() {
         spinner.style.top = "50%";
         spinner.style.left = "50%";
         spinner.style.transform = "translate(-50%, -50%)";
-        spinner.style.zIndex = "10000";
-        spinner.style.setProperty('color', 'black', 'important');
-        spinner.style.setProperty('opacity', '1', 'important');
         tbody.style.position = "relative";
         tbody.appendChild(spinner);
-
-        // grey out the table
         transactionTable.style.opacity = "0.5";
-        transactionTable.style.pointerEvents = "none"; // disable interactionsfor now (until finally block)
+        transactionTable.style.pointerEvents = "none";
 
         const response = await fetch(`/api/transactions?type=transactions-with-filters&${queryParams.toString()}`);
-        if (!response.ok) throw new Error(`Fetch failed with status: ${response.status}`);
+        if (!response.ok) throw new Error(`fetch failed with status: ${response.status}`);
 
         const transactions = await response.json();
-        console.log("Transactions fetched:", transactions);
+        console.log("transactions fetched:", transactions);
 
         const hasTransactions = transactions.length > 0;
 
@@ -257,52 +244,32 @@ async function updateFilters() {
                 <tr>
                     <td>${tx.items_given.join(", ")}</td>
                     <td>${tx.items_received.join(", ")}</td>
-                    <td>${tx.trade_date ? formatDate(tx.trade_date) : "N/A"}</td>
+                    <td>${tx.trade_date ? formatDate(tx.trade_date) : "n/a"}</td>
                     <td>${tx.location}</td>
                 </tr>
             `).join("")
-            : "<tr><td colspan='4'>No transactions found for this filter.</td></tr>";
+            : "<tr><td colspan='4'>no transactions found for this filter.</td></tr>";
 
         document.querySelectorAll("#transaction-table th:nth-child(3), #transaction-table td:nth-child(3)")
             .forEach(cell => cell.style.display = "table-cell");
 
-            mergeTransactionTableCells('transaction-table-body', 2);
-            mergeTransactionTableCells('transaction-table-body', 3);
+        mergeTransactionTableCells('transaction-table-body', 2);
+        mergeTransactionTableCells('transaction-table-body', 3);
 
-        // stats calculation
         const totalTransactions = transactions.length;
-        console.log('Total transactions:', totalTransactions);
+        console.log('total transactions:', totalTransactions);
         const totalItemsGiven = transactions.reduce((sum, tx) => sum + tx.items_given.length, 0);
-        console.log('Total items given:', totalItemsGiven);
         const itemOccurrences = item ? transactions.filter(tx =>
             tx.items_given.includes(item) || tx.items_received.includes(item)).length : 0;
-        console.log(`Item occurrences for "${item}":`, itemOccurrences);
-
         const uniqueIPs = new Set(transactions.map(tx => tx.ip_address));
-        console.log('Unique IPs (count):', uniqueIPs.size);
         const desirability = totalTransactions > 0 ? (totalItemsGiven / totalTransactions).toFixed(2) : 0;
-        if (totalTransactions > 0) {
-            console.log(`Desirability = Total Items Given (${totalItemsGiven}) / Total Transactions (${totalTransactions}) = ${desirability}`);
-        } else {
-            console.log('Desirability = 0 (No transactions)');
-        }
         const rarity = totalTransactions > 0 && item ? (itemOccurrences / totalTransactions).toFixed(2) : 0;
-        if (totalTransactions > 0 && item) {
-            console.log(`Rarity = Item Occurrences (${itemOccurrences}) / Total Transactions (${totalTransactions}) = ${rarity}`);
-        } else if (!item) {
-            console.log('Rarity = 0 (No item specified)');
-        } else {
-            console.log('Rarity = 0 (No transactions)');
-        }
         const diversity = itemOccurrences > 0 ? (uniqueIPs.size / itemOccurrences).toFixed(2) : 0;
-        if (itemOccurrences > 0) {
-            console.log(`Diversity = Unique IPs (${uniqueIPs.size}) / Item Occurrences (${itemOccurrences}) = ${diversity}`);
-        } else {
-            console.log('Diversity = 0 (No item occurrences)');
-        }
+
         document.getElementById('stats-desirability').innerText = desirability;
         document.getElementById('stats-rarity').innerText = rarity;
         document.getElementById('stats-diversity').innerText = diversity;
+
         const statsSection = document.getElementById('stats-section');
         const statsItems = statsSection.querySelectorAll('.stats-item');
         statsSection.style.display = 'flex';
@@ -310,19 +277,14 @@ async function updateFilters() {
             item.style.opacity = '0';
             item.style.transform = 'scale(0.8)';
             setTimeout(() => {
-                item.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                item.style.transition = 'opacity 0.5s, transform 0.5s';
                 item.style.opacity = '1';
                 item.style.transform = 'scale(1)';
             }, index * 200);
         });
-
-
-
-
     } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.error('error fetching transactions:', error);
     } finally {
-        // restore table interaction and remove spinner
         const transactionTable = document.querySelector("#transaction-table");
         transactionTable.style.opacity = "1";
         transactionTable.style.pointerEvents = "auto";
@@ -332,13 +294,12 @@ async function updateFilters() {
 }
 
 
-
 // format date
 function formatDate(dateString) {
     const date = new Date(dateString);
     if (isNaN(date)) {
         console.warn(`Invalid date string: ${dateString}`);
-        return dateString; //raw input if parsing fails
+        return dateString; // raw input if parsing fails
     }
 
     const today = new Date();
@@ -354,10 +315,6 @@ function formatDate(dateString) {
         year: "2-digit",
     });
 }
-
-
-
-
 
 // populate item filter dropdown
 async function populateItemFilter() {
@@ -381,14 +338,11 @@ async function populateItemFilter() {
         console.error("Error fetching unique items:", error);
     }
 }
-
 populateItemFilter();
-
 
 // allow typing in the drop down box
 document.getElementById('filter-item').addEventListener('input', async (e) => {
     const query = e.target.value.toLowerCase();
-    
     if (!query) return; // no input --> return
 
     const suggestions = await fetch(`/api/transactions?type=unique-items-fuzzy&searchQuery=${encodeURIComponent(query)}`)
@@ -401,22 +355,15 @@ document.getElementById('filter-item').addEventListener('input', async (e) => {
         const matched = suggestions.filter(item => item.toLowerCase().includes(query));
         if (matched.length === 0) {
             console.warn('Item not found');
-        } else {
-
         }
     } else {
         console.error('The suggestions are not an array:', suggestions);
     }
 });
 
-
-
-
-
-
 // filter location
 
-// show/hide (but not just on click as it can be called from other function)
+// show/hide location input depending on toggle state
 function toggleLocationDisplay() {
     const localInput = document.getElementById('local-location');
     const filterLocationToggle = document.getElementById('filter-location-toggle');
@@ -428,17 +375,13 @@ function toggleLocationDisplay() {
 }
 document.getElementById('filter-location-toggle').addEventListener('change', toggleLocationDisplay);
 
-
 // get location from toggle/input
 const locationOfTransaction = document.getElementById('filter-location-toggle').checked
     ? 'Global'
     : document.getElementById('local-location').value || 'Unknown';
 
+// UTILITY
 
-
-
-
-    // UTILITY
 // prevent form submission on enter and trigger updateFilters instead
 document.getElementById('transaction-filters-form').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
@@ -473,96 +416,3 @@ function mergeTransactionTableCells(tableBodyId, columnIndex) {
     });
 }
 
-// // merge cells in table - approach 2
-// function mergeTransactionTableCells(tableBodyId, columnIndex) {
-//     const tbody = document.getElementById(tableBodyId);
-//     const rows = Array.from(tbody.rows);
-
-//     if (rows.length === 0) return;
-
-//     let mergeInfo = [];
-//     let lastText = null;
-//     let lastRowIndex = -1;
-//     let rowSpan = 0;
-
-//     rows.forEach((row, rowIndex) => {
-//         const cell = row.cells[columnIndex];
-//         if (!cell) return;
-//         const cellText = cell.textContent.trim();
-//         if (cellText === lastText) {
-//             rowSpan++;
-//         } else {
-//             // save other merges' info
-//             if (lastRowIndex >= 0) {
-//                 mergeInfo.push({ rowIndex: lastRowIndex, rowSpan });
-//             }
-//             // reset tracking
-//             lastText = cellText;
-//             lastRowIndex = rowIndex;
-//             rowSpan = 1;
-//         }
-//     });
-//     // save final group
-//     if (lastRowIndex >= 0) {
-//         mergeInfo.push({ rowIndex: lastRowIndex, rowSpan });
-//     }
-//     // do all merges in separate iteration
-//     mergeInfo.forEach(({ rowIndex, rowSpan }) => {
-//         const cell = rows[rowIndex].cells[columnIndex];
-//         cell.rowSpan = rowSpan;
-//         for (let i = 1; i < rowSpan; i++) {
-//             rows[rowIndex + i].cells[columnIndex].style.display = "none";
-//         }
-//     });
-// }
-
-
-
-
-
-    // below NOT USED -- currently not necessary as there is no submit button for filters
-document.getElementById('transaction-filters-form').addEventListener('submit', async function (e) {
-    e.preventDefault(); // prevent page reload
-    // get filter values
-    const item = document.getElementById('filter-item').value;
-    const timeRange = document.querySelector('input[name="time-range"]:checked').value;
-    const locationToggle = document.getElementById('filter-location-toggle').checked;
-    const location = locationToggle ? 'Global' : document.getElementById('local-location').value;
-
-    try {
-        const response = await fetch(`/api/transactions?type=transactions-with-filters&item=${encodeURIComponent(item)}&timeRange=${encodeURIComponent(timeRange)}&location=${encodeURIComponent(location)}`);
-        const transactions = await response.json();
-
-        if (!response.ok) throw new Error(transactions.message);
-
-        const tbody = document.getElementById('transaction-table-body'); 
-        tbody.innerHTML = ''; // clear existing rows
-        transactions.forEach(tx => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${tx.items_given.join(', ')}</td>
-                <td>${tx.items_received.join(', ')}</td>
-                <td>${new Date(tx.trade_date).toLocaleDateString()}</td>
-                <td>${tx.location}</td>
-            `;
-            tbody.appendChild(row);
-        });
-        const totalTransactions = transactions.length;
-        const totalItemsGiven = transactions.reduce((sum, tx) => sum + tx.items_given.length, 0);
-        const itemOccurrences = transactions.filter(tx =>
-            tx.items_given.includes(item) || tx.items_received.includes(item)).length;
-
-        const uniqueIPs = new Set(transactions.map(tx => tx.ip_address));
-
-        const desirability = totalTransactions > 0 ? (totalItemsGiven / totalTransactions).toFixed(2) : 0;
-        const rarity = totalTransactions > 0 ? (itemOccurrences / totalTransactions).toFixed(2) : 0;
-        const diversity = itemOccurrences > 0 ? (uniqueIPs.size / itemOccurrences).toFixed(2) : 0;
-
-        document.getElementById('stats-desirability').innerText = desirability;
-        document.getElementById('stats-rarity').innerText = rarity;
-        document.getElementById('stats-diversity').innerText = diversity;
-        document.getElementById('stats-section').style.display = 'block';
-    } catch (error) {
-        console.error('Error fetching transactions:', error);
-    }
-});
