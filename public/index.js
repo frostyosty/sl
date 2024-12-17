@@ -1,357 +1,119 @@
-// fetch and display transactions in the table
-// show transaction table on page load
-async function fetchTransactions(selectedItem = '') {
-    const transactionTableContainer = document.querySelector("#transaction-table");
-    const tableBody = document.querySelector("#transaction-table tbody");
-    const spinner = document.createElement("div"); // create spinner dynamically
-    spinner.classList.add("csf-spinner");
+
+// fetch and display entries in the recent entries table
+async function fetchEntries(selectedCriteria = '') {
+    const recentEntriesContainer = document.querySelector("#recent-entries-table");
+    const tableBody = document.querySelector("#recent-entries-table tbody");
+    const spinner = document.createElement("div");
+    spinner.classList.add("entry-spinner");
     spinner.innerHTML = `
-        <div class="csf-letter">C</div>
-        <div class="csf-letter">I</div>
-        <div class="csf-letter">B</div>
+        <div class="spinner-letter">L</div>
+        <div class="spinner-letter">O</div>
+        <div class="spinner-letter">A</div>
+        <div class="spinner-letter">D</div>
     `;
-    spinner.style.top = "-10%";
-    spinner.style.left = "50%";
-    // spinner.style.transform = "translate(-50%, -50%)";
-    spinner.style.marginTop = "2px"; 
-    spinner.style.zIndex = "100";
-    spinner.style.setProperty('color', 'black', 'important');
-    // clear previous table content and show spinner
+    spinner.style.position = "relative";
+    spinner.style.marginTop = "2px";
+
     tableBody.innerHTML = '';
-    transactionTableContainer.appendChild(spinner);
+    recentEntriesContainer.appendChild(spinner);
 
     try {
-        const url = `/api/transactions?type=transactions${selectedItem ? `?item=${encodeURIComponent(selectedItem)}` : ''}`;
-        console.log("Fetching from URL:", url);
+        const url = `/api/entries${selectedCriteria ? `?criteria=${encodeURIComponent(selectedCriteria)}` : ''}`;
+        console.log("Fetching entries from URL:", url);
 
         const response = await fetch(url);
-        console.log("Response status:", response.status);
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
 
-        if (!response.ok) {
-            console.error("Response not OK:", response.statusText);
-            return;
-        }
+        const entries = await response.json();
+        console.log("Fetched entries:", entries);
 
-        const transactions = await response.json();
-        console.log("Fetched transactions:", transactions);
-
-        const tbody = document.getElementById('transaction-table-body');
-        console.log("Clearing and populating table body...");
-        tbody.innerHTML = '';
-        transactions.forEach(transaction => {
+        entries.forEach(entry => {
             const row = document.createElement('tr');
-
             row.innerHTML = `
-                <td>${transaction.items_given.join(', ')}</td>
-                <td>${transaction.items_received.join(', ')}</td>
-                <td>${formatDate(transaction.trade_date)}</td>
-                <td>${transaction.location}</td>
+                <td>${entry.name || '-'}</td>
+                <td>${entry.description || '-'}</td>
+                <td>${entry.approx_date || '-'}</td>
+                <td>${entry.approx_age || '-'}</td>
+                <td>${entry.ethnicity || '-'}</td>
+                <td>${entry.timestamp || '-'}</td>
             `;
-            
-            tbody.appendChild(row);
-
+            tableBody.appendChild(row);
         });
-
-
-       
-            console.log("Transactions table updated successfully.");
-        } catch (error) {
-            console.error("Error fetching transactions:", error);
-        } finally {
-            spinner.remove();
-        }
-    mergeTransactionTableCells('transaction-table-body', 2);
-    mergeTransactionTableCells('transaction-table-body', 3);    
-}        
-    
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOMContentLoaded event fired.");
-    
-    fetchTransactions();
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-// TRANSACTION FORM SUBMISSION
-
-// form validation etc
-// ADD ITEM Dynamically add new input fields/to the specified list
-function addItem(listId) {
-    const list = document.getElementById(listId);
-
-    // container for the input and buttons
-    const itemEntry = document.createElement('div');
-    itemEntry.className = 'item-entry';
-    itemEntry.style.transition = 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
-    itemEntry.style.opacity = '0';
-    itemEntry.style.transform = 'translateY(-10px)';
-    //the input fields
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.name = listId === 'items-given-list' ? 'items-given[]' : 'items-received[]';
-    input.placeholder = listId === 'items-given-list' ? 'Item Given' : 'Item Received';
-    input.required = true;
-    input.className = 'transaction-item-input';
-
-    //the Remove button
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className = 'button-style-3-purple-v2 remove-transaction-item-button';
-    removeButton.textContent = 'Remove';
-    removeButton.onclick = () => removeItem(itemEntry);
-
-    itemEntry.appendChild(input);
-    itemEntry.appendChild(removeButton);
-
-    list.appendChild(itemEntry);
-
-    requestAnimationFrame(() => {
-        itemEntry.style.opacity = '1';
-        itemEntry.style.transform = 'translateY(0)';
-    });
-}
-// remove an item smooth animation
-function removeItem(itemEntry) {
-    itemEntry.style.opacity = '0';
-    itemEntry.style.transform = 'translateY(-10px)';
-    setTimeout(() => itemEntry.remove(), 300);
-}
-// hide add buttons initially and manage visibility dynamically
-document.querySelectorAll('.transactions-submit-row').forEach(row => {
-    const input = row.querySelector('.item-entry input');
-    const addButton = row.querySelector('.add-transaction-item-given-button') || row.querySelector('.add-transaction-item-received-button');
-    // hide the Add button
-    if (addButton) addButton.style.display = 'none';
-    // showwhen typing starts
-    if (input) {
-        input.addEventListener('input', () => {
-            addButton.style.display = input.value.trim() ? 'inline-block' : 'none';
-        });
+        console.log("Recent entries table updated.");
+    } catch (error) {
+        console.error("Error fetching entries:", error);
+    } finally {
+        spinner.remove();
     }
-});
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// date selection logic
-document.querySelectorAll('input[name="trade-date-option"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        const tradeDateInput = document.getElementById('trade-date');
-        const selectedValue = e.target.value;
-
-        if (selectedValue === 'today') {
-            tradeDateInput.value = new Date().toISOString().split('T')[0];
-            tradeDateInput.style.display = 'none';
-        } else if (selectedValue === 'yesterday') {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            tradeDateInput.value = yesterday.toISOString().split('T')[0];
-            tradeDateInput.style.display = 'none';
-        } else {
-            tradeDateInput.style.display = 'block';
-            tradeDateInput.value = ''; // clear value for custom input
-        }
-    });
-});
-
-
-
-
-
-
-// form submission
-document.getElementById('transaction-form').addEventListener('submit', async (e) => {
+// handle the "Add Entry" form submission
+document.getElementById('entry-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!canSubmitTransactionTimerCheck()) return;
-    if (!canSubmitTransaction()) return;
-    // form data collect
-    const itemsGiven = Array.from(document.querySelectorAll('input[name="items-given[]"]')).map(input => input.value.trim()).filter(val => val);
-    const itemsReceived = Array.from(document.querySelectorAll('input[name="items-received[]"]')).map(input => input.value.trim()).filter(val => val);
-    const tradeDateOption = document.querySelector('input[name="trade-date-option"]:checked')?.value || 'custom';
-    const tradeDate = (() => {
-        if (tradeDateOption === 'today') {
-            return new Date().toISOString().split('T')[0];
-        } else if (tradeDateOption === 'yesterday') {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            return yesterday.toISOString().split('T')[0];
-        } else {
-            return document.getElementById('trade-date').value.trim();
-        }
-    })();
-    const locationOfTransaction = document.getElementById('location').value.trim();
-    if (!itemsGiven.length || !itemsReceived.length || !tradeDate || !locationOfTransaction) {
-        alert('Please ensure all required fields are filled out.');
+
+    const name = document.getElementById('name').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const approxDate = document.getElementById('approx-date').value.trim();
+    const approxAge = document.querySelector('input[name="approx-age"]:checked')?.value || '-';
+    const ethnicity = document.getElementById('ethnicity').value.trim();
+
+    if (!name) {
+        alert("Name is required.");
         return;
     }
-    const transaction = { 
-        itemsGivenSubmission: itemsGiven, 
-        itemsReceivedSubmission: itemsReceived, 
-        tradeDateSubmission: tradeDate, 
-        locationSubmission: locationOfTransaction 
+
+    const entry = {
+        name,
+        description,
+        approx_date: approxDate || '-',
+        approx_age: approxAge,
+        ethnicity: ethnicity || '-'
     };
-    // optimistic update
-    const tbody = document.getElementById('transaction-table-body');
+
+    const tableBody = document.querySelector("#recent-entries-table tbody");
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
-        <td>${transaction.itemsGivenSubmission.join(', ')}</td>
-        <td>${transaction.itemsReceivedSubmission.join(', ')}</td>
-        <td>${transaction.tradeDateSubmission}</td>
-        <td>${transaction.locationSubmission}</td>
+        <td>${entry.name}</td>
+        <td>${entry.description}</td>
+        <td>${entry.approx_date}</td>
+        <td>${entry.approx_age}</td>
+        <td>${entry.ethnicity}</td>
+        <td>${new Date().toLocaleDateString()}</td>
     `;
-    tbody.prepend(newRow);
+    tableBody.prepend(newRow);
 
-    console.log('Transaction payload:', transaction);
-    // transaction to server
+    console.log("Entry payload:", entry);
+
     try {
-        const response = await fetch('/api/transactions', {
+        const response = await fetch('/api/entries', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(transaction)
+            body: JSON.stringify(entry)
         });
-        const result = await response.json();
-        if (!response.ok) {
-            console.error('Server error:', result.message);
-            showTransactionAddedMessage(result.message || 'Failed to submit transaction.', 'red');
-            newRow.remove();
-        } else {
-            showTransactionAddedMessage('Submission successful!', 'green');
-            document.getElementById('transaction-form').reset();
-        }
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+        console.log("Entry submitted successfully.");
+        document.getElementById('entry-form').reset();
     } catch (error) {
-        console.error('Error submitting transaction:', error);
-        alert('Error occurred while submitting the transaction.');
+        console.error("Error submitting entry:", error);
         newRow.remove();
     }
 });
 
+// "Today" and "Yesterday" button functionality for approx date
+document.querySelectorAll('.date-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const dateInput = document.getElementById('approx-date');
+        const today = new Date();
+        const offset = button.id === 'yesterday-button' ? -1 : 0;
+        today.setDate(today.getDate() + offset);
+        dateInput.value = today.toISOString().split('T')[0];
+    });
+});
 
-function showTransactionAddedMessage(text, color) {
-    const message = document.createElement("p");
-    message.textContent = text;
-    message.style.color = color;
-    message.classList.add("message");
-    
-    // add the message to the container
-    const messageContainer = document.getElementById("transaction-message-container");
-    messageContainer.appendChild(message);
-
-    setTimeout(() => {
-        message.classList.add("fade-out");
-    }, 3500);
-
-    // remove the message element after fade-out completes (total 6 seconds here)
-    setTimeout(() => {
-        message.remove();
-    }, 5000);
-}
-
-
-// validate fields function
-function canSubmitTransaction() {
-    const itemsGiven = document.querySelectorAll('input[name="items-given[]"]');
-    const itemsReceived = document.querySelectorAll('input[name="items-received[]"]');
-    const tradeDateOption = document.querySelector('input[name="trade-date-option"]:checked');
-    const tradeDate = document.getElementById('trade-date');
-    const location = document.getElementById('location');
-
-    if (Array.from(itemsGiven).some(input => !input.value.trim())) {
-        alert("Please fill in all 'Items Given' fields.");
-        return false;
-    }
-    if (Array.from(itemsReceived).some(input => !input.value.trim())) {
-        alert("Please fill in all 'Items Received' fields.");
-        return false;
-    }
-    if (tradeDateOption.value === 'custom' && !tradeDate.value.trim()) {
-        alert("Please select a custom trade date.");
-        return false;
-    }
-    if (!location.value.trim()) {
-        alert("Please fill in the location field.");
-        return false;
-    }
-    return true;
-}
-
-let lastTransactionSubmissionTime = 0;
-
-function canSubmitTransactionTimerCheck() {
-    const now = Date.now();
-    const timeDifference = now - lastTransactionSubmissionTime;
-
-    if (timeDifference < 10000) {
-        alert(`Please wait ${(10 - timeDifference / 1000).toFixed(1)} seconds before submitting another transaction.`);
-        return false;
-    }
-
-    lastTransactionSubmissionTime = now;
-    return true;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// location grab for transactions - fancy
-async function fetchTransactionLocation() {
-    try {
-        const response = await fetch(`https://ipinfo.io/json?token=96aa35404e2849`);
-        const data = await response.json();
-        const locationInput = document.getElementById("location"); // Update to transaction location field
-
-        if (locationInput) {
-            locationInput.value = data.city || "Unknown";
-            locationInput.addEventListener("click", () => {
-                locationInput.value = locationInput.value === data.city ? "Global" : data.city || "Unknown";
-            });
-        } else {
-            console.error("Location input not found.");
-        }
-    } catch (error) {
-        console.error("Failed to fetch location:", error);
-    }
-}
-fetchTransactionLocation();
-
-// tab-select functionality to location input
-document.getElementById("location").addEventListener("keydown", (event) => {
-    if (event.key === "Tab" && document.activeElement === event.target) {
-        event.preventDefault(); // Prevent jumping to the next field
-        event.target.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" })); // i.e. suggestion
-    }
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOMContentLoaded event fired.");
+    fetchEntries();
 });
 
 
