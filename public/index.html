@@ -19,7 +19,7 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
-  <title>JHJ</title>
+  <title>END SUITERRY</title>
 </head>
 
 <body>
@@ -499,105 +499,89 @@ function generateGuestName(ip) {
 
 //End suittery
 
-fetch('/api/test-connection')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error fetching test connection:', error));
-// Fetch recent entries when the page loads
-document.addEventListener('DOMContentLoaded', fetchRecentEntries);
+// fetch('/api/test-connection')
+//   .then(response => response.json())
+//   .then(data => console.log(data))
+//   .catch(error => console.error('Error fetching test connection:', error));
+// // Fetch recent entries when the page loads
+// document.addEventListener('DOMContentLoaded', fetchRecentEntries);
 
 
 
-async function fetchRecentEntries() {
-  try {
-    const response = await fetch('/api/recent');
+// async function fetchRecentEntries() {
+//   try {
+//     const response = await fetch('/api/recent');
 
-    // Log if the response is not OK
-    if (!response.ok) {
-      console.error(`Server error: ${response.status} - ${response.statusText}`);
-      throw new Error(`Server error: ${response.status}`);
-    }
+//     // Log if the response is not OK
+//     if (!response.ok) {
+//       console.error(`Server error: ${response.status} - ${response.statusText}`);
+//       throw new Error(`Server error: ${response.status}`);
+//     }
 
-    const entries = await response.json();
-    console.log('Raw response from API:', entries);  // Log the raw response
+//     const entries = await response.json();
+//     console.log('Raw response from API:', entries);  // Log the raw response
     
-    // Check if entries is an array
-    if (!Array.isArray(entries)) {
-      throw new Error('Expected an array but received: ' + JSON.stringify(entries));
-    }
+//     // Check if entries is an array
+//     if (!Array.isArray(entries)) {
+//       throw new Error('Expected an array but received: ' + JSON.stringify(entries));
+//     }
 
-    updateEntriesTable(entries);  // Call the function to update the table
-  } catch (error) {
-    console.error('Error fetching recent entries:', error);
-  }
-}
+//     updateEntriesTable(entries);  // Call the function to update the table
+//   } catch (error) {
+//     console.error('Error fetching recent entries:', error);
+//   }
+// }
 
-// refresh every 30 seconds
-document.addEventListener('DOMContentLoaded', () => {
-  fetchRecentEntries(); // Initial load
-  setInterval(fetchRecentEntries, 30000); // Reload every 15 seconds
-});
+// // refresh every 30 seconds
+// document.addEventListener('DOMContentLoaded', () => {
+//   fetchRecentEntries(); // Initial load
+//   setInterval(fetchRecentEntries, 30000); // Reload every 15 seconds
+// });
 
-// Unified function to update the table with entries (recent entries or search results)
-function updateEntriesTable(entries, append = false) {
-  const tableBody = document.getElementById('sl-recentEntriesList');
+// // Unified function to update the table with entries (recent entries or search results)
+// function updateEntriesTable(entries, append = false) {
+//   const tableBody = document.getElementById('sl-recentEntriesList');
   
-  // Clear table if not appending (e.g., for search results)
-  if (!append) {
-    tableBody.innerHTML = ''; 
-  }
+//   // Clear table if not appending (e.g., for search results)
+//   if (!append) {
+//     tableBody.innerHTML = ''; 
+//   }
 
-  entries.forEach(entry => {
-    const row = document.createElement('tr');
-
-    // Name Cell
-    const nameCell = document.createElement('td');
-    nameCell.textContent = entry.name || '-';  // Default to '-' if name is missing
-    row.appendChild(nameCell);
-
-    // Description Cell
-    const descriptionCell = document.createElement('td');
-    descriptionCell.textContent = entry.description || '-';  // Default to '-' if description is missing
-    row.appendChild(descriptionCell);
-
-    // Approx Date Cell
-    const approxDateCell = document.createElement('td');
-    approxDateCell.textContent = entry.approx_date || '-';  // Default to '-' if approx_date is missing
-    row.appendChild(approxDateCell);
-
-    // Approx Age Cell
-    const approxAgeCell = document.createElement('td');
-    approxAgeCell.textContent = entry.approx_age || '-';  // Default to '-' if approx_age is missing
-    row.appendChild(approxAgeCell);
-
-    // Ethnicity Cell
-    const ethnicityCell = document.createElement('td');
-    ethnicityCell.textContent = entry.ethnicity || '-';  // Default to '-' if ethnicity is missing
-    row.appendChild(ethnicityCell);
-
-    // Timestamp Cell
-    const timestampCell = document.createElement('td');
-    const timestamp = entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : '-';  // Handle missing timestamp
-    timestampCell.textContent = timestamp;
-    row.appendChild(timestampCell);
-
-    // Evidence Cell (Photo Placeholder)
-    const evidenceCell = document.createElement('td');
-    evidenceCell.textContent = 'None submitted';  // Static text
-    const infoIcon = document.createElement('span');
-    infoIcon.textContent = ' ';
-    infoIcon.title = "This feature is not currently enabled as it's hard to stop inappropriate content.";
-    evidenceCell.appendChild(infoIcon);
-    row.appendChild(evidenceCell);
-
-    // Insert row into table
-    if (append) {
-      tableBody.insertBefore(row, tableBody.firstChild); // Insert at top if appending
-    } else {
-      tableBody.appendChild(row);
-    }
-  });
-}
+//   entries.forEach(entry => {
+//     const row = document.createElement('tr');
+//     const nameCell = document.createElement('td');
+//     nameCell.textContent = entry.name || '-';  // Default to '-' if name is missing
+//     row.appendChild(nameCell);
+//     const descriptionCell = document.createElement('td');
+//     descriptionCell.textContent = entry.description || '-';  // Default to '-' if description is missing
+//     row.appendChild(descriptionCell);
+//     const approxDateCell = document.createElement('td');
+//     approxDateCell.textContent = entry.approx_date || '-';  // Default to '-' if approx_date is missing
+//     row.appendChild(approxDateCell);
+//     const approxAgeCell = document.createElement('td');
+//     approxAgeCell.textContent = entry.approx_age || '-';  // Default to '-' if approx_age is missing
+//     row.appendChild(approxAgeCell);
+//     const ethnicityCell = document.createElement('td');
+//     ethnicityCell.textContent = entry.ethnicity || '-';  // Default to '-' if ethnicity is missing
+//     row.appendChild(ethnicityCell);
+//     const timestampCell = document.createElement('td');
+//     const timestamp = entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : '-';  // Handle missing timestamp
+//     timestampCell.textContent = timestamp;
+//     row.appendChild(timestampCell);
+//     const evidenceCell = document.createElement('td');
+//     evidenceCell.textContent = 'None submitted';  // Static text
+//     const infoIcon = document.createElement('span');
+//     infoIcon.textContent = ' ';
+//     infoIcon.title = "This feature is not currently enabled as it's hard to stop inappropriate content.";
+//     evidenceCell.appendChild(infoIcon);
+//     row.appendChild(evidenceCell);
+//     if (append) {
+//       tableBody.insertBefore(row, tableBody.firstChild); // Insert at top if appending
+//     } else {
+//       tableBody.appendChild(row);
+//     }
+//   });
+// }
 
 
 
@@ -606,272 +590,270 @@ function updateEntriesTable(entries, append = false) {
 
 
 
-// Track last submission time
-let lastSubmissionTime = 0;
+// // Track last submission time
+// let lastSubmissionTime = 0;
 
-// Setting approxDate to today's date
-const todayButton = document.getElementById('todayButton');
-if (todayButton) {
-  todayButton.addEventListener('click', function () {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('sl-approxDate').value = today;
-  });
-}
-
-
-// Setting approxDate to yesterday's date
-const yesterdayButton = document.getElementById('yesterdayButton');
-if (yesterdayButton) {
-  yesterdayButton.addEventListener('click', function () {
-    const yesterday = new Date(Date.now() - 864e5).toISOString().split('T')[0];
-    document.getElementById('sl-approxDate').value = yesterday;
-  });
-}
+// // Setting approxDate to today's date
+// const todayButton = document.getElementById('todayButton');
+// if (todayButton) {
+//   todayButton.addEventListener('click', function () {
+//     const today = new Date().toISOString().split('T')[0];
+//     document.getElementById('sl-approxDate').value = today;
+//   });
+// }
 
 
-// Handle form submission with a 10-second submission restriction
-document.getElementById('sl-entryForm').addEventListener('submit', async (event) => {
-  const firstnamelastnamecheck = document.getElementById('sl-name').value.trim() || '-';
-
-  if (!firstnamelastnamecheck.includes(' ')) {
-    alert('Please enter both a first and last name.');
-    return;
-  }
-
-    const now = Date.now();
-  if (now - lastSubmissionTime < 10000) { // 10 seconds restriction
-    alert('Please wait at least 10 seconds between submissions.');
-    return;
-  }
-
-  lastSubmissionTime = now; // Update last submission time
-  // Get form values
-  const name = document.getElementById('sl-name').value.trim() || '-';
-  const description = document.getElementById('sl-description').value.trim() || '-';
-  const approxDate = document.getElementById('sl-approxDate').value || '-';
-  const approxAge = document.querySelector('input[name="approxAge"]:checked')?.value || '-';
-  const ethnicity = document.querySelector('input[name="ethnicity"]:checked')?.value || '-'; // Ethnicity is optional
-  const submitButton = document.getElementById('sl-submitButton');
-  const messageContainer = document.getElementById('sl-message');
-
-  // Create current timestamp
-  const timestamp = new Date().toISOString();
-
-  if (name && description) {
-    submitButton.textContent = 'Loading...';
-    messageContainer.textContent = '';
-            try {
-          const response = await fetch('/api/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name,
-              description,
-              approxDate,
-              approxAge,
-              ethnicity
-            }),
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Server error: ${errorText}`);
-          }
-
-          const result = await response.json();
-          messageContainer.textContent = result.message;
-          messageContainer.className = 'sl-success';
-          console.log('Submit response:', result);
-
-          // Successful submission --> add the new entry at the top of the table
-          addRecentEntryToList(name, description, approxDate, approxAge, ethnicity, timestamp);
-
-        } catch (error) {
-          console.error('Error submitting entry:', error);
-          messageContainer.textContent = error.message;
-          messageContainer.className = 'sl-error';
-
-        } finally {
-          submitButton.textContent = 'Submit'; // Reset button text
-        }
-
-  } else {
-    messageContainer.textContent = 'Name and description are required.';
-    messageContainer.className = 'sl-error';
-  }
-});
+// // Setting approxDate to yesterday's date
+// const yesterdayButton = document.getElementById('yesterdayButton');
+// if (yesterdayButton) {
+//   yesterdayButton.addEventListener('click', function () {
+//     const yesterday = new Date(Date.now() - 864e5).toISOString().split('T')[0];
+//     document.getElementById('sl-approxDate').value = yesterday;
+//   });
+// }
 
 
+// // Handle form submission with a 10-second submission restriction
+// document.getElementById('sl-entryForm').addEventListener('submit', async (event) => {
+//   const firstnamelastnamecheck = document.getElementById('sl-name').value.trim() || '-';
+
+//   if (!firstnamelastnamecheck.includes(' ')) {
+//     alert('Please enter both a first and last name.');
+//     return;
+//   }
+
+//     const now = Date.now();
+//   if (now - lastSubmissionTime < 10000) { // 10 seconds restriction
+//     alert('Please wait at least 10 seconds between submissions.');
+//     return;
+//   }
+
+//   lastSubmissionTime = now; // Update last submission time
+//   // Get form values
+//   const name = document.getElementById('sl-name').value.trim() || '-';
+//   const description = document.getElementById('sl-description').value.trim() || '-';
+//   const approxDate = document.getElementById('sl-approxDate').value || '-';
+//   const approxAge = document.querySelector('input[name="approxAge"]:checked')?.value || '-';
+//   const ethnicity = document.querySelector('input[name="ethnicity"]:checked')?.value || '-'; // Ethnicity is optional
+//   const submitButton = document.getElementById('sl-submitButton');
+//   const messageContainer = document.getElementById('sl-message');
+
+//   // Create current timestamp
+//   const timestamp = new Date().toISOString();
+
+//   if (name && description) {
+//     submitButton.textContent = 'Loading...';
+//     messageContainer.textContent = '';
+//             try {
+//           const response = await fetch('/api/submit', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({
+//               name,
+//               description,
+//               approxDate,
+//               approxAge,
+//               ethnicity
+//             }),
+//           });
+
+//           if (!response.ok) {
+//             const errorText = await response.text();
+//             throw new Error(`Server error: ${errorText}`);
+//           }
+
+//           const result = await response.json();
+//           messageContainer.textContent = result.message;
+//           messageContainer.className = 'sl-success';
+//           console.log('Submit response:', result);
+
+//           // Successful submission --> add the new entry at the top of the table
+//           addRecentEntryToList(name, description, approxDate, approxAge, ethnicity, timestamp);
+
+//         } catch (error) {
+//           console.error('Error submitting entry:', error);
+//           messageContainer.textContent = error.message;
+//           messageContainer.className = 'sl-error';
+
+//         } finally {
+//           submitButton.textContent = 'Submit'; // Reset button text
+//         }
+
+//   } else {
+//     messageContainer.textContent = 'Name and description are required.';
+//     messageContainer.className = 'sl-error';
+//   }
+// });
 
 
 
-// Add a new entry to the top of the recent entries list
-function addRecentEntryToList(name, description, approxDate, approxAge, ethnicity, timestamp) {
-  const table = document.getElementById('sl-recentEntriesTable').querySelector('tbody');
-  const row = document.createElement('tr');
 
-  row.innerHTML = `
-    <td data-label="Name">${name}</td>
-    <td data-label="Description">${description}</td>
-    <td data-label="Approx. Date">${approxDate || '-'}</td>
-    <td data-label="Approx. Age">${approxAge || '-'}</td>
-    <td data-label="Ethnicity">${ethnicity || '-'}</td>
-    <td data-label="Timestamp">${timestamp}</td>
-    <td data-label="Photo(?)"><span class="photo-question">?</span></td>
-  `;
-  table.prepend(row);
-}
-// Setting today's date
-document.getElementById('todayButton').addEventListener('click', function () {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('date').value = today;
-});
 
-// Setting yesterday's date
-document.getElementById('yesterdayButton').addEventListener('click', function () {
-  const yesterday = new Date(Date.now() - 864e5).toISOString().split('T')[0];
-  document.getElementById('date').value = yesterday;
-});
-// sorting entries 
-document.querySelectorAll('.sortable').forEach(header => {
-  header.addEventListener('click', () => {
-    const tableBody = document.getElementById('sl-recentEntriesList');
-    const rows = Array.from(tableBody.querySelectorAll('tr'));
-    const column = header.getAttribute('data-column');
-    const ascending = header.getAttribute('data-ascending') === 'true';
+// // Add a new entry to the top of the recent entries list
+// function addRecentEntryToList(name, description, approxDate, approxAge, ethnicity, timestamp) {
+//   const table = document.getElementById('sl-recentEntriesTable').querySelector('tbody');
+//   const row = document.createElement('tr');
 
-    rows.sort((a, b) => {
-      const cellA = a.querySelector(`td[data-label="${column}"]`).textContent.trim();
-      const cellB = b.querySelector(`td[data-label="${column}"]`).textContent.trim();
+//   row.innerHTML = `
+//     <td data-label="Name">${name}</td>
+//     <td data-label="Description">${description}</td>
+//     <td data-label="Approx. Date">${approxDate || '-'}</td>
+//     <td data-label="Approx. Age">${approxAge || '-'}</td>
+//     <td data-label="Ethnicity">${ethnicity || '-'}</td>
+//     <td data-label="Timestamp">${timestamp}</td>
+//     <td data-label="Photo(?)"><span class="photo-question">?</span></td>
+//   `;
+//   table.prepend(row);
+// }
+// // Setting today's date
+// document.getElementById('todayButton').addEventListener('click', function () {
+//   const today = new Date().toISOString().split('T')[0];
+//   document.getElementById('date').value = today;
+// });
+
+// // Setting yesterday's date
+// document.getElementById('yesterdayButton').addEventListener('click', function () {
+//   const yesterday = new Date(Date.now() - 864e5).toISOString().split('T')[0];
+//   document.getElementById('date').value = yesterday;
+// });
+// // sorting entries 
+// document.querySelectorAll('.sortable').forEach(header => {
+//   header.addEventListener('click', () => {
+//     const tableBody = document.getElementById('sl-recentEntriesList');
+//     const rows = Array.from(tableBody.querySelectorAll('tr'));
+//     const column = header.getAttribute('data-column');
+//     const ascending = header.getAttribute('data-ascending') === 'true';
+
+//     rows.sort((a, b) => {
+//       const cellA = a.querySelector(`td[data-label="${column}"]`).textContent.trim();
+//       const cellB = b.querySelector(`td[data-label="${column}"]`).textContent.trim();
       
-      return ascending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
-    });
+//       return ascending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+//     });
     
-    tableBody.innerHTML = ''; // clear current rows
-    rows.forEach(row => tableBody.appendChild(row)); // append sorted rows
+//     tableBody.innerHTML = ''; // clear current rows
+//     rows.forEach(row => tableBody.appendChild(row)); // append sorted rows
 
-    header.setAttribute('data-ascending', !ascending); // toggle direction
-  });
-});
-
-
-
-
-
-
-// Handle search functionality
-document.getElementById('sl-searchButton').addEventListener('click', async () => {
-  const searchTerm = document.getElementById('sl-searchTerm').value;
-  console.log('Search initiated for:', searchTerm);
-  const searchButton = document.getElementById('sl-searchButton');
-  const messageContainer = document.getElementById('sl-message');
-
-  searchButton.textContent = 'Searching...';
-  messageContainer.textContent = '';
-
-  try {
-    const response = await fetch(`/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
-    const searchResults = await response.json();
-
-    if (searchResults.length > 0) {
-      updateEntriesTable(searchResults); // Use the same table for search results
-    } else {
-      messageContainer.textContent = 'No results found';
-    }
-  } catch (error) {
-    console.error('Error fetching search results:', error);
-    messageContainer.textContent = error.message;
-    messageContainer.className = 'sl-error';
-  } finally {
-    searchButton.textContent = 'Search';
-  }
-});
-
-// photo notification
-
-document.getElementById('sl-recentEntriesTable').addEventListener('click', (event) => {
-  if (event.target.classList.contains('photo-question')) {
-    const blurb = document.getElementById('sl-photoBlurb');
-    if (blurb.classList.contains('sl-hidden')) {
-      blurb.classList.remove('sl-hidden');
-      blurb.classList.add('sl-visible');
-    } else {
-      blurb.classList.remove('sl-visible');
-      blurb.classList.add('sl-hidden');
-    }
-  }
-});
+//     header.setAttribute('data-ascending', !ascending); // toggle direction
+//   });
+// });
 
 
 
 
 
-//alltable all table
-document.getElementById('sl-loadAllButton').addEventListener('click', async () => {
-  console.log('Load All button clicked');
-  const allTable = document.getElementById('sl-allEntriesTable');
-  const allTableBody = document.getElementById('sl-allEntriesList');
-  const hideButton = document.getElementById('sl-hideAllButton');
+
+// // Handle search functionality
+// document.getElementById('sl-searchButton').addEventListener('click', async () => {
+//   const searchTerm = document.getElementById('sl-searchTerm').value;
+//   console.log('Search initiated for:', searchTerm);
+//   const searchButton = document.getElementById('sl-searchButton');
+//   const messageContainer = document.getElementById('sl-message');
+
+//   searchButton.textContent = 'Searching...';
+//   messageContainer.textContent = '';
+
+//   try {
+//     const response = await fetch(`/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+//     const searchResults = await response.json();
+
+//     if (searchResults.length > 0) {
+//       updateEntriesTable(searchResults); // Use the same table for search results
+//     } else {
+//       messageContainer.textContent = 'No results found';
+//     }
+//   } catch (error) {
+//     console.error('Error fetching search results:', error);
+//     messageContainer.textContent = error.message;
+//     messageContainer.className = 'sl-error';
+//   } finally {
+//     searchButton.textContent = 'Search';
+//   }
+// });
+
+// // photo notification
+
+// document.getElementById('sl-recentEntriesTable').addEventListener('click', (event) => {
+//   if (event.target.classList.contains('photo-question')) {
+//     const blurb = document.getElementById('sl-photoBlurb');
+//     if (blurb.classList.contains('sl-hidden')) {
+//       blurb.classList.remove('sl-hidden');
+//       blurb.classList.add('sl-visible');
+//     } else {
+//       blurb.classList.remove('sl-visible');
+//       blurb.classList.add('sl-hidden');
+//     }
+//   }
+// });
+
+
+
+
+
+// //alltable all table
+// document.getElementById('sl-loadAllButton').addEventListener('click', async () => {
+//   console.log('Load All button clicked');
+//   const allTable = document.getElementById('sl-allEntriesTable');
+//   const allTableBody = document.getElementById('sl-allEntriesList');
+//   const hideButton = document.getElementById('sl-hideAllButton');
   
-  try {
-    const response = await fetch('/api/all');
-    console.log('Fetching data from /api/all');
+//   try {
+//     const response = await fetch('/api/all');
+//     console.log('Fetching data from /api/all');
     
-    if (!response.ok) {
-      console.error(`Error fetching data: ${response.status} ${response.statusText}`);
-      throw new Error(`Status Code: ${response.status}`);
-    }
+//     if (!response.ok) {
+//       console.error(`Error fetching data: ${response.status} ${response.statusText}`);
+//       throw new Error(`Status Code: ${response.status}`);
+//     }
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    // Populate table with initial columns
-    allTableBody.innerHTML = ''; // Clear any existing data
-    data.forEach(entry => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${entry.name || '-'}</td>
-        <td>${entry.description || '-'}</td>
-        <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
-        <td class="sl-hide-when-minified">${entry.approx_date || '-'}</td>
-        <td class="sl-hide-when-minified">${entry.approx_age || '-'}</td>
-        <td class="sl-hide-when-minified">${entry.ethnicity || '-'}</td>
-        <td class="sl-hide-when-minified">${entry.photo || '-'}</td>
-        <td class="sl-hide-when-minified">${entry.created_at ? new Date(entry.created_at).toLocaleDateString() : '-'}</td>
-      `;
-      allTableBody.appendChild(row);
-    });
+//     // Populate table with initial columns
+//     allTableBody.innerHTML = ''; // Clear any existing data
+//     data.forEach(entry => {
+//       const row = document.createElement('tr');
+//       row.innerHTML = `
+//         <td>${entry.name || '-'}</td>
+//         <td>${entry.description || '-'}</td>
+//         <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
+//         <td class="sl-hide-when-minified">${entry.approx_date || '-'}</td>
+//         <td class="sl-hide-when-minified">${entry.approx_age || '-'}</td>
+//         <td class="sl-hide-when-minified">${entry.ethnicity || '-'}</td>
+//         <td class="sl-hide-when-minified">${entry.photo || '-'}</td>
+//         <td class="sl-hide-when-minified">${entry.created_at ? new Date(entry.created_at).toLocaleDateString() : '-'}</td>
+//       `;
+//       allTableBody.appendChild(row);
+//     });
 
-    // Show table and toggle button visibility
-    allTable.classList.remove('sl-hidden'); // remove hidden class from table
-    hideButton.classList.remove('sl-hidden'); // show the hide button
-    document.getElementById('sl-loadAllButton').classList.add('sl-hidden'); // hide load button
-  } catch (error) {
-    console.error('Error loading all entries:', error);
-  }
-});
+//     // Show table and toggle button visibility
+//     allTable.classList.remove('sl-hidden'); // remove hidden class from table
+//     hideButton.classList.remove('sl-hidden'); // show the hide button
+//     document.getElementById('sl-loadAllButton').classList.add('sl-hidden'); // hide load button
+//   } catch (error) {
+//     console.error('Error loading all entries:', error);
+//   }
+// });
 
-// Hide button behavior
-document.getElementById('sl-hideAllButton').addEventListener('click', () => {
-  document.getElementById('sl-allEntriesTable').classList.add('sl-hidden');
-  document.getElementById('sl-hideAllButton').classList.add('sl-hidden');
-  document.getElementById('sl-loadAllButton').classList.remove('sl-hidden');
-});
+// // Hide button behavior
+// document.getElementById('sl-hideAllButton').addEventListener('click', () => {
+//   document.getElementById('sl-allEntriesTable').classList.add('sl-hidden');
+//   document.getElementById('sl-hideAllButton').classList.add('sl-hidden');
+//   document.getElementById('sl-loadAllButton').classList.remove('sl-hidden');
+// });
 
-document.getElementById('sl-expandColumnsButton').addEventListener('click', () => {
-  const expandButton = document.getElementById('sl-expandColumnsButton');
-  const extraColumns = document.querySelectorAll('.sl-hide-when-minified');
-  const isExpanded = expandButton.textContent === 'Minify';
+// document.getElementById('sl-expandColumnsButton').addEventListener('click', () => {
+//   const expandButton = document.getElementById('sl-expandColumnsButton');
+//   const extraColumns = document.querySelectorAll('.sl-hide-when-minified');
+//   const isExpanded = expandButton.textContent === 'Minify';
 
-  // Toggle extra columns' visibility
-  extraColumns.forEach(column => {
-    column.style.display = isExpanded ? 'none' : 'table-cell';
-  });
+//   // Toggle extra columns' visibility
+//   extraColumns.forEach(column => {
+//     column.style.display = isExpanded ? 'none' : 'table-cell';
+//   });
 
-  // Adjust button text
-  expandButton.textContent = isExpanded ? 'Expand Columns' : 'Minify';
-});
-
-
+//   // Adjust button text
+//   expandButton.textContent = isExpanded ? 'Expand Columns' : 'Minify';
+// });
 
 
 
@@ -886,28 +868,23 @@ document.getElementById('sl-expandColumnsButton').addEventListener('click', () =
 
 
 
-// form submission with "Enter" key
-document.getElementById('sl-entryForm').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();  // stop form from auto-submitting
-    document.getElementById('sl-submitButton').click();
-  }
-});
-
-//search functionality with "Enter" key
-document.getElementById('sl-searchTerm').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    document.getElementById('sl-searchButton').click();
-  }
-});
 
 
+// // form submission with "Enter" key
+// document.getElementById('sl-entryForm').addEventListener('keydown', function(event) {
+//   if (event.key === 'Enter') {
+//     event.preventDefault();  // stop form from auto-submitting
+//     document.getElementById('sl-submitButton').click();
+//   }
+// });
 
-
-
-
-
+// //search functionality with "Enter" key
+// document.getElementById('sl-searchTerm').addEventListener('keydown', function(event) {
+//   if (event.key === 'Enter') {
+//     event.preventDefault();
+//     document.getElementById('sl-searchButton').click();
+//   }
+// });
 
 
 
