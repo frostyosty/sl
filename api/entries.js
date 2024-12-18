@@ -8,26 +8,29 @@ const db = createClient({
 
 
 // submit a new entry
-
+// Submit entry function
 async function submitEntry(req, res) {
-    
-    const { itemsGivenSubmission, itemsReceivedSubmission, tradeDateSubmission, locationSubmission } = req.body;
+    const { nameSubmission, descriptionSubmission, approxDateSubmission, approxAgeSubmission, ethnicitySubmission, pictureSubmission } = req.body;
 
-    // capture ip address from requested
+    // capture ip address from request
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-    if (!itemsGivenSubmission || !itemsReceivedSubmission || !tradeDateSubmission || !locationSubmission) {
-        return res.status(400).json({ message: "All required fields must be filled." });
+    if (!nameSubmission || !descriptionSubmission || !approxDateSubmission) {
+        return res.status(400).json({ message: "Required fields (name, description, and approx date) must be filled." });
     }
 
     try {
         const result = await db.execute(
-            'INSERT INTO entries (items_given, items_received, trade_date, location, ip_address) VALUES (?, ?, ?, ?, ?)',
+            `INSERT INTO entries 
+            (name, description, created_at, picture, approx_date, approx_age, ethnicity, ip) 
+            VALUES (?, ?, datetime('now'), ?, ?, ?, ?, ?)`,
             [
-                JSON.stringify(itemsGivenSubmission),
-                JSON.stringify(itemsReceivedSubmission),
-                tradeDateSubmission,
-                locationSubmission,
+                nameSubmission,
+                descriptionSubmission,
+                pictureSubmission || null, // optional
+                approxDateSubmission,
+                approxAgeSubmission || null, // optional
+                ethnicitySubmission || null, // optional
                 ipAddress
             ]
         );
@@ -38,49 +41,32 @@ async function submitEntry(req, res) {
     }
 }
 
-
-
-
-
-
-// get all entries initially
+// Get entries function
 async function getEntries(req, res) {
-    const { item, timeRange, location } = req.query;
+    const { name, timeRange, ethnicity, location } = req.query;
     console.log('getEntries called with:', req.query);
 
     try {
         let query = `
-            SELECT items_given, items_received, trade_date, location, ip_address 
+            SELECT name, description, approx_date, approx_age, ethnicity, created_at, ip 
             FROM entries 
             WHERE 1 = 1`;
         let params = [];
 
-        // fuzz matching for item
-        if (item?.trim()) {
-            console.log('Building query for item filter:', item);
-            const allItems = (
-                await db.execute(`
-                    SELECT DISTINCT value 
-                    FROM json_each((SELECT items_given FROM entries UNION SELECT items_received FROM entries))
-                `)
-            ).rows.map(row => row.value);
-            const closestMatchItem = getFuzzyMatch(item, 'value', allItems);
-            console.log('Fuzzy matched item:', closestMatchItem);
-            if (!closestMatchItem) {
-                console.error('No fuzzy match found for item:', item);
-                return res.status(400).json({ message: `No match found for item: ${item}` });
+        // Fuzz matching for name
+        if (name?.trim()) {
+            console.log('Building query for name filter:', name);
+            const allNames = (await db.execute(`SELECT DISTINCT name FROM entries`)).rows.map(row => row.name);
+            const closestMatchName = getFuzzyMatch(name, 'name', allNames);
+            if (!closestMatchName) {
+                console.error('No fuzzy match found for name:', name);
+                return res.status(400).json({ message: `No match found for name: ${name}` });
             }
-            query += `
-                AND (
-                    EXISTS (SELECT 1 FROM json_each(items_given) WHERE LOWER(value) = LOWER(?)) 
-                    OR EXISTS (SELECT 1 FROM json_each(items_received) WHERE LOWER(value) = LOWER(?))
-                )`;
-            console.log('Generated SQL Query:', query);
-            console.log('Query Parameters:', params);   
-            params.push(closestMatchItem, closestMatchItem);
+            query += ` AND LOWER(name) = LOWER(?)`;
+            params.push(closestMatchName);
         }
 
-        // time filter
+        // Time range filter
         if (timeRange && timeRange !== 'all') {
             const dateOffset = {
                 week: '-7 days',
@@ -89,23 +75,105 @@ async function getEntries(req, res) {
             }[timeRange] || '-7 days'; // Default to '-7 days'
 
             console.log('Time range offset:', dateOffset);
-            query += ` AND trade_date >= DATE('now', ?)`;
+            query += ` AND created_at >= DATE('now', ?)`;
+            params.push(dateOffset);
+        }
+
+        // Fuzz match for ethnicity
+        if (ethnicity?.trim()) {
+            const allEthnicities = (await db.execute(`SELECT DISTINCT ethnicity FROM entries`)).rows.map(row => row.ethnicity);
+            const closestMatchEthnicity = getFuzzyMatch(ethnicity, 'ethnicity', allEthnicities);
+            if (!closestMatchEthnicity) {
+                console.error('No fuzzy match found for ethnicity:', ethnicity);
+                return res.status(400).json({ message: `No match found for ethnicity: ${ethnicity}` });
+            }
+            query += ` AND ethnicity = ?`;
+            params.push(closestMatchEthnicity);
+        }
+
+        // Sorting and limit
+        query += ' ORDER BY created_at DESC LIMIT 100';
+
+        console.log('Query:', query);
+        console.log('Params:', params);
+        const result = await db.execute(query, params);
+
+        const entries = result.rows;
+        res.status(200).json(entries);
+    } catch (error) {
+        console.error('[GET] Error fetching entries:', error);
+        res.status(500).json({ message: 'Error fetching entries' });
+    }
+}
+
+
+
+
+
+// get all entries initially
+async function getEntries(req, res) {
+    const { itemSubmission, timeRangeSubmission, locationSubmission } = req.query;
+    console.log('getEntries called with:', req.query);
+
+    try {
+        let query = `
+            SELECT name, description, approx_date, approx_age, ethnicity, created_at, ip 
+            FROM entries 
+            WHERE 1 = 1`;
+        let params = [];
+
+        // fuzz matching for name or description
+        if (itemSubmission?.trim()) {
+            console.log('Building query for item filter:', itemSubmission);
+            const allItems = (
+                await db.execute(`
+                    SELECT DISTINCT name 
+                    FROM entries 
+                    UNION 
+                    SELECT DISTINCT description 
+                    FROM entries
+                `)
+            ).rows.map(row => row.name || row.description);
+            const closestMatchItem = getFuzzyMatch(itemSubmission, 'name or description', allItems);
+            console.log('Fuzzy matched item:', closestMatchItem);
+            if (!closestMatchItem) {
+                console.error('No fuzzy match found for item:', itemSubmission);
+                return res.status(400).json({ message: `No match found for item: ${itemSubmission}` });
+            }
+            query += `
+                AND (
+                    LOWER(name) = LOWER(?) 
+                    OR LOWER(description) = LOWER(?)
+                )`;
+            params.push(closestMatchItem, closestMatchItem);
+        }
+
+        // time filter
+        if (timeRangeSubmission && timeRangeSubmission !== 'all') {
+            const dateOffset = {
+                week: '-7 days',
+                month: '-1 month',
+                year: '-1 year',
+            }[timeRangeSubmission] || '-7 days'; // Default to '-7 days'
+
+            console.log('Time range offset:', dateOffset);
+            query += ` AND created_at >= DATE('now', ?)`;
             params.push(dateOffset);
         }
 
         // fuzz match for location
-        if (location && location !== 'Global') {
-            const allLocations = (await db.execute(`SELECT DISTINCT location FROM entries`)).rows.map(row => row.location);
-            const closestMatchLocation = getFuzzyMatch(location, 'location', allLocations);
+        if (locationSubmission && locationSubmission !== 'Global') {
+            const allLocations = (await db.execute(`SELECT DISTINCT approx_date FROM entries`)).rows.map(row => row.approx_date);
+            const closestMatchLocation = getFuzzyMatch(locationSubmission, 'location', allLocations);
             if (!closestMatchLocation) {
-                console.error('No fuzzy match found for location:', location);
-                return res.status(400).json({ message: `No match found for location: ${location}` });
+                console.error('No fuzzy match found for location:', locationSubmission);
+                return res.status(400).json({ message: `No match found for location: ${locationSubmission}` });
             }
-            query += ` AND location = ?`;
+            query += ` AND approx_date= ?`;
             params.push(closestMatchLocation);
         }
         // sorting and limit
-        query += ' ORDER BY trade_date DESC LIMIT 100';
+        query += ' ORDER BY created_at DESC LIMIT 100';
 
         console.log('Query:', query);
         console.log('Params:', params);
@@ -116,15 +184,19 @@ async function getEntries(req, res) {
                 try {
                     return {
                         ...row,
-                        items_given: JSON.parse(row.items_given),
-                        items_received: JSON.parse(row.items_received),
+                        name: JSON.stringify(row.name),
+                        approx_date: row.approx_date,
+                        approx_age: row.approx_age,
+                        ethnicity: row.ethnicity,
+                        created_at: row.created_at,
+                        ip: row.ip
                     };
                 } catch (parseError) {
                     console.error('Error parsing JSON for row:', row, parseError);
                     return null; // skips invalid rows
                 }
             })
-            .filter(Boolean); // rm null rows
+            .filter(Boolean); // remove null rows
 
         res.status(200).json(entries);
     } catch (error) {
@@ -135,86 +207,77 @@ async function getEntries(req, res) {
 
 
 
-
 // get all entries with filters
 async function getEntriesWithFilters(req, res) {
-    const { item, timeRange, location } = req.query;
+    const { item, timeRange, ethnicity } = req.query;
     console.log('getEntriesWithFilters called with:', req.query);
     console.log("Query String received by backend to be processed:", new URLSearchParams(req.query).toString());
 
     try {
         let query = `
-            SELECT items_given, items_received, trade_date, location, ip_address
+            SELECT id, name, description, created_at, picture, approx_date, approx_age, ethnicity, ip
             FROM entries
             WHERE 1 = 1
         `;
         let params = [];
 
-
-        
+        // Filter by item (name or description)
         if (item?.trim()) {
-            let allItems = [];
+            const allItems = [];
             try {
                 const itemsResult = await db.execute(`
-                    SELECT DISTINCT value FROM json_each(
-                        (SELECT items_given FROM entries UNION SELECT items_received FROM entries)
-                    )
+                    SELECT DISTINCT name FROM entries
+                    UNION
+                    SELECT DISTINCT description FROM entries
                 `);
-                allItems = itemsResult.rows.map(row => row.value).filter(Boolean); // ensure non-null values
+                allItems.push(...itemsResult.rows.map(row => row.name || row.description).filter(Boolean));
             } catch (error) {
                 console.error('Error fetching all items for fuzzy matching:', error);
             }
-            let allLocations = [];
-            try {
-                const locationsResult = await db.execute(`SELECT DISTINCT location FROM entries`);
-                allLocations = locationsResult.rows.map(row => row.location).filter(Boolean); // ensure non-null values
-            } catch (error) {
-                console.error('Error fetching all locations for fuzzy matching:', error);
-            }            
+
             const closestMatchItem = getFuzzyMatch(item, 'value', allItems);
             if (!closestMatchItem) {
                 console.error('No fuzzy match found for item:', item);
                 return res.status(400).json({ message: `No match found for item: ${item}` });
             }
-        
+
             query += `
-                AND (
-                    EXISTS (SELECT 1 FROM json_each(items_given) WHERE LOWER(value) = LOWER(?))
-                    OR EXISTS (SELECT 1 FROM json_each(items_received) WHERE LOWER(value) = LOWER(?))
-                )
+                AND (LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))
             `;
-            params.push(closestMatchItem, closestMatchItem);
+            params.push(`%${closestMatchItem}%`, `%${closestMatchItem}%`);
         }
-          if (timeRange && timeRange !== 'all') {
+
+        // Filter by time range
+        if (timeRange && timeRange !== 'all') {
             if (timeRange === 'week') {
-                // determine start and end of the current week (e.g., Sunday-Saturday)
                 const now = new Date();
-                const dayOfWeek = now.getDay(); // Sunday = 0, Monday = 1, etc.
+                const dayOfWeek = now.getDay();
                 const startOfWeek = new Date(now.setDate(now.getDate() - dayOfWeek));
                 const endOfWeek = new Date(startOfWeek);
                 endOfWeek.setDate(startOfWeek.getDate() + 6);
-                query += ` AND trade_date BETWEEN ? AND ?`;
+
+                query += ` AND created_at BETWEEN ? AND ?`;
                 params.push(startOfWeek.toISOString().slice(0, 10), endOfWeek.toISOString().slice(0, 10));
             } else {
-                // other ranges (month/year), continue using DATE('now', offset)
                 const dateOffset = { month: '-1 month', year: '-1 year' }[timeRange];
-                query += ` AND trade_date >= DATE('now', ?)`;
+                query += ` AND created_at >= DATE('now', ?)`;
                 params.push(dateOffset);
             }
         }
 
-        if (location && location !== 'Global') {
-            const allLocations = (await db.execute(`SELECT DISTINCT location FROM entries`)).rows.map(row => row.location);
-            const closestMatchLocation = getFuzzyMatch(location, 'location', allLocations);
-            if (!closestMatchLocation) {
-                console.error('No fuzzy match found for location:', location);
-                return res.status(400).json({ message: `No match found for location: ${location}` });
+        // Filter by ethnicity
+        if (ethnicity?.trim()) {
+            const allEthnicities = (await db.execute(`SELECT DISTINCT ethnicity FROM entries`)).rows.map(row => row.ethnicity).filter(Boolean);
+            const closestMatchEthnicity = getFuzzyMatch(ethnicity, 'ethnicity', allEthnicities);
+            if (!closestMatchEthnicity) {
+                console.error('No fuzzy match found for ethnicity:', ethnicity);
+                return res.status(400).json({ message: `No match found for ethnicity: ${ethnicity}` });
             }
-            query += ` AND location = ?`;
-            params.push(closestMatchLocation);
+            query += ` AND ethnicity = ?`;
+            params.push(closestMatchEthnicity);
         }
 
-        query += ' ORDER BY trade_date DESC LIMIT 100';
+        query += ' ORDER BY created_at DESC LIMIT 100';
         console.log('Query:', query, 'Params:', params);
 
         const result = await db.execute(query, params);
@@ -222,11 +285,10 @@ async function getEntriesWithFilters(req, res) {
             try {
                 return {
                     ...row,
-                    items_given: JSON.parse(row.items_given),
-                    items_received: JSON.parse(row.items_received),
+                    picture: row.picture || 'No picture provided',
                 };
-            } catch (parseError) {
-                console.error('Error parsing JSON for row:', row, parseError);
+            } catch (error) {
+                console.error('Error processing row:', row, error);
                 return null;
             }
         }).filter(Boolean);
@@ -237,6 +299,7 @@ async function getEntriesWithFilters(req, res) {
         res.status(500).json({ message: 'Error fetching entries' });
     }
 }
+
 
 
 // utility
@@ -256,17 +319,17 @@ function getFuzzyMatch(input, field, possibleMatches) {
 
 
 // getunique items
-
 async function getUniqueItems(req, res) {
     try {
         const result = await db.execute(`
-            SELECT DISTINCT items_given, items_received FROM entries
+            SELECT DISTINCT name, description, ethnicity FROM entries
         `);
 
         const uniqueItems = new Set();
         result.rows.forEach(row => {
-            JSON.parse(row.items_given).forEach(item => uniqueItems.add(item));
-            JSON.parse(row.items_received).forEach(item => uniqueItems.add(item));
+            uniqueItems.add(row.name);
+            uniqueItems.add(row.description);
+            uniqueItems.add(row.ethnicity);
         });
 
         res.status(200).json(Array.from(uniqueItems));
@@ -278,33 +341,26 @@ async function getUniqueItems(req, res) {
 
 async function getUniqueItemsFuzzy(req, res) {
     try {
-        const { searchQuery } = req.query; // searchQuery from query params
-        
+        const { searchQuery } = req.query;
+
         if (!searchQuery) {
-            return res.status(400).json({ message: 'Search query is required' }); // error if no search query is provided
+            return res.status(400).json({ message: 'Search query is required' });
         }
 
         const result = await db.execute(`
-            SELECT DISTINCT items_given, items_received FROM entries
+            SELECT DISTINCT name, description, ethnicity FROM entries
         `);
 
         const uniqueItems = new Set();
-
         result.rows.forEach(row => {
-            JSON.parse(row.items_given).forEach(item => {
-                if (item.toLowerCase().includes(searchQuery.toLowerCase())) {
-                    uniqueItems.add(item);
-                }
-            });
-
-            JSON.parse(row.items_received).forEach(item => {
-                if (item.toLowerCase().includes(searchQuery.toLowerCase())) {
+            [row.name, row.description, row.ethnicity].forEach(item => {
+                if (item?.toLowerCase().includes(searchQuery.toLowerCase())) {
                     uniqueItems.add(item);
                 }
             });
         });
 
-        res.status(200).json(Array.from(uniqueItems)); // unique items as array
+        res.status(200).json(Array.from(uniqueItems));
     } catch (error) {
         console.error('[GET] Error fetching unique items:', error);
         res.status(500).json({ message: 'Error fetching unique items' });
@@ -317,20 +373,15 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
         const { type } = req.query;
 
-        console.log('GET request received with type:', type);
-
         if (type === 'unique-items') {
             return getUniqueItems(req, res);
         } else if (type === 'unique-items-fuzzy') {
             return getUniqueItemsFuzzy(req, res);
         } else if (type === 'entries-with-filters') {
-            // query parameters are provided?
             if (!req.query.item && !req.query.timeRange && !req.query.location) {
                 return res.status(400).json({ message: 'Missing required filters' });
             }
             return getEntriesWithFilters(req, res);
-        } else if (type === 'entries') {
-            return getEntries(req, res);
         } else {
             res.status(400).json({ message: 'Invalid type parameter for GET request' });
         }
@@ -340,5 +391,4 @@ export default async function handler(req, res) {
         res.status(405).json({ message: 'Method Not Allowed' });
     }
 }
-
 
