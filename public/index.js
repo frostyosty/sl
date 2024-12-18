@@ -201,15 +201,17 @@ document.getElementById('filter-location-toggle').addEventListener('change', () 
 
 async function updateFilters() {
     try {
-        const item = document.getElementById('filter-item').value || null;
+        const name = document.getElementById('filter-name').value || null;
+        const description = document.getElementById('filter-description').value || null;
         const timeRange = document.querySelector('input[name="time-range"]:checked')?.value || "all";
         const locationToggle = document.getElementById('filter-location-toggle').checked;
         const location = locationToggle ? "global" : document.getElementById('local-location').value || "";
 
-        console.log("filter details:", { item, timeRange, location });
+        console.log("Filter details:", { name, description, timeRange, location });
 
         const queryParams = new URLSearchParams();
-        if (item) queryParams.append('item', item);
+        if (name) queryParams.append('name', name);
+        if (description) queryParams.append('description', description);
         queryParams.append('timeRange', timeRange);
         queryParams.append('location', location);
 
@@ -232,23 +234,23 @@ async function updateFilters() {
         entryTable.style.pointerEvents = "none";
 
         const response = await fetch(`/api/entries?type=entries-with-filters&${queryParams.toString()}`);
-        if (!response.ok) throw new Error(`fetch failed with status: ${response.status}`);
+        if (!response.ok) throw new Error(`Fetch failed with status: ${response.status}`);
 
         const entries = await response.json();
-        console.log("entries fetched:", entries);
+        console.log("Entries fetched:", entries);
 
         const hasEntries = entries.length > 0;
 
         tbody.innerHTML = hasEntries
-            ? entries.map(tx => `
+            ? entries.map(entry => `
                 <tr>
-                    <td>${tx.items_given.join(", ")}</td>
-                    <td>${tx.items_received.join(", ")}</td>
-                    <td>${tx.trade_date ? formatDate(tx.trade_date) : "n/a"}</td>
-                    <td>${tx.location}</td>
+                    <td>${entry.name}</td>
+                    <td>${entry.description}</td>
+                    <td>${entry.approx_date || "n/a"}</td>
+                    <td>${entry.ethnicity || "n/a"}</td>
                 </tr>
             `).join("")
-            : "<tr><td colspan='4'>no entries found for this filter.</td></tr>";
+            : "<tr><td colspan='4'>No entries found for this filter.</td></tr>";
 
         document.querySelectorAll("#entry-table th:nth-child(3), #entry-table td:nth-child(3)")
             .forEach(cell => cell.style.display = "table-cell");
@@ -257,17 +259,13 @@ async function updateFilters() {
         mergeEntryTableCells('entry-table-body', 3);
 
         const totalEntries = entries.length;
-        console.log('total entries:', totalEntries);
-        const totalItemsGiven = entries.reduce((sum, tx) => sum + tx.items_given.length, 0);
-        const itemOccurrences = item ? entries.filter(tx =>
-            tx.items_given.includes(item) || tx.items_received.includes(item)).length : 0;
-        const uniqueIPs = new Set(entries.map(tx => tx.ip_address));
-        const desirability = totalEntries > 0 ? (totalItemsGiven / totalEntries).toFixed(2) : 0;
-        const rarity = totalEntries > 0 && item ? (itemOccurrences / totalEntries).toFixed(2) : 0;
-        const diversity = itemOccurrences > 0 ? (uniqueIPs.size / itemOccurrences).toFixed(2) : 0;
+        console.log('Total entries:', totalEntries);
+        const totalEthnicities = new Set(entries.map(entry => entry.ethnicity)).size;
+
+        const desirability = totalEntries > 0 ? (totalEntries / entries.length).toFixed(2) : 0;
+        const diversity = totalEthnicities > 0 ? (totalEthnicities / totalEntries).toFixed(2) : 0;
 
         document.getElementById('stats-desirability').innerText = desirability;
-        document.getElementById('stats-rarity').innerText = rarity;
         document.getElementById('stats-diversity').innerText = diversity;
 
         const statsSection = document.getElementById('stats-section');
@@ -283,7 +281,7 @@ async function updateFilters() {
             }, index * 200);
         });
     } catch (error) {
-        console.error('error fetching entries:', error);
+        console.error('Error fetching entries:', error);
     } finally {
         const entryTable = document.querySelector("#entry-table");
         entryTable.style.opacity = "1";
@@ -292,6 +290,7 @@ async function updateFilters() {
         if (spinner) spinner.remove();
     }
 }
+
 
 
 // format date
@@ -331,7 +330,7 @@ async function populateItemFilter() {
 
         items.forEach(item => {
             const option = document.createElement('option');
-            option.value = item;
+            option.value = item.name; // assuming `name` is the unique item in the database
             itemList.appendChild(option);
         });
     } catch (error) {
@@ -345,19 +344,33 @@ document.getElementById('filter-item').addEventListener('input', async (e) => {
     const query = e.target.value.toLowerCase();
     if (!query) return; // no input --> return
 
-    const suggestions = await fetch(`/api/entries?type=unique-items-fuzzy&searchQuery=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .catch(error => console.error('Error fetching suggestions:', error));
+    try {
+        const suggestions = await fetch(`/api/entries?type=unique-items-fuzzy&searchQuery=${encodeURIComponent(query)}`)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                return res.json();
+            });
 
-    console.log('Suggestions:', suggestions);
+        console.log('Suggestions:', suggestions);
 
-    if (Array.isArray(suggestions)) {
-        const matched = suggestions.filter(item => item.toLowerCase().includes(query));
-        if (matched.length === 0) {
-            console.warn('Item not found');
+        if (Array.isArray(suggestions)) {
+            const matched = suggestions.filter(item => item.name.toLowerCase().includes(query)); // assuming suggestions have a `name` field
+            if (matched.length === 0) {
+                console.warn('Item not found');
+            } else {
+                const itemList = document.getElementById('item-list');
+                itemList.innerHTML = ''; // clear current items
+                matched.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.name; // assuming `name` is the field
+                    itemList.appendChild(option);
+                });
+            }
+        } else {
+            console.error('The suggestions are not an array:', suggestions);
         }
-    } else {
-        console.error('The suggestions are not an array:', suggestions);
+    } catch (error) {
+        console.error('Error fetching suggestions:', error);
     }
 });
 
