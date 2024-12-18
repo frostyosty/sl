@@ -229,19 +229,66 @@
 
   
     <div id="bible" class="tabcontent">
-        <div class="header" id="fancyHeader">TEMP TRANS TABLE</div>
+        <div class="header" id="fancyHeader">TEMP TABLE</div>
 
 
+<!--       TABLE SUBMISSION SECTION  -->
+                
+                <!-- submit section -->
+                <div id="entry-submit-section" class="block">
+                  <div class="header fancyHeader">Submit an Old Entry</div>
+                  <form id="entry-form">
+                      <div class="entries-submit-row">
+                          <div id="items-given-list">
+                              <div class="item-entry">
+                                  <input type="text" name="items-given[]" class="trigger-to-hide-add-entry-item-given-button" placeholder="Item Given" required>
+                              </div>
+                          </div>
+                          <button type="button"  class="button-style-3-purple-v2 add-entry-item-given-button" onclick="addItem('items-given-list')">Add Another Item Given</button>
+                          <div id="items-received-list">
+                              <div class="item-entry">
+                                  <input type="text" name="items-received[]" class="trigger-to-hide-add-entry-item-received-button" placeholder="Item Received" required>
+                              </div>
+                          </div>
+                          <button type="button" class="button-style-3-purple-v2 add-entry-item-received-button" onclick="addItem('items-received-list')">Add Another Item Received</button>
+                          <label for="trade-date">Trade Date:</label>
+                          <div>
+                              <input type="radio" id="trade-today" name="trade-date-option" value="today" checked>
+                              <label for="trade-today">Today</label>
+                              <input type="radio" id="trade-yesterday" name="trade-date-option" value="yesterday">
+                              <label for="trade-yesterday">Yesterday</label>
+                              <input type="radio" id="trade-custom" name="trade-date-option" value="custom">
+                              <label for="trade-custom">Custom</label>
+                          </div>
+                          <input type="date" id="trade-date" style="display: none;">
+                      </div>
+                      <div class="entries-submit-row">
+                          <label for="location">Location:</label>
+                          <input type="text" id="location" value="Global" required>
+                      </div>
+                      <div class="entries-submit-row">
+                          <button type="submit" class="button-style-3-gold button-general-formatting">Submit Entry</button>
+                      </div>
+                  </form>
+                  <div id="entry-message-container"></div>
+                
+                </div>
+
+
+<!--       MAIN TABLE -->
 
                 <div id="entry-table-container">
                   <div class="header fancyHeader" id="fancyHeaderEntries">Successful Entries</div>
                   <table id="entry-table" class="block">
                       <thead>
                           <tr>
-                              <th>I swapped...</th>
-                              <th>...for...</th>
+                              <th>Name</th>
+                              <th>Allegation</th>
                               <th>...on...</th>
+                              <th>Picture</th>
                               <th>...in...</th>
+                              <th>...in...</th>
+                            name description created_at approx_date approx_age ethnicity and ip
                           </tr>
                       </thead>
                       <tbody id="entry-table-body">
