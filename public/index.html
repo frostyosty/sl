@@ -229,13 +229,133 @@
 
   
     <div id="bible" class="tabcontent">
-        <div class="header" id="fancyHeader">Bible</div>
+        <div class="header" id="fancyHeader">TEMP TRANS TABLE</div>
 
 
 
+                <div id="entry-table-container">
+                  <div class="header fancyHeader" id="fancyHeaderEntries">Successful Entries</div>
+                  <table id="entry-table" class="block">
+                      <thead>
+                          <tr>
+                              <th>I swapped...</th>
+                              <th>...for...</th>
+                              <th>...on...</th>
+                              <th>...in...</th>
+                          </tr>
+                      </thead>
+                      <tbody id="entry-table-body">
+                          <!-- table rows injected here -->
+                      </tbody>
+                  </table>
+              
+                  <div id="entry-side-by-side-container">
+                      <!-- filters Section -->
+                      <div id="entry-filters" class="block">
+
+                        <div id="entry-filters-wrapper">
+                        <!-- <div class="header fancyHeader">Filter</div> --muted as not really needed -->
+                          <form id="entry-filters-form">
+
+                              <div class="entries-filters-row">
+<!--                                   <label>Time Range:</label> -->
+                                  <div>
+                                    <input type="radio" id="filter-any" name="time-range" value="all" checked>
+                                    <label for="filter-any">Any</label>
+                                    <input type="radio" id="filter-this-week" name="time-range" value="week">
+                                    <label for="filter-this-week">This Week</label>
+                                    <input type="radio" id="filter-this-month" name="time-range" value="month">
+                                    <label for="filter-this-month">This Month</label>
+                                    <input type="radio" id="filter-this-year" name="time-range" value="year">
+                                    <label for="filter-this-year">This Year</label>
+                                  </div>
+<!--                               </div>
+                              <div class="entries-filters-row"> -->
+<!--                                   <label for="filter-location">Location:</label> -->
+                                  <div class="toggle-switch">
+                                      <input type="checkbox" name="filter-location-toggle" id="filter-location-toggle" checked>
+                                      <label for="filter-location-toggle">Global</label>
+                                  </div>
+                                  <input type="text" id="local-location" placeholder="Enter location" style="display: none;">
+                              </div>
+                              <div class="entries-filters-row">
+                                  <!-- <label for="filter-item">Filter:</label> -->
+                                  <input list="item-list" id="filter-item" placeholder="Type or select an item to filter for">
+                                  <datalist id="item-list"></datalist>
+                              </div>
+                              <!-- APPLY FILTER BUTTON IF NEEDED IN THE FUTURE -->
+                              <!-- <button type="submit" id="apply-filter-submit" class="button-style-3-purple-v2 button-general-formatting">Apply Filters</button> -->
+                          </form>
 
 
+                          <div id="stats-section" class="stats-section-container" style="display: none;">
+                            <!-- desirability -->
+                            <div class="stats-item">
+                                <div class="stats-title">Desirability</div>
+                                <div class="stats-value" id="stats-desirability">0</div>
+                                <div class="stats-toggle" onclick="toggleDropdown('desirability-desc')">&#9660;</div>
+                                <div class="stats-description stats-section-slide-down" id="desirability-desc">
+                                    The desirability score reflects how many items are normally swapped for the item.
+                                    This is helpful because if an item often fetches multiple items when swapped, it means it is more likely to be the item that is highly desired. Conversely if the item is normally bundled with other items when swapped, it is unlikely to be the focal point of the swap.
+                                </div>
+                            </div>
+                        
+                            <!-- rarity -->
+                            <div class="stats-item">
+                                <div class="stats-title">Rarity</div>
+                                <div class="stats-value" id="stats-rarity">0</div>
+                                <div class="stats-toggle" onclick="toggleDropdown('rarity-desc')">&#9660;</div>
+                                <div class="stats-description stats-section-slide-down" id="rarity-desc">
+                                    The rarity score reflects how many entries have had an instance of this item in them.
+                                    This is helpful because if an item is not normally traded, it may be an opportunity to acquire something unusual.
+                                </div>
+                            </div>
+                        
+                            <!-- diversity -->
+                            <div class="stats-item">
+                                <div class="stats-title">Diversity</div>
+                                <div class="stats-value" id="stats-diversity">0</div>
+                                <div class="stats-toggle" onclick="toggleDropdown('diversity-desc')">&#9660;</div>
+                                <div class="stats-description stats-section-slide-down" id="diversity-desc">
+                                    Diversity represents the variety of IP addresses associated with the item. High diversity indicates a flexibility of sorts - the more parties interested in certain items, the more "dynamic" the "flow" of the item is.
+                                </div>
+                            </div>
 
+
+                              <!-- ratios -->
+                              <div class="stats-item">
+                                <div class="stats-title">Item Ratios</div>
+                                <div class="stats-value" id="stats-ratios">0</div>
+                                <div class="stats-toggle" onclick="toggleDropdown('ratios-desc')">&#9660;</div>
+                                <div class="stats-description stats-section-slide-down" id="ratios-desc">
+                                    These ratios show how much of this item is normally traded for other items. This functionality will be operational once the database gets larger, as quite a number of occurences will be needed for these 'ratios' to be useful.
+                                </div>
+                            </div>
+
+<!-- implement later - seasonality - will need to do css js etc -->
+                            <!-- <div class="stats-item">
+                              <div class="stats-title">Seasonality</div>
+                              <div class="stats-value" id="stats-seasonality">0</div>
+                              <div class="stats-toggle" onclick="toggleDropdown('seasonality-desc')">&#9660;</div>
+                              <div class="stats-description stats-section-slide-down" id="seasonality-desc">
+                                  Seasonality can be implemented to help users understand if there are "seasons" for this item. As a random example, rakes might be swapped biannually, when the leaves fall and when the soil needs tilling.
+                               </div>
+                          </div> -->
+
+                        </div>
+                        <!-- below is closing div for form wrapper (for grey lines css) -->
+                      </div>
+                    </div>
+                  </div>
+  
+<!--   closing entries div -->
+                </div>
+      
+<!-- closing bible container div -->
+            </div>
+
+
+  
 
 <div id="csf-comment-section">
   <div id="csf-comment-section-form">
