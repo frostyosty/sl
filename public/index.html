@@ -238,41 +238,54 @@
                 <div id="entry-submit-section" class="block">
                   <div class="header fancyHeader">Submit an Old Entry</div>
                   <form id="entry-form">
-                      <div class="entries-submit-row">
-                          <div id="items-given-list">
-                              <div class="item-entry">
-                                  <input type="text" name="items-given[]" class="trigger-to-hide-add-entry-item-given-button" placeholder="Item Given" required>
-                              </div>
-                          </div>
-                          <button type="button"  class="button-style-3-purple-v2 add-entry-item-given-button" onclick="addItem('items-given-list')">Add Another Item Given</button>
-                          <div id="items-received-list">
-                              <div class="item-entry">
-                                  <input type="text" name="items-received[]" class="trigger-to-hide-add-entry-item-received-button" placeholder="Item Received" required>
-                              </div>
-                          </div>
-                          <button type="button" class="button-style-3-purple-v2 add-entry-item-received-button" onclick="addItem('items-received-list')">Add Another Item Received</button>
-                          <label for="trade-date">Trade Date:</label>
-                          <div>
-                              <input type="radio" id="trade-today" name="trade-date-option" value="today" checked>
-                              <label for="trade-today">Today</label>
-                              <input type="radio" id="trade-yesterday" name="trade-date-option" value="yesterday">
-                              <label for="trade-yesterday">Yesterday</label>
-                              <input type="radio" id="trade-custom" name="trade-date-option" value="custom">
-                              <label for="trade-custom">Custom</label>
-                          </div>
-                          <input type="date" id="trade-date" style="display: none;">
-                      </div>
-                      <div class="entries-submit-row">
-                          <label for="location">Location:</label>
-                          <input type="text" id="location" value="Global" required>
-                      </div>
-                      <div class="entries-submit-row">
-                          <button type="submit" class="button-style-3-gold button-general-formatting">Submit Entry</button>
-                      </div>
-                  </form>
-                  <div id="entry-message-container"></div>
+                    <div class="entries-submit-row">
+                        <!-- Name Entry -->
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" placeholder="Enter Name" required>
+                    </div>
                 
-                </div>
+                    <div class="entries-submit-row">
+                        <!-- Description Entry -->
+                        <label for="description">Description:</label>
+                        <input type="text" id="description" placeholder="Enter Description" required>
+                    </div>
+                
+                    <div class="entries-submit-row">
+                        <!-- Approximate Date -->
+                        <label for="approx-date">Approximate Date:</label>
+                        <input type="date" id="approx-date" required>
+                        <button type="button" onclick="setToday()">Today</button>
+                        <button type="button" onclick="setYesterday()">Yesterday</button>
+                    </div>
+                
+                    <div class="entries-submit-row">
+                        <!-- Approximate Age -->
+                        <label>Approximate Age:</label>
+                        <div>
+                            <input type="radio" id="age-18" name="approx-age" value="18">
+                            <label for="age-18">18</label>
+                            <input type="radio" id="age-21" name="approx-age" value="21">
+                            <label for="age-21">21</label>
+                            <input type="radio" id="age-25" name="approx-age" value="25">
+                            <label for="age-25">25</label>
+                        </div>
+                    </div>
+                
+                    <div class="entries-submit-row">
+                        <!-- Ethnicity -->
+                        <label for="ethnicity">Ethnicity:</label>
+                        <input type="text" id="ethnicity" placeholder="Enter Ethnicity" required>
+                    </div>
+                
+                    <div class="entries-submit-row">
+                        <!-- Submit Button -->
+                        <button type="submit" class="button-style-3-gold button-general-formatting">Submit Entry</button>
+                    </div>
+                </form>
+                  
+                <div id="entry-message-container"></div>
+              
+              </div>
 
 
 <!--       MAIN TABLE -->
