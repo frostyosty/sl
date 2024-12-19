@@ -2,9 +2,9 @@
 /*---------------------------headers---------------------------*/
 /*-------------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;}
+    font-family: 'Poppins', sans-serif;}
   body {
-      font-family: 'Lato', sans-serif;}
+      font-family: 'Playfair', sans-serif;}
   header {
     background-color: black;
     display: flex;
@@ -199,7 +199,7 @@ h1, h2, h3, h4, h5, h6 {
   header,
   footer {
     width: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Great Vibes', sans-serif;
     background-color: #6e628f;
     text-align: center;
     min-height: 80px;
@@ -217,7 +217,7 @@ h1, h2, h3, h4, h5, h6 {
       header,
       footer {
         width: -webkit-fill-available;
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Great Vibes', sans-serif;
         background-color: #6e628f;
         text-align: center;}
     }
