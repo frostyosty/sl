@@ -48,6 +48,7 @@ async function fetchEntries(selectedCriteria = '') {
 }
 
 // handle the "Add Entry" form submission
+// handle the "Add Entry" form submission
 document.getElementById('entry-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -57,17 +58,17 @@ document.getElementById('entry-form').addEventListener('submit', async (e) => {
     const approxAge = document.querySelector('input[name="approx-age"]:checked')?.value || '-';
     const ethnicity = document.getElementById('ethnicity').value.trim();
 
-    if (!name) {
-        alert("Name is required.");
+    if (!name || !approxDate) {
+        alert("Name and approximate date are required.");
         return;
     }
 
     const entry = {
         name,
-        description,
-        approx_date: approxDate || '-',
+        description: description || '-',
+        approx_date: approxDate,
         approx_age: approxAge,
-        ethnicity: ethnicity || '-'
+        ethnicity: ethnicity || '-',
     };
 
     const tableBody = document.querySelector("#recent-entries-table tbody");
@@ -88,12 +89,13 @@ document.getElementById('entry-form').addEventListener('submit', async (e) => {
         const response = await fetch('/api/entries', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entry)
+            body: JSON.stringify(entry),
         });
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
 
         console.log("Entry submitted successfully.");
         document.getElementById('entry-form').reset();
+        document.getElementById('approx-date').value = new Date().toISOString().split('T')[0]; // Reset date to today
     } catch (error) {
         console.error("Error submitting entry:", error);
         newRow.remove();
@@ -111,10 +113,13 @@ document.querySelectorAll('.date-button').forEach(button => {
     });
 });
 
+// Set "Today" as the default value for the date field
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOMContentLoaded event fired.");
+    document.getElementById('approx-date').value = new Date().toISOString().split('T')[0];
     fetchEntries();
 });
+
 
 
 
