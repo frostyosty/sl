@@ -49,6 +49,13 @@ async function fetchEntries(selectedCriteria = '') {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    fetchEntries(); // Fetch all entries initially
+});
+
+
+
+// submit content
+document.addEventListener("DOMContentLoaded", () => {
     // Handle form submission
     const entryForm = document.getElementById('entry-form');
     if (entryForm) {
