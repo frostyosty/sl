@@ -2557,6 +2557,71 @@ background-color: #000000e5;
 
 
 
+#love-test-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 14px;
+    text-align: left;
+}
+
+#love-test-table th, 
+#love-test-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#love-test-container {
+    margin-top: 20px;
+}
+
+#love-meter-container {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#love-meter {
+    width: 200px;
+    height: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    position: relative;
+}
+
+#love-meter-bar {
+    width: 0%;
+    height: 100%;
+    background-color: green;
+    transition: width 0.3s ease-in-out;
+}
+
+#love-score {
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
