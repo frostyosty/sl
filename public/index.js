@@ -72,15 +72,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 ethnicity: ethnicity || '-',
             };
 
-            const tableBody = document.querySelector("#recent-entries-table tbody");
+            const tableBody = document.getElementById("entry-table-body");
+            if (!tableBody) {
+                console.error("Table body not found! Check your HTML structure.");
+                return;
+            }
+
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${entry.name}</td>
                 <td>${entry.description}</td>
                 <td>${entry.approx_date}</td>
+                <td>Picture Placeholder</td>
+                <td>...in...</td>
+                <td>Picture Placeholder</td>
                 <td>${entry.approx_age}</td>
                 <td>${entry.ethnicity}</td>
-                <td>${new Date().toLocaleDateString()}</td>
             `;
             tableBody.prepend(newRow);
 
@@ -130,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
 });
+
 
 
 
