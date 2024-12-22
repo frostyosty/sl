@@ -199,7 +199,7 @@ h1, h2, h3, h4, h5, h6 {
   header,
   footer {
     width: 100%;
-    font-family: 'Great Vibes', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #6e628f;
     text-align: center;
     min-height: 80px;
@@ -3288,6 +3288,10 @@ background-color: #000000e5;
     .black-text {
       color: black;
     }
+
+.lovefont {
+    font-family: 'Great Vibes', sans-serif;
+}
 
 
 /* container swap */
