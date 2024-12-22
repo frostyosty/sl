@@ -82,7 +82,7 @@
                             <span class="bar twentysecond"></span>
                         </div>
                         <div class="tabs">
-                            <button class="tablinks active" onclick="openTab(event, 'view')">View</button>
+                            <button class="tablinks active" onclick="openTab(event, 'find')">Find</button>
                             <button class="tablinks" onclick="openTab(event, 'add')">Add</button>
                             <button class="tablinks" onclick="openTab(event, 'love test')">Love Test</button>
                             <button class="tablinks" onclick="openTab(event, 'other')">Other</button>
@@ -110,7 +110,121 @@
 
 
   
-    <div id="add" class="tabcontent">
+    
+
+<!--       MAIN TABLE -->
+<!--       VARIABLES NEEDED        name description  approx_date approx_age ethnicity created_at and ip -->
+
+
+          <div id="find" class="tabcontent">
+
+
+<div id="entry-side-by-side-container">
+                      <!-- filters Section -->
+                      <div id="entry-filters" class="block">
+
+                        <div id="entry-filters-wrapper">
+                        <!-- <div class="header fancyHeader">Filter</div> --muted as not really needed -->
+                          <form id="entry-filters-form">
+
+                              <div class="entries-filters-row">
+<!--                                   <label>Time Range:</label> -->
+                                  <div>
+                                    <input type="radio" id="filter-any" name="time-range" value="all" checked>
+                                    <label for="filter-any">Any</label>
+                                    <input type="radio" id="filter-this-week" name="time-range" value="week">
+                                    <label for="filter-this-week">This Week</label>
+                                    <input type="radio" id="filter-this-month" name="time-range" value="month">
+                                    <label for="filter-this-month">Month</label>
+                                    <input type="radio" id="filter-this-year" name="time-range" value="year">
+                                    <label for="filter-this-year">Year</label>
+                                  </div>
+                               </div>
+<!--                               <div class="entries-filters-row"> -->
+
+                                  <div class="toggle-switch">
+                                      <input type="checkbox" name="filter-location-toggle" id="filter-location-toggle" checked>
+                                      <label for="filter-location-toggle">Global</label>
+                                  </div>
+                                  <input type="text" id="local-location" placeholder="Enter location" style="display: none;">
+                              </div>
+                              <div class="entries-filters-row">
+                                  <!-- <label for="filter-item">Filter:</label> -->
+                                  <input list="item-list" id="filter-item" placeholder="Type or select an item to filter for">
+                                  <datalist id="item-list"></datalist>
+                              </div>
+                              <!-- APPLY FILTER BUTTON IF NEEDED IN THE FUTURE -->
+                              <!-- <button type="submit" id="apply-filter-submit" class="button-style-3-purple-v2 button-general-formatting">Apply Filters</button> -->
+                          </form>
+
+                        </div>
+                        <!-- below is closing div for form wrapper (for grey lines css) -->
+                      </div>
+
+
+
+            
+                <div id="entry-table-container">
+                  <div class="header fancyHeader" id="fancyHeaderEntries">Successful Entries</div>
+                  <table id="entry-table" class="block">
+                      <thead>
+                          <tr>
+                              <th>Name</th>
+                              <th>Allegation</th>
+                              <th>Happened on</th>
+                              <th>Age</th>                            
+                              <th>Ethnicity</th>
+                              <th>Picture</th>
+                              <th>Filed</th>
+                          </tr>
+                      </thead>
+                      <tbody id="entry-table-body">
+                          <!-- table rows injected here -->
+                      </tbody>
+                  </table>
+              
+                  
+
+<!--   closing entries div -->
+                </div>
+      
+<!-- closing find container div -->
+            </div>
+
+
+
+  <div id="love test" class="tabcontent">
+
+      
+      <div id="love-test-container">
+          <table id="love-test-table">
+              <thead>
+                  <tr>
+                      <th class="lovefont">Is it love?</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Click on an item in the above table to add to your love check</td>
+                  </tr>
+              </tbody>
+          </table>
+          <div id="love-meter-container">
+              <div id="love-meter">
+                  <div id="love-meter-bar"></div>
+              </div>
+              <div id="love-score">Score: 0</div>
+          </div>
+      </div>
+        
+
+    </div>
+
+
+
+
+
+<div id="add" class="tabcontent">
 
 <!--       TABLE SUBMISSION SECTION  -->
                 
@@ -168,108 +282,8 @@
               </div>
 <!--       closing add section div below -->
             </div>
+  
 
-<!--       MAIN TABLE -->
-<!--       VARIABLES NEEDED        name description  approx_date approx_age ethnicity created_at and ip -->
-
-
-          <div id="view" class="tabcontent">
-                <div id="entry-table-container">
-                  <div class="header fancyHeader" id="fancyHeaderEntries">Successful Entries</div>
-                  <table id="entry-table" class="block">
-                      <thead>
-                          <tr>
-                              <th>Name</th>
-                              <th>Allegation</th>
-                              <th>Happened on</th>
-                              <th>Age</th>                            
-                              <th>Ethnicity</th>
-                              <th>Picture</th>
-                              <th>Filed</th>
-                          </tr>
-                      </thead>
-                      <tbody id="entry-table-body">
-                          <!-- table rows injected here -->
-                      </tbody>
-                  </table>
-              
-                  <div id="entry-side-by-side-container">
-                      <!-- filters Section -->
-                      <div id="entry-filters" class="block">
-
-                        <div id="entry-filters-wrapper">
-                        <!-- <div class="header fancyHeader">Filter</div> --muted as not really needed -->
-                          <form id="entry-filters-form">
-
-                              <div class="entries-filters-row">
-<!--                                   <label>Time Range:</label> -->
-                                  <div>
-                                    <input type="radio" id="filter-any" name="time-range" value="all" checked>
-                                    <label for="filter-any">Any</label>
-                                    <input type="radio" id="filter-this-week" name="time-range" value="week">
-                                    <label for="filter-this-week">This Week</label>
-                                    <input type="radio" id="filter-this-month" name="time-range" value="month">
-                                    <label for="filter-this-month">Month</label>
-                                    <input type="radio" id="filter-this-year" name="time-range" value="year">
-                                    <label for="filter-this-year">Year</label>
-                                  </div>
-                               </div>
-<!--                               <div class="entries-filters-row"> -->
-
-                                  <div class="toggle-switch">
-                                      <input type="checkbox" name="filter-location-toggle" id="filter-location-toggle" checked>
-                                      <label for="filter-location-toggle">Global</label>
-                                  </div>
-                                  <input type="text" id="local-location" placeholder="Enter location" style="display: none;">
-                              </div>
-                              <div class="entries-filters-row">
-                                  <!-- <label for="filter-item">Filter:</label> -->
-                                  <input list="item-list" id="filter-item" placeholder="Type or select an item to filter for">
-                                  <datalist id="item-list"></datalist>
-                              </div>
-                              <!-- APPLY FILTER BUTTON IF NEEDED IN THE FUTURE -->
-                              <!-- <button type="submit" id="apply-filter-submit" class="button-style-3-purple-v2 button-general-formatting">Apply Filters</button> -->
-                          </form>
-
-                        </div>
-                        <!-- below is closing div for form wrapper (for grey lines css) -->
-                      </div>
-
-<!--   closing entries div -->
-                </div>
-      
-<!-- closing view container div -->
-            </div>
-
-
-
-  <div id="love test" class="tabcontent">
-
-      
-      <div id="love-test-container">
-          <table id="love-test-table">
-              <thead>
-                  <tr>
-                      <th>Love Test Table</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td>Click on an item in the above table to add to your love check</td>
-                  </tr>
-              </tbody>
-          </table>
-          <div id="love-meter-container">
-              <div id="love-meter">
-                  <div id="love-meter-bar"></div>
-              </div>
-              <div id="love-score">Score: 0</div>
-          </div>
-      </div>
-        
-
-    </div>
-     <script src="index.js"></script>
 
 
   
@@ -295,7 +309,7 @@
   <div class="gutters right-gutter"></div>
 </div><!-- closing wrapper container-->
 
-
+<script src="index.js"></script>
 
 
 
@@ -318,8 +332,7 @@
 
 <script>
 
-
-
+//  MISC
 
 
 // question mark
