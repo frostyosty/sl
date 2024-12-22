@@ -48,77 +48,76 @@ async function fetchEntries(selectedCriteria = '') {
 }
 
 // handle the "Add Entry" form submission
-// handle the "Add Entry" form submission
-document.getElementById('entry-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById('name').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const approxDate = document.getElementById('approx-date').value.trim();
-    const approxAge = document.querySelector('input[name="approx-age"]:checked')?.value || '-';
-    const ethnicity = document.getElementById('ethnicity').value.trim();
-
-    if (!name || !approxDate) {
-        alert("Name and approximate date are required.");
-        return;
-    }
-
-    const entry = {
-        name,
-        description: description || '-',
-        approx_date: approxDate,
-        approx_age: approxAge,
-        ethnicity: ethnicity || '-',
-    };
-
-    const tableBody = document.querySelector("#recent-entries-table tbody");
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td>${entry.name}</td>
-        <td>${entry.description}</td>
-        <td>${entry.approx_date}</td>
-        <td>${entry.approx_age}</td>
-        <td>${entry.ethnicity}</td>
-        <td>${new Date().toLocaleDateString()}</td>
-    `;
-    tableBody.prepend(newRow);
-
-    console.log("Entry payload:", entry);
-
-    try {
-        const response = await fetch('/api/entries', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entry),
-        });
-        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-
-        console.log("Entry submitted successfully.");
-        document.getElementById('entry-form').reset();
-        document.getElementById('approx-date').value = new Date().toISOString().split('T')[0]; // Reset date to today
-    } catch (error) {
-        console.error("Error submitting entry:", error);
-        newRow.remove();
-    }
-});
-
-// "Today" and "Yesterday" button functionality for approx date
-document.querySelectorAll('.date-button').forEach(button => {
-    button.addEventListener('click', () => {
-        const dateInput = document.getElementById('approx-date');
-        const today = new Date();
-        const offset = button.id === 'yesterday-button' ? -1 : 0;
-        today.setDate(today.getDate() + offset);
-        dateInput.value = today.toISOString().split('T')[0];
-    });
-});
-
-// Set "Today" as the default value for the date field
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOMContentLoaded event fired.");
-    document.getElementById('approx-date').value = new Date().toISOString().split('T')[0];
-    fetchEntries();
+    document.getElementById('sl-entryForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('sl-name').value.trim();
+        const description = document.getElementById('sl-description').value.trim();
+        const approxDate = document.getElementById('sl-approxDate').value.trim();
+        const approxAge = document.querySelector('input[name="approxAge"]:checked')?.value || '-';
+        const ethnicity = document.querySelector('input[name="ethnicity"]:checked')?.value || '-';
+
+        if (!name || !approxDate) {
+            alert("Name and approximate date are required.");
+            return;
+        }
+
+        const entry = {
+            name,
+            description: description || '-',
+            approx_date: approxDate,
+            approx_age: approxAge,
+            ethnicity,
+        };
+
+        const tableBody = document.querySelector("#recent-entries-table tbody");
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${entry.name}</td>
+            <td>${entry.description}</td>
+            <td>${entry.approx_date}</td>
+            <td>${entry.approx_age}</td>
+            <td>${entry.ethnicity}</td>
+            <td>${new Date().toLocaleDateString()}</td>
+        `;
+        tableBody.prepend(newRow);
+
+        console.log("Entry payload:", entry);
+
+        try {
+            const response = await fetch('/api/entries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(entry),
+            });
+            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+            console.log("Entry submitted successfully.");
+            document.getElementById('sl-entryForm').reset();
+            document.getElementById('sl-approxDate').value = new Date().toISOString().split('T')[0]; // Reset date to today
+        } catch (error) {
+            console.error("Error submitting entry:", error);
+            newRow.remove();
+        }
+    });
+
+    // Today and Yesterday buttons
+    document.getElementById('todayButton').addEventListener('click', () => {
+        const dateInput = document.getElementById('sl-approxDate');
+        dateInput.value = new Date().toISOString().split('T')[0];
+    });
+
+    document.getElementById('yesterdayButton').addEventListener('click', () => {
+        const dateInput = document.getElementById('sl-approxDate');
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        dateInput.value = yesterday.toISOString().split('T')[0];
+    });
+
+    // Default date selection to today
+    document.getElementById('sl-approxDate').value = new Date().toISOString().split('T')[0];
 });
+
 
 
 
