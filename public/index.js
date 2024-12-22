@@ -485,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let loveScore = 0;
 
     // Add event listener to the recent entries table
-    document.querySelector("#recent-entries-table tbody").addEventListener("click", (e) => {
+    document.querySelector("#entry-table tbody").addEventListener("click", (e) => {
         const target = e.target.closest("tr");
         if (!target || target.children.length === 0) return;
 
