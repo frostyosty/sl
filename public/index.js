@@ -65,11 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const entry = {
-                name,
-                description: description || '-',
-                approx_date: approxDate,
-                approx_age: approxAge,
-                ethnicity: ethnicity || '-',
+                nameSubmission: name,
+                descriptionSubmission: description || '-',
+                approxDateSubmission: approxDate,
+                approxAgeSubmission: approxAge || '-',
+                ethnicitySubmission: ethnicity || '-',
+                pictureSubmission: null // placeholder if picture isn't implemented
             };
 
             const tableBody = document.getElementById("entry-table-body");
