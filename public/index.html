@@ -82,7 +82,8 @@
                             <span class="bar twentysecond"></span>
                         </div>
                         <div class="tabs">
-                            <button class="tablinks active" onclick="openTab(event, 'sl')">End Sl</button>
+                            <button class="tablinks active" onclick="openTab(event, 'view')">View</button>
+                            <button class="tablinks" onclick="openTab(event, 'add')">Add</button>
                             <button class="tablinks" onclick="openTab(event, 'love test')">Love Test</button>
                             <button class="tablinks" onclick="openTab(event, 'other')">Other</button>
                         </div>
@@ -110,9 +111,7 @@
 
 
   
-    <div id="sl" class="tabcontent">
-        <div class="header" id="fancyHeader">MAIN TABLE</div>
-
+    <div id="add" class="tabcontent">
 
 <!--       TABLE SUBMISSION SECTION  -->
                 
@@ -168,10 +167,14 @@
                 <div id="entry-message-container"></div>
               
               </div>
-
+<!--       closing add section div below -->
+            </div>
 
 <!--       MAIN TABLE -->
 <!--       VARIABLES NEEDED        name description  approx_date approx_age ethnicity created_at and ip -->
+
+
+          <div id="view" class="tabcontent">
                 <div id="entry-table-container">
                   <div class="header fancyHeader" id="fancyHeaderEntries">Successful Entries</div>
                   <table id="entry-table" class="block">
@@ -237,7 +240,7 @@
 <!--   closing entries div -->
                 </div>
       
-<!-- closing sl container div -->
+<!-- closing view container div -->
             </div>
 
 
@@ -272,7 +275,7 @@
 
 
   
-    <div id="love test" class="tabcontent">
+    <div id="other" class="tabcontent">
     </div>
   
 
