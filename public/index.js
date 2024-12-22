@@ -68,9 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 nameSubmission: name,
                 descriptionSubmission: description || '-',
                 approxDateSubmission: approxDate,
-                approxAgeSubmission: approxAge || '-',
+                approxAgeSubmission: approxAge,
                 ethnicitySubmission: ethnicity || '-',
-                pictureSubmission: null // placeholder if picture isn't implemented
+                pictureSubmission: null, // placeholder if picture isn't implemented
+                createdAtSubmission: new Date().toISOString(),
+                ipSubmission: '...' // placeholder for IP handling if required
             };
 
             const tableBody = document.getElementById("entry-table-body");
@@ -81,14 +83,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td>${entry.name}</td>
-                <td>${entry.description}</td>
-                <td>${entry.approx_date}</td>
+                <td>${entry.nameSubmission}</td>
+                <td>${entry.descriptionSubmission}</td>
+                <td>${entry.approxDateSubmission}</td>
+                <td>${entry.approxAgeSubmission}</td>
+                <td>${entry.ethnicitySubmission}</td>
                 <td>Picture Placeholder</td>
-                <td>...in...</td>
-                <td>Picture Placeholder</td>
-                <td>${entry.approx_age}</td>
-                <td>${entry.ethnicity}</td>
+                <td>${new Date(entry.createdAtSubmission).toLocaleDateString()}</td>
             `;
             tableBody.prepend(newRow);
 
@@ -138,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
 });
+
 
 
 
@@ -229,19 +231,18 @@ document.getElementById('filter-location-toggle').addEventListener('change', () 
 
 async function updateFilters() {
     try {
-        const name = document.getElementById('filter-name').value || null;
-        const description = document.getElementById('filter-description').value || null;
-        const timeRange = document.querySelector('input[name="time-range"]:checked')?.value || "all";
-        const locationToggle = document.getElementById('filter-location-toggle').checked;
-        const location = locationToggle ? "global" : document.getElementById('local-location').value || "";
+        const form = document.getElementById('entry-filters-form');
+        const timeRange = form.querySelector('input[name="time-range"]:checked')?.value || "all";
+        const locationToggle = form.querySelector('#filter-location-toggle').checked;
+        const location = locationToggle ? "global" : form.querySelector('#local-location').value || "";
+        const item = form.querySelector('#filter-item').value || null;
 
-        console.log("Filter details:", { name, description, timeRange, location });
+        console.log("Filter details:", { timeRange, location, item });
 
         const queryParams = new URLSearchParams();
-        if (name) queryParams.append('name', name);
-        if (description) queryParams.append('description', description);
         queryParams.append('timeRange', timeRange);
         queryParams.append('location', location);
+        if (item) queryParams.append('item', item);
 
         const entryTable = document.querySelector("#entry-table");
         const tbody = document.getElementById("entry-table-body");
@@ -272,16 +273,13 @@ async function updateFilters() {
         tbody.innerHTML = hasEntries
             ? entries.map(entry => `
                 <tr>
-                    <td>${entry.name}</td>
-                    <td>${entry.description}</td>
+                    <td>${entry.name || "n/a"}</td>
+                    <td>${entry.description || "n/a"}</td>
                     <td>${entry.approx_date || "n/a"}</td>
                     <td>${entry.ethnicity || "n/a"}</td>
                 </tr>
             `).join("")
             : "<tr><td colspan='4'>No entries found for this filter.</td></tr>";
-
-        document.querySelectorAll("#entry-table th:nth-child(3), #entry-table td:nth-child(3)")
-            .forEach(cell => cell.style.display = "table-cell");
 
         mergeEntryTableCells('entry-table-body', 2);
         mergeEntryTableCells('entry-table-body', 3);
@@ -318,6 +316,7 @@ async function updateFilters() {
         if (spinner) spinner.remove();
     }
 }
+
 
 
 
