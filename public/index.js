@@ -35,7 +35,8 @@ async function fetchEntries(selectedCriteria = '') {
                 <td>${entry.approx_date || '-'}</td>
                 <td>${entry.approx_age || '-'}</td>
                 <td>${entry.ethnicity || '-'}</td>
-                <td>${entry.timestamp || '-'}</td>
+                <td>Picture Placeholder</td>
+                <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
             `;
             tableBody.appendChild(row);
         });
@@ -245,7 +246,6 @@ async function updateFilters() {
         queryParams.append('location', location);
         if (item) queryParams.append('item', item);
 
-        const entryTable = document.querySelector("#entry-table");
         const tbody = document.getElementById("entry-table-body");
         const spinner = document.createElement("div");
         spinner.classList.add("csf-spinner");
@@ -262,6 +262,7 @@ async function updateFilters() {
         tbody.appendChild(spinner);
         entryTable.style.opacity = "0.5";
         entryTable.style.pointerEvents = "none";
+        // tbody.appendChild(spinner);
 
         const response = await fetch(`/api/entries?type=entries-with-filters&${queryParams.toString()}`);
         if (!response.ok) throw new Error(`Fetch failed with status: ${response.status}`);
@@ -269,44 +270,19 @@ async function updateFilters() {
         const entries = await response.json();
         console.log("Entries fetched:", entries);
 
-        const hasEntries = entries.length > 0;
-
-        tbody.innerHTML = hasEntries
+        tbody.innerHTML = entries.length > 0
             ? entries.map(entry => `
                 <tr>
-                    <td>${entry.name || "n/a"}</td>
-                    <td>${entry.description || "n/a"}</td>
-                    <td>${entry.approx_date || "n/a"}</td>
-                    <td>${entry.ethnicity || "n/a"}</td>
+                    <td>${entry.name || '-'}</td>
+                    <td>${entry.description || '-'}</td>
+                    <td>${entry.approx_date || '-'}</td>
+                    <td>${entry.approx_age || '-'}</td>
+                    <td>${entry.ethnicity || '-'}</td>
+                    <td>Picture Placeholder</td>
+                    <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
                 </tr>
             `).join("")
-            : "<tr><td colspan='4'>No entries found for this filter.</td></tr>";
-
-        mergeEntryTableCells('entry-table-body', 2);
-        mergeEntryTableCells('entry-table-body', 3);
-
-        const totalEntries = entries.length;
-        console.log('Total entries:', totalEntries);
-        const totalEthnicities = new Set(entries.map(entry => entry.ethnicity)).size;
-
-        const desirability = totalEntries > 0 ? (totalEntries / entries.length).toFixed(2) : 0;
-        const diversity = totalEthnicities > 0 ? (totalEthnicities / totalEntries).toFixed(2) : 0;
-
-        document.getElementById('stats-desirability').innerText = desirability;
-        document.getElementById('stats-diversity').innerText = diversity;
-
-        const statsSection = document.getElementById('stats-section');
-        const statsItems = statsSection.querySelectorAll('.stats-item');
-        statsSection.style.display = 'flex';
-        statsItems.forEach((item, index) => {
-            item.style.opacity = '0';
-            item.style.transform = 'scale(0.8)';
-            setTimeout(() => {
-                item.style.transition = 'opacity 0.5s, transform 0.5s';
-                item.style.opacity = '1';
-                item.style.transform = 'scale(1)';
-            }, index * 200);
-        });
+            : "<tr><td colspan='7'>No entries found for this filter.</td></tr>";
     } catch (error) {
         console.error('Error fetching entries:', error);
     } finally {
@@ -317,6 +293,7 @@ async function updateFilters() {
         if (spinner) spinner.remove();
     }
 }
+
 
 
 
