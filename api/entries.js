@@ -41,11 +41,9 @@ async function submitEntry(req, res) {
     }
 }
 
-
-
-// get all entries initially
+// initial get entries
 async function getEntries(req, res) {
-    const { itemSubmission, timeRangeSubmission, locationSubmission } = req.query;
+    const { item, timeRange, location } = req.query;
     console.log('getEntries called with:', req.query);
 
     try {
@@ -55,9 +53,9 @@ async function getEntries(req, res) {
             WHERE 1 = 1`;
         let params = [];
 
-        // fuzz matching for name or description
-        if (itemSubmission?.trim()) {
-            console.log('Building query for item filter:', itemSubmission);
+        // Filter by item with fuzzy matching
+        if (item?.trim()) {
+            console.log('Building query for item filter:', item);
             const allItems = (
                 await db.execute(`
                     SELECT DISTINCT name 
@@ -67,12 +65,14 @@ async function getEntries(req, res) {
                     FROM entries
                 `)
             ).rows.map(row => row.name || row.description);
-            const closestMatchItem = getFuzzyMatch(itemSubmission, 'name or description', allItems);
+
+            const closestMatchItem = getFuzzyMatch(item, 'name or description', allItems);
             console.log('Fuzzy matched item:', closestMatchItem);
             if (!closestMatchItem) {
-                console.error('No fuzzy match found for item:', itemSubmission);
-                return res.status(400).json({ message: `No match found for item: ${itemSubmission}` });
+                console.error('No fuzzy match found for item:', item);
+                return res.status(400).json({ message: `No match found for item: ${item}` });
             }
+
             query += `
                 AND (
                     LOWER(name) = LOWER(?) 
@@ -81,55 +81,58 @@ async function getEntries(req, res) {
             params.push(closestMatchItem, closestMatchItem);
         }
 
-        // time filter
-        if (timeRangeSubmission && timeRangeSubmission !== 'all') {
+        // Filter by time range
+        if (timeRange && timeRange !== 'all') {
             const dateOffset = {
                 week: '-7 days',
                 month: '-1 month',
                 year: '-1 year',
-            }[timeRangeSubmission] || '-7 days'; // Default to '-7 days'
+            }[timeRange] || '-7 days'; // Default to '-7 days'
 
             console.log('Time range offset:', dateOffset);
             query += ` AND created_at >= DATE('now', ?)`;
             params.push(dateOffset);
         }
 
-        // fuzz match for location
-        if (locationSubmission && locationSubmission !== 'Global') {
+        // Filter by location with fuzzy matching
+        if (location && location !== 'global') {
+            console.log('Building query for location filter:', location);
             const allLocations = (await db.execute(`SELECT DISTINCT approx_date FROM entries`)).rows.map(row => row.approx_date);
-            const closestMatchLocation = getFuzzyMatch(locationSubmission, 'location', allLocations);
+
+            const closestMatchLocation = getFuzzyMatch(location, 'location', allLocations);
             if (!closestMatchLocation) {
-                console.error('No fuzzy match found for location:', locationSubmission);
-                return res.status(400).json({ message: `No match found for location: ${locationSubmission}` });
+                console.error('No fuzzy match found for location:', location);
+                return res.status(400).json({ message: `No match found for location: ${location}` });
             }
-            query += ` AND approx_date= ?`;
+
+            query += ` AND approx_date = ?`;
             params.push(closestMatchLocation);
         }
-        // sorting and limit
+
+        // Sorting and limiting results
         query += ' ORDER BY created_at DESC LIMIT 100';
 
         console.log('Query:', query);
         console.log('Params:', params);
         const result = await db.execute(query, params);
 
-        const entries = result.rows
-            .map(row => {
-                try {
-                    return {
-                        ...row,
-                        name: JSON.stringify(row.name),
-                        approx_date: row.approx_date,
-                        approx_age: row.approx_age,
-                        ethnicity: row.ethnicity,
-                        created_at: row.created_at,
-                        ip: row.ip
-                    };
-                } catch (parseError) {
-                    console.error('Error parsing JSON for row:', row, parseError);
-                    return null; // skips invalid rows
-                }
-            })
-            .filter(Boolean); // remove null rows
+        // Transform and validate entries
+        const entries = result.rows.map(row => {
+            try {
+                return {
+                    name: row.name || '-',
+                    description: row.description || '-',
+                    approx_date: row.approx_date || '-',
+                    approx_age: row.approx_age || '-',
+                    ethnicity: row.ethnicity || '-',
+                    created_at: new Date(row.created_at).toISOString(),
+                    ip: row.ip || '-'
+                };
+            } catch (parseError) {
+                console.error('Error parsing row:', row, parseError);
+                return null; // Skip invalid rows
+            }
+        }).filter(Boolean);
 
         res.status(200).json(entries);
     } catch (error) {
@@ -137,6 +140,7 @@ async function getEntries(req, res) {
         res.status(500).json({ message: 'Error fetching entries' });
     }
 }
+
 
 
 
