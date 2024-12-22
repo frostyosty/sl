@@ -3,7 +3,7 @@ import { createClient } from '@libsql/client';
 
 const db = createClient({
     url: "libsql://sl-database-frostyosty.turso.io",
-    authToken: process.env.SL_AUTH_TOKEN
+    authToken: process.env.SL_AUTH_TOKEN_FROM_SL
 });
 
 
