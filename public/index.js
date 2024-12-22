@@ -448,3 +448,100 @@ function mergeEntryTableCells(tableBodyId, columnIndex) {
     });
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loveTestTableBody = document.querySelector("#love-test-table tbody");
+    const loveMeterBar = document.getElementById("love-meter-bar");
+    const loveScoreDisplay = document.getElementById("love-score");
+
+    let loveTestItems = [];
+    let loveScore = 0;
+
+    // Add event listener to the recent entries table
+    document.querySelector("#recent-entries-table tbody").addEventListener("click", (e) => {
+        const target = e.target.closest("tr");
+        if (!target || target.children.length === 0) return;
+
+        const description = target.children[1]?.textContent.trim();
+        if (!description) return;
+
+        // Check if the description already exists in the love test table
+        if (loveTestItems.includes(description)) return;
+
+        // Add the description to the love test table
+        loveTestItems.push(description);
+        updateLoveTestTable();
+    });
+
+    // Function to update the love test table and calculate the score
+    function updateLoveTestTable() {
+        loveTestTableBody.innerHTML = "";
+        loveScore = 0;
+
+        const row = document.createElement("tr");
+
+        loveTestItems.forEach((item, index) => {
+            const cell = document.createElement("td");
+            cell.textContent = item;
+            cell.style.cursor = "pointer";
+            cell.addEventListener("click", () => removeItemFromLoveTest(index));
+            row.appendChild(cell);
+
+            // Update score
+            if (item.toLowerCase().includes("love")) loveScore += 2;
+            if (item.toLowerCase().includes("happy")) loveScore += 1;
+            if (item.toLowerCase().includes("hate")) loveScore -= 2;
+        });
+
+        loveTestTableBody.appendChild(row);
+
+        if (loveTestItems.length === 0) {
+            loveTestTableBody.innerHTML = `
+                <tr>
+                    <td>Click on an item in the above table to add to your love check</td>
+                </tr>
+            `;
+        }
+
+        updateLoveMeter();
+    }
+
+    // Function to remove an item from the love test table
+    function removeItemFromLoveTest(index) {
+        loveTestItems.splice(index, 1);
+        updateLoveTestTable();
+    }
+
+    // Function to update the love meter
+    function updateLoveMeter() {
+        const maxScore = loveTestItems.length * 2; // Assuming max score of +2 per item
+        const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
+
+        loveMeterBar.style.width = `${Math.max(0, Math.min(100, meterPercentage))}%`;
+        loveMeterBar.style.backgroundColor = loveScore > 0 ? "green" : loveScore < 0 ? "red" : "gray";
+        loveScoreDisplay.textContent = `Score: ${loveScore}`;
+    }
+});
+
+
+
+
+
