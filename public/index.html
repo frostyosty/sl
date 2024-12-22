@@ -82,9 +82,9 @@
                             <span class="bar twentysecond"></span>
                         </div>
                         <div class="tabs">
-                            <button class="tablinks active" onclick="openTab(event, 'bible')">The Swearer's Bible</button>
-                            <button class="tablinks" onclick="openTab(event, 'sl')">End Sl</button>
-                            <button class="tablinks" onclick="openTab(event, 'music')">Music</button>
+                            <button class="tablinks active" onclick="openTab(event, 'sl')">End Sl</button>
+                            <button class="tablinks" onclick="openTab(event, 'love test')">Love Test</button>
+                            <button class="tablinks" onclick="openTab(event, 'other')">Other</button>
                         </div>
                       </nav>
                   </div>
@@ -106,139 +106,12 @@
 <div id="tabContentsContainer">
   
 
-    <div id="sl" class="tabcontent">
-
-
-<!-- <div class="csf-spinner">
-  <div class="csf-letter">C</div>
-  <div class="csf-letter">S</div>
-  <div class="csf-letter">F</div>
-</div>
-
-<div id="es-spinner">
-  <span>E</span>
-  <span>S</span>
-</div> -->
-            
-
-        <div class="header" id="fancyHeader">End S</Script:src></div>
-
-        <div class="sl-container">
-            <div class="sl-forms">
-
-                      <!-- Search Form -->
-                      <div class="sl-form-block">
-                        <h2>Search</h2>
-                        <br>
-                        <div id="sl-searchResults">Is your S.O. chaste?</div>
-                        <input type="text" id="sl-searchTerm" placeholder="Search for a name" />
-                        <button id="sl-searchButton" class="sl-button">Search</button>
-                        <div id="sl-searchResults">"Narking" involves authority. This is just shouting to the world - a globalised reimagining of the "chaperone" mechanism that kept your ancestors prosperous</div>
-                      </div>
-
-
-                <!-- Entry Form -->
-                <div class="sl-form-block">
-                  <h2>Add</h2>
-                  <br>
-                  <form id="sl-entryForm">
-                    <div id="sl-message" class="sl-message"></div>
-                    <input type="text" id="sl-name" placeholder="e.g. Helen Carpenter" required />
-                    <textarea id="sl-description" placeholder="Offense description" required></textarea>
-                
-                    <div class="sl-date-row">
-                      <label for="sl-approxDate">Approx. date of offense:</label>
-                      <input type="date" id="sl-approxDate" name="approxDate" placeholder="Approx. date of offense" />
-                      <button type="button" id="todayButton" class="sl-button">Today</button>
-                      <button type="button" id="yesterdayButton" class="sl-button">Yesterday</button>
-                    </div>
-                
-                    <div class="sl-options-row">
-                      <div>
-                        <label>Approx. Age:</label>
-                        <input type="radio" id="age18" name="approxAge" value="18">
-                        <label for="age18">18</label>
-                        <input type="radio" id="age21" name="approxAge" value="21">
-                        <label for="age21">21</label>
-                        <input type="radio" id="age25" name="approxAge" value="25">
-                        <label for="age25">25</label>
-                      </div>
-                
-                      <div>
-                        <label>Ethnicity of suit:</label>
-                        <label><input type="radio" name="ethnicity" value="White" /> White</label>
-                        <label><input type="radio" name="ethnicity" value="Black" /> Black</label>
-                        <label><input type="radio" name="ethnicity" value="Asian" /> Asian</label>
-                      </div>
-                    </div>
-                
-                    <button id="sl-submitButton" class="sl-button" type="submit">Submit</button>
-                  </form>
-                </div>
-
-
-              </div>
-
-            <div id="sl-photoBlurb" class="sl-hidden">
-              This feature is disabled until I can sort out converting pictures to text.
-            </div>
-
-            <h2>Recent Entries</h2>
-            <table id="sl-recentEntriesTable" class="sl-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Approx Date</th>
-                  <th>Approx Age</th>
-                  <th>Ethnicity</th>
-                  <th>Timestamp</th>
-                  <th><span class="photo-question">Photo(?)</span></th>
-                </tr>
-              </thead>
-              <tbody id="sl-recentEntriesList">
-                <!-- Populated entries will go here -->
-              </tbody>
-            </table>
-        </div>
-        
-        <div class="sl-container-alltable">
-          <div class="sl-seeAll-block">
-            <h2>See All</h2>
-            <br>
-            <button id="sl-loadAllButton" class="sl-button">Load All</button>
-            <button id="sl-hideAllButton" class="sl-button sl-hidden">Hide</button>
-            
-            <table id="sl-allEntriesTable" class="sl-table sl-hidden">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>
-                    <button id="sl-expandColumnsButton" class="sl-button">Expand Columns</button>
-                  </th>
-                  <th class="sl-hide-when-minified">Approx Date</th>
-                  <th class="sl-hide-when-minified">Approx Age</th>
-                  <th class="sl-hide-when-minified">Ethnicity</th>
-                  <th class="sl-hide-when-minified">Created At</th>
-                  <th class="sl-hide-when-minified">Photo</th>
-                </tr>
-              </thead>
-              <tbody id="sl-allEntriesList">
-                <!-- All entries will be loaded here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-        
-
-    </div>
-     <script src="index.js"></script>
+    
 
 
   
-    <div id="bible" class="tabcontent">
-        <div class="header" id="fancyHeader">TEMP TABLE</div>
+    <div id="sl" class="tabcontent">
+        <div class="header" id="fancyHeader">MAIN TABLE</div>
 
 
 <!--       TABLE SUBMISSION SECTION  -->
@@ -422,10 +295,43 @@
 <!--   closing entries div -->
                 </div>
       
-<!-- closing bible container div -->
+<!-- closing sl container div -->
             </div>
 
 
+
+  <div id="love test" class="tabcontent">
+
+      
+      <div id="love-test-container">
+          <table id="love-test-table">
+              <thead>
+                  <tr>
+                      <th>Love Test Table</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Click on an item in the above table to add to your love check</td>
+                  </tr>
+              </tbody>
+          </table>
+          <div id="love-meter-container">
+              <div id="love-meter">
+                  <div id="love-meter-bar"></div>
+              </div>
+              <div id="love-score">Score: 0</div>
+          </div>
+      </div>
+        
+
+    </div>
+     <script src="index.js"></script>
+
+
+  
+    <div id="love test" class="tabcontent">
+    </div>
   
 
 <div id="csf-comment-section">
