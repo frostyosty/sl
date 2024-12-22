@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
 // filter stuff
 
 // event listeners to the entry table
