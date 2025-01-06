@@ -1,8 +1,13 @@
-
-// fetch and display entries in the recent entries table
 async function fetchEntries(selectedCriteria = '') {
-    const recentEntriesContainer = document.querySelector("#recent-entries-table");
-    const tableBody = document.querySelector("#recent-entries-table tbody");
+    // Use the new ID 'entry-table-container' for the container and 'entry-table-body' for the tbody
+    const recentEntriesContainer = document.querySelector("#entry-table-container");
+    const tableBody = document.querySelector("#entry-table-body");
+
+    if (!tableBody) {
+        console.error("Table body not found. Check the HTML structure and ensure the script runs after the table is loaded.");
+        return;
+    }
+
     const spinner = document.createElement("div");
     spinner.classList.add("entry-spinner");
     spinner.innerHTML = `
@@ -51,7 +56,6 @@ async function fetchEntries(selectedCriteria = '') {
 document.addEventListener("DOMContentLoaded", () => {
     fetchEntries(); // Fetch all entries initially
 });
-
 
 
 // submit content

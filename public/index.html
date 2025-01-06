@@ -336,18 +336,18 @@
 //  MISC
 
 
-// question mark
-document.getElementById('questionmark-icon').addEventListener('click', function() {
-  const blurb = document.getElementById('blurb');
-  const isExpanded = blurb.style.maxHeight;
-  if (isExpanded) {
-    blurb.style.maxHeight = null;
-    blurb.classList.remove('blurb-expanded');
-  } else {
-    blurb.style.maxHeight = blurb.scrollHeight + "px";
-    blurb.classList.add('blurb-expanded');
-  }
-});
+// // question mark
+// document.getElementById('questionmark-icon').addEventListener('click', function() {
+//   const blurb = document.getElementById('blurb');
+//   const isExpanded = blurb.style.maxHeight;
+//   if (isExpanded) {
+//     blurb.style.maxHeight = null;
+//     blurb.classList.remove('blurb-expanded');
+//   } else {
+//     blurb.style.maxHeight = blurb.scrollHeight + "px";
+//     blurb.classList.add('blurb-expanded');
+//   }
+// });
 //document.getElementById('justification-btn').addEventListener('click', function() {
 //  openPDFViewer('pdfs/biblebooks/foreword.pdf'); 
 //});
