@@ -1,5 +1,4 @@
-async function fetchEntries(selectedCriteria = '') {
-    // Use the new ID 'entry-table-container' for the container and 'entry-table-body' for the tbody
+async function fetchEntries(item = '', timeRange = '', location = '') {
     const recentEntriesContainer = document.querySelector("#entry-table-container");
     const tableBody = document.querySelector("#entry-table-body");
 
@@ -23,11 +22,20 @@ async function fetchEntries(selectedCriteria = '') {
     recentEntriesContainer.appendChild(spinner);
 
     try {
-        const url = `/api/entries${selectedCriteria ? `?criteria=${encodeURIComponent(selectedCriteria)}` : ''}`;
+        const params = new URLSearchParams();
+        if (item) params.append('item', item);
+        if (timeRange) params.append('timeRange', timeRange);
+        if (location) params.append('location', location);
+
+        const url = `/api/entries?${params.toString()}`;
         console.log("Fetching entries from URL:", url);
 
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error fetching entries:", errorText);
+            throw new Error(`Error: ${errorText}`);
+        }
 
         const entries = await response.json();
         console.log("Fetched entries:", entries);
@@ -56,6 +64,7 @@ async function fetchEntries(selectedCriteria = '') {
 document.addEventListener("DOMContentLoaded", () => {
     fetchEntries(); // Fetch all entries initially
 });
+
 
 
 // submit content
