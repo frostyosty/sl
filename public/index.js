@@ -31,13 +31,21 @@ async function fetchEntries(item = '', timeRange = '', location = '') {
         console.log("Fetching entries from URL:", url);
 
         const response = await fetch(url);
+        const text = await response.text();
+        
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Error fetching entries:", errorText);
-            throw new Error(`Error: ${errorText}`);
+            console.error("Error fetching entries:", text);
+            throw new Error(`Error: ${text}`);
         }
 
-        const entries = await response.json();
+        let entries;
+        try {
+            entries = JSON.parse(text);
+        } catch (e) {
+            console.error("Response is not valid JSON:", text);
+            throw new Error("Invalid JSON response");
+        }
+
         console.log("Fetched entries:", entries);
 
         entries.forEach(entry => {
