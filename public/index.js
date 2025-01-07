@@ -27,7 +27,7 @@ async function fetchEntries(item = '', timeRange = '', location = '') {
         if (timeRange) params.append('timeRange', timeRange);
         if (location) params.append('location', location);
 
-        const url = `/api/entries?${params.toString()}`;
+        const url = `/api/entries?type=fetchEntries&${params.toString()}`;
         console.log("Fetching entries from URL:", url);
 
         const response = await fetch(url);

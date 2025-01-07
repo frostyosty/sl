@@ -42,9 +42,9 @@ async function submitEntry(req, res) {
 }
 
 // initial get entries
-async function getEntries(req, res) {
+async function fetchEntries(req, res) {
     const { item, timeRange, location } = req.query;
-    console.log('getEntries called with:', req.query);
+    console.log('fetchEntries called with:', req.query);
 
     try {
         let query = `
@@ -145,9 +145,9 @@ async function getEntries(req, res) {
 
 
 // get all entries with filters
-async function getEntriesWithFilters(req, res) {
+async function fetchEntriesWithFilters(req, res) {
     const { item, timeRange, ethnicity } = req.query;
-    console.log('getEntriesWithFilters called with:', req.query);
+    console.log('fetchEntriesWithFilters called with:', req.query);
     console.log("Query String received by backend to be processed:", new URLSearchParams(req.query).toString());
 
     try {
@@ -312,15 +312,15 @@ export default async function handler(req, res) {
 
         if (type === 'unique-items') {
             return getUniqueItems(req, res);
-        } else if (type === 'getEntries') {
-            return getEntries(req, res);
+        } else if (type === 'fetchEntries') {
+            return fetchEntries(req, res);
         } else if (type === 'unique-items-fuzzy') {
             return getUniqueItemsFuzzy(req, res);
         } else if (type === 'entries-with-filters') {
             if (!req.query.item && !req.query.timeRange && !req.query.location) {
                 return res.status(400).json({ message: 'Missing required filters' });
             }
-            return getEntriesWithFilters(req, res);
+            return fetchEntriesWithFilters(req, res);
         } else {
             res.status(400).json({ message: 'Invalid type parameter for GET request' });
         }
