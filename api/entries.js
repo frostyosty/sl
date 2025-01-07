@@ -312,6 +312,8 @@ export default async function handler(req, res) {
 
         if (type === 'unique-items') {
             return getUniqueItems(req, res);
+        } else if (type === 'getEntries') {
+            return getEntries(req, res);
         } else if (type === 'unique-items-fuzzy') {
             return getUniqueItemsFuzzy(req, res);
         } else if (type === 'entries-with-filters') {
