@@ -2566,12 +2566,18 @@ background-color: #000000e5;
     margin: 10px 0;
     font-size: 14px;
     text-align: left;
+    table-layout: fixed;
 }
 
 #love-test-table th, 
 #love-test-table td {
     border: 1px solid #ddd;
     padding: 8px;
+}
+
+#love-test-table th {
+  width: 100%;
+  text-align: center;
 }
 
 #love-test-container {
