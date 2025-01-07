@@ -2279,7 +2279,7 @@ background-color: #000000e5;
   display: grid;
 }
 #entry-table {
-    overflow-y: auto; ?
+    overflow-y: auto;
 /* overflow-y needed for vertical scrolling possibilities below */
 }
 @media (max-width: 768px) {
@@ -3377,19 +3377,7 @@ font-style: normal;
 -webkit-text-fill-color: white;
 -webkit-text-stroke: 1.5px;
 -webkit-text-stroke-color: black;
-    
-  animation: slightFloat 3s ease-in-out infinite;
 }
-
-@keyframes slightFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 
 /* Fancy shine effect */
 .fancyHeader::before {
