@@ -264,7 +264,7 @@ async function updateFilters() {
         const form = document.getElementById('entry-filters-form');
         const timeRange = form.querySelector('input[name="time-range"]:checked')?.value || "all";
         const locationToggle = form.querySelector('#filter-location-toggle').checked;
-        const location = locationToggle ? "global" : form.querySelector('#local-location').value || "";
+        const location = locationToggle ? "global" : form.querySelector('#local-location')?.value || "";
         const item = form.querySelector('#filter-item').value || null;
 
         console.log("Filter details:", { timeRange, location, item });
