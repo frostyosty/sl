@@ -483,6 +483,7 @@ function mergeEntryTableCells(tableBodyId, columnIndex) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const loveTestTableBody = document.querySelector("#love-test-table tbody");
+    const loveMeter = document.getElementById("love-meter");
     const loveMeterBar = document.getElementById("love-meter-bar");
     const loveScoreDisplay = document.getElementById("love-score");
     const loveTestTable = document.getElementById("love-test-table");
@@ -508,22 +509,19 @@ document.addEventListener("DOMContentLoaded", () => {
         loveTestTableBody.innerHTML = "";
         loveScore = 0;
 
-        const row = document.createElement("tr");
-
         loveTestItems.forEach((item, index) => {
+            const row = document.createElement("tr");
             const cell = document.createElement("td");
             cell.textContent = item;
             cell.style.cursor = "pointer";
             cell.addEventListener("click", () => removeItemFromLoveTest(index));
             row.appendChild(cell);
+            loveTestTableBody.appendChild(row);
 
             if (item.toLowerCase().includes("love")) loveScore += 2;
-            else if (item.toLowerCase().includes("happy")) loveScore += 1;
-            else if (item.toLowerCase().includes("hate")) loveScore -= 2;
-            else loveScore += 1; // Default +1 for no specific keyword
+            if (item.toLowerCase().includes("happy")) loveScore += 1;
+            if (item.toLowerCase().includes("hate")) loveScore -= 2;
         });
-
-        loveTestTableBody.appendChild(row);
 
         if (loveTestItems.length === 0) {
             loveTestTableBody.innerHTML = `
@@ -544,22 +542,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateLoveMeter() {
         const maxScore = loveTestItems.length * 2;
-        const meterPercentage = 50; // Always keep it half full
+        const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
 
+        loveMeterBar.style.height = `${Math.max(0, Math.min(100, meterPercentage))}%`;
+        loveMeterBar.style.transition = "height 0.8s ease-in-out";
+
+        const lowColor = '#8b4513';
+        const highColor = '#ff0000';
+        const negativeColor = '#008000'; // Green for very negative scores
+        const extremeNegativeColor = '#000000'; // Black for extreme negatives
         let color;
-        if (loveScore < -10) {
-            color = '#006400'; // Dark green for very negative
+
+        if (loveScore <= -10) {
+            color = extremeNegativeColor;
         } else if (loveScore < -5) {
-            color = '#8b4513'; // Brown
-        } else if (loveScore < 0) {
-            color = interpolateColor('#8b4513', '#ff0000', loveScore / -5); // Gradient brown to red
+            color = negativeColor;
         } else {
-            color = interpolateColor('#ff0000', '#8b0000', loveScore / maxScore); // Red to dark red
+            color = interpolateColor(lowColor, highColor, meterPercentage / 100);
         }
 
-        loveMeterBar.style.height = `${meterPercentage}%`;
         loveMeterBar.style.backgroundColor = color;
-        addSwirlEffect(loveMeterBar);
+
+        loveMeter.classList.add('swirl');
+        setTimeout(() => loveMeter.classList.remove('swirl'), 500);
 
         loveScoreDisplay.textContent = `Score: ${loveScore}`;
     }
@@ -573,14 +578,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return `#${result.join('')}`;
     }
 
-    function addSwirlEffect(element) {
-        element.classList.add('swirl');
-        setTimeout(() => element.classList.remove('swirl'), 500);
-    }
-
     function updateColspan() {
-        const columnCount = loveTestTable.querySelector("tbody tr").children.length;
-        loveTestHeader.colSpan = columnCount || 1;
+        const columnCount = loveTestTable.querySelector("tbody tr")?.children.length || 1;
+        loveTestHeader.colSpan = columnCount;
     }
 
     updateColspan();

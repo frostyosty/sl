@@ -2588,26 +2588,7 @@ background-color: #000000e5;
   justify-content: center;
 }
 
-#love-meter {
-  width: 50px;
-  height: 300px;
-  background: linear-gradient(to top, #f0e68c, #8b4513);
-  border-radius: 25px;
-  border: 2px solid #6b4423;
-  overflow: hidden;
-  position: relative;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-}
 
-#love-meter-bar {
-  width: 100%;
-  height: 0;
-  background: linear-gradient(to bottom, rgba(255, 0, 0, 0.8), rgba(255, 165, 0, 0.8));
-  border-radius: 25px;
-  position: absolute;
-  bottom: 0;
-  transition: height 1.5s ease-in-out, background-color 1s;
-}
 
 #love-score {
   font-weight: bold;
@@ -2629,13 +2610,30 @@ background-color: #000000e5;
 #love-meter-bar.swirl {
   animation: swirl 0.5s ease-in-out;
 }
-
-@keyframes swirl {
-  0% { transform: rotate(0); }
-  50% { transform: rotate(20deg); }
-  100% { transform: rotate(0); }
+#love-meter {
+  border: 1px solid #000;
+  border-radius: 5px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(128, 128, 128, 0.3));
+  width: 50px;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
 }
-
+#love-meter-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #ff0000;
+  border-top: 2px solid #000;
+}
+.swirl {
+  animation: swirl-animation 0.5s ease-in-out;
+}
+@keyframes swirl-animation {
+  0% { transform: rotate(0); }
+  50% { transform: rotate(2deg); }
+  100% { transform: rotate(-2deg); }
+}
 
 
 
