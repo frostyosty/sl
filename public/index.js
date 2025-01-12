@@ -480,11 +480,12 @@ function mergeEntryTableCells(tableBodyId, columnIndex) {
 
 
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const loveTestTableBody = document.querySelector("#love-test-table tbody");
     const loveMeterBar = document.getElementById("love-meter-bar");
     const loveScoreDisplay = document.getElementById("love-score");
+    const loveTestTable = document.getElementById("love-test-table");
+    const loveTestHeader = loveTestTable.querySelector("th");
 
     let loveTestItems = [];
     let loveScore = 0;
@@ -536,6 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateLoveMeter();
+        updateColspan();
     }
 
     // Function to remove an item from the love test table
@@ -553,9 +555,15 @@ document.addEventListener("DOMContentLoaded", () => {
         loveMeterBar.style.backgroundColor = loveScore > 0 ? "green" : loveScore < 0 ? "red" : "gray";
         loveScoreDisplay.textContent = `Score: ${loveScore}`;
     }
+
+    // Function to update the colspan of the header
+    function updateColspan() {
+        const columnCount = loveTestTable.querySelector("tbody tr").children.length;
+        loveTestHeader.colSpan = columnCount || 1; // Ensure colspan is at least 1
+    }
+
+    updateColspan(); // Initial call to set colspan
 });
-
-
 
 
 

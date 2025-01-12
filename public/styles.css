@@ -2559,20 +2559,18 @@ background-color: #000000e5;
 
 
 
-
 #love-test-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px 0;
-    font-size: 14px;
-    text-align: left;
-    table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+  text-align: left;
 }
 
 #love-test-table th, 
 #love-test-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
 #love-test-table th {
@@ -3407,8 +3405,7 @@ text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 #fancyHeaderEntries {
-margin-top: -4.4%;
-font-size: 2.8em; 
+font-size: 2.2em; 
 }
 
 @media (max-width: 768px) {
