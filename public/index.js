@@ -545,16 +545,29 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateLoveMeter() {
         const maxScore = loveTestItems.length * 2;
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
-
-        loveMeterBar.style.height = `${Math.max(0, Math.min(100, meterPercentage))}%`;
-        loveMeterBar.style.transition = "height 0.8s ease-in-out";
-
+    
+        loveMeterBar.style.backgroundColor = determineColor(meterPercentage);
+    
+        loveMeter.classList.add('swirl');
+        loveMeterBar.classList.add('shake'); // Add shake class to loveMeterBar
+    
+        // Remove the shake class after the animation ends
+        loveMeterBar.addEventListener('animationend', () => {
+            loveMeterBar.classList.remove('shake');
+        }, { once: true });
+    
+        setTimeout(() => loveMeter.classList.remove('swirl'), 500);
+    
+        loveScoreDisplay.textContent = `Score: ${loveScore}`;
+    }
+    
+    function determineColor(meterPercentage) {
         const lowColor = '#8b4513';
         const highColor = '#ff0000';
         const negativeColor = '#008000'; // Green for very negative scores
         const extremeNegativeColor = '#000000'; // Black for extreme negatives
         let color;
-
+    
         if (loveScore <= -10) {
             color = extremeNegativeColor;
         } else if (loveScore < -5) {
@@ -562,14 +575,10 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             color = interpolateColor(lowColor, highColor, meterPercentage / 100);
         }
-
-        loveMeterBar.style.backgroundColor = color;
-
-        loveMeter.classList.add('swirl');
-        setTimeout(() => loveMeter.classList.remove('swirl'), 500);
-
-        loveScoreDisplay.textContent = `Score: ${loveScore}`;
+    
+        return color;
     }
+    
 
     function interpolateColor(color1, color2, factor) {
         const result = color1.match(/\w\w/g).map((c, i) => {
