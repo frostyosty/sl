@@ -481,7 +481,6 @@ function mergeEntryTableCells(tableBodyId, columnIndex) {
 
 
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const loveTestTableBody = document.querySelector("#love-test-table tbody");
     const loveMeterBar = document.getElementById("love-meter-bar");
@@ -492,7 +491,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let loveTestItems = [];
     let loveScore = 0;
 
-    // Add event listener to the recent entries table
     document.querySelector("#entry-table tbody").addEventListener("click", (e) => {
         const target = e.target.closest("tr");
         if (!target || target.children.length === 0) return;
@@ -500,15 +498,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const description = target.children[1]?.textContent.trim();
         if (!description) return;
 
-        // Check if the description already exists in the love test table
         if (loveTestItems.includes(description)) return;
 
-        // Add the description to the love test table
         loveTestItems.push(description);
         updateLoveTestTable();
     });
 
-    // Function to update the love test table and calculate the score
     function updateLoveTestTable() {
         loveTestTableBody.innerHTML = "";
         loveScore = 0;
@@ -522,10 +517,10 @@ document.addEventListener("DOMContentLoaded", () => {
             cell.addEventListener("click", () => removeItemFromLoveTest(index));
             row.appendChild(cell);
 
-            // Update score
             if (item.toLowerCase().includes("love")) loveScore += 2;
-            if (item.toLowerCase().includes("happy")) loveScore += 1;
-            if (item.toLowerCase().includes("hate")) loveScore -= 2;
+            else if (item.toLowerCase().includes("happy")) loveScore += 1;
+            else if (item.toLowerCase().includes("hate")) loveScore -= 2;
+            else loveScore += 1; // Default +1 for no specific keyword
         });
 
         loveTestTableBody.appendChild(row);
@@ -542,36 +537,33 @@ document.addEventListener("DOMContentLoaded", () => {
         updateColspan();
     }
 
-    // Function to remove an item from the love test table
     function removeItemFromLoveTest(index) {
         loveTestItems.splice(index, 1);
         updateLoveTestTable();
     }
 
-    // Function to update the love meter
     function updateLoveMeter() {
-        const maxScore = loveTestItems.length * 2; // Assuming max score of +2 per item
-        const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
+        const maxScore = loveTestItems.length * 2;
+        const meterPercentage = 50; // Always keep it half full
 
-        // Update the height of the bar with a smooth transition
-        loveMeterBar.style.height = `${Math.max(0, Math.min(100, meterPercentage))}%`;
+        let color;
+        if (loveScore < -10) {
+            color = '#006400'; // Dark green for very negative
+        } else if (loveScore < -5) {
+            color = '#8b4513'; // Brown
+        } else if (loveScore < 0) {
+            color = interpolateColor('#8b4513', '#ff0000', loveScore / -5); // Gradient brown to red
+        } else {
+            color = interpolateColor('#ff0000', '#8b0000', loveScore / maxScore); // Red to dark red
+        }
 
-        // Determine the color based on the score, transitioning from brown to red
-        const lowColor = '#8b4513'; // Brown for lower amounts
-        const highColor = '#ff0000'; // Red for higher amounts
-        const color = interpolateColor(lowColor, highColor, meterPercentage / 100);
-
+        loveMeterBar.style.height = `${meterPercentage}%`;
         loveMeterBar.style.backgroundColor = color;
+        addSwirlEffect(loveMeterBar);
 
-        // Add shaking effect
-        loveMeter.classList.add('shake');
-        setTimeout(() => loveMeter.classList.remove('shake'), 500);
-
-        // Update the score display
         loveScoreDisplay.textContent = `Score: ${loveScore}`;
     }
 
-    // Function to interpolate between two colors
     function interpolateColor(color1, color2, factor) {
         const result = color1.match(/\w\w/g).map((c, i) => {
             const num1 = parseInt(c, 16);
@@ -581,14 +573,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return `#${result.join('')}`;
     }
 
-
-    // Function to update the colspan of the header
-    function updateColspan() {
-        const columnCount = loveTestTable.querySelector("tbody tr").children.length;
-        loveTestHeader.colSpan = columnCount || 1; // Ensure colspan is at least 1
+    function addSwirlEffect(element) {
+        element.classList.add('swirl');
+        setTimeout(() => element.classList.remove('swirl'), 500);
     }
 
-    updateColspan(); // Initial call to set colspan
+    function updateColspan() {
+        const columnCount = loveTestTable.querySelector("tbody tr").children.length;
+        loveTestHeader.colSpan = columnCount || 1;
+    }
+
+    updateColspan();
 });
 
 
