@@ -2576,39 +2576,28 @@ background-color: #000000e5;
   width: 100%;
   text-align: center;
 }
-
 #love-test-container {
-    margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+#love-test-table-wrapper {
+  width: 70%;
+  position: relative;
+}
+#love-test-table {
+  width: 100%;
+  background: linear-gradient(90deg, rgba(200, 200, 200, 0.1), rgba(255, 255, 255, 0.1));
+  animation: gradient-move 5s infinite linear;
+}
+@keyframes gradient-move {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 #love-meter-container {
-  margin-top: 20px;
+  width: 25%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  justify-content: center;
-}
-
-
-
-#love-score {
-  font-weight: bold;
-  font-size: 18px;
-  color: #333;
-}
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  50% { transform: translateX(2px); }
-  75% { transform: translateX(-3px); }
-  100% { transform: translateX(0); }
-}
-
-#love-meter.shake {
-  animation: shake 0.5s;
-}
-
-#love-meter-bar.swirl {
-  animation: swirl 0.5s ease-in-out;
 }
 #love-meter {
   border: 1px solid #000;
@@ -2618,13 +2607,14 @@ background-color: #000000e5;
   height: 300px;
   position: relative;
   overflow: hidden;
+  border-radius: 0 0 25px 25px; /* Rounded bottom */
 }
 #love-meter-bar {
   position: absolute;
   bottom: 0;
   width: 100%;
   background-color: #ff0000;
-  border-top: 2px solid #000;
+  border-radius: 0 0 25px 25px; /* Rounded bottom */
 }
 .swirl {
   animation: swirl-animation 0.5s ease-in-out;

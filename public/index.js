@@ -277,6 +277,8 @@ async function updateFilters() {
         if (item) queryParams.append('item', item);
 
         const tbody = document.getElementById("entry-table-body");
+        const entryTable = document.querySelector("#entry-table");
+        
         const spinner = document.createElement("div");
         spinner.classList.add("csf-spinner");
         spinner.innerHTML = `
