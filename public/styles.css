@@ -983,7 +983,7 @@ textarea {
 }
 
 .sl-table td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ffe8e8;
 }
 
 .sl-date-row {
@@ -2296,7 +2296,7 @@ background-color: #000000e5;
 #entry-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgb(224 203 243 / 60%)
 }
 
 #entry-table th {
@@ -2312,7 +2312,6 @@ background-color: #000000e5;
   padding: 8px 5px;
   text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
 }
 
 #entry-table tr:hover td {
@@ -2539,7 +2538,7 @@ background-color: #000000e5;
   right: 0;
   width: 50%; 
   height: 2px;
-  background: linear-gradient(to left, transparent, rgba(128, 128, 128, 0.5), transparent);
+  background: linear-gradient(to left, transparent, rgba(227 205 243 / 60%), transparent);
   border-radius: 3px;
 }
 
@@ -2569,7 +2568,7 @@ background-color: #000000e5;
 
 #love-test-table th, 
 #love-test-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #2947cc;
   padding: 8px;
 }
 
@@ -2581,31 +2580,50 @@ background-color: #000000e5;
 #love-test-container {
     margin-top: 20px;
 }
-
 #love-meter-container {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
 }
 
 #love-meter {
-    width: 200px;
-    height: 20px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    position: relative;
+  width: 50px;
+  height: 300px;
+  background: linear-gradient(to top, #f0e68c, #8b4513);
+  border-radius: 25px;
+  border: 2px solid #6b4423;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #love-meter-bar {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    transition: width 0.3s ease-in-out;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to bottom, rgba(255, 0, 0, 0.8), rgba(255, 165, 0, 0.8));
+  border-radius: 25px;
+  position: absolute;
+  bottom: 0;
+  transition: height 1.5s ease-in-out, background-color 1s;
 }
 
 #love-score {
-    font-weight: bold;
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+#love-meter.shake {
+  animation: shake 0.5s;
 }
 
 
@@ -2883,54 +2901,29 @@ background-color: #000000e5;
 /* button 3 gold 3 variations*/
 /* 3 variations - more solid*/
 .button-style-3-gold {
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 10px 22px;
+  font-size: 15px;
   font-weight: bold;
-  color: #ffffff;
-  background: linear-gradient(135deg, #8c8e1b, #32390f);
-  border: 1px solid #ffffff;
-  border-radius: 20px;
-  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.15), 6px 6px 12px rgba(0, 0, 0, 0.3);
+  color: #000000;
+  background: linear-gradient(145deg, #FFD700, #FFC107);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 2px 2px 5px rgba(255, 215, 0, 0.5), -2px -2px 5px rgba(255, 193, 7, 0.5);
   cursor: pointer;
   overflow: hidden;
   position: relative;
   transition: all 0.3s ease;
 }
 
- 
 .button-style-3-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.25), 6px 6px 12px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(145deg, #FFC107, #FFD700);
+  box-shadow: 3px 3px 8px rgba(255, 193, 7, 0.5), -3px -3px 8px rgba(255, 215, 0, 0.5);
+  transform: scale(1.05);
 }
 
-/* Inner Border Reveal */
-.button-style-3-gold ::before {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  border-radius: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: opacity 0.4s ease;
-  opacity: 0;
-}
-
-.button-style-3-gold :hover::before {
-  opacity: 1;
-}
-
-/* Inner Glow */
-.button-style-3-gold :hover::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
-  box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.4);
+.button-style-3-gold:active {
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
 }
 
 

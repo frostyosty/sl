@@ -553,10 +553,34 @@ document.addEventListener("DOMContentLoaded", () => {
         const maxScore = loveTestItems.length * 2; // Assuming max score of +2 per item
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
 
-        loveMeterBar.style.width = `${Math.max(0, Math.min(100, meterPercentage))}%`;
-        loveMeterBar.style.backgroundColor = loveScore > 0 ? "green" : loveScore < 0 ? "red" : "gray";
+        // Update the height of the bar with a smooth transition
+        loveMeterBar.style.height = `${Math.max(0, Math.min(100, meterPercentage))}%`;
+
+        // Determine the color based on the score, transitioning from brown to red
+        const lowColor = '#8b4513'; // Brown for lower amounts
+        const highColor = '#ff0000'; // Red for higher amounts
+        const color = interpolateColor(lowColor, highColor, meterPercentage / 100);
+
+        loveMeterBar.style.backgroundColor = color;
+
+        // Add shaking effect
+        loveMeter.classList.add('shake');
+        setTimeout(() => loveMeter.classList.remove('shake'), 500);
+
+        // Update the score display
         loveScoreDisplay.textContent = `Score: ${loveScore}`;
     }
+
+    // Function to interpolate between two colors
+    function interpolateColor(color1, color2, factor) {
+        const result = color1.match(/\w\w/g).map((c, i) => {
+            const num1 = parseInt(c, 16);
+            const num2 = parseInt(color2.match(/\w\w/g)[i], 16);
+            return Math.round(num1 + (num2 - num1) * factor).toString(16).padStart(2, '0');
+        });
+        return `#${result.join('')}`;
+    }
+
 
     // Function to update the colspan of the header
     function updateColspan() {
