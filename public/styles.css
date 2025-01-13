@@ -2294,8 +2294,8 @@ background-color: #000000e5;
 }
 
 #entry-table {
-  width: 100%;
-  border-collapse: collapse;
+  /* width: 100%; */
+  /* border-collapse: collapse; */
   background-color: rgb(224 203 243 / 60%)
 }
 
