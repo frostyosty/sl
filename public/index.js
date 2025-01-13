@@ -531,6 +531,20 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.toLowerCase().includes("slept")) loveScore -= 2;
             if (item.toLowerCase().includes("sleep")) loveScore -= 2;
             if (item.toLowerCase().includes("making")) loveScore -= 3;
+
+            if (item.toLowerCase().includes("lewd")) loveScore -= 2;
+            if (item.toLowerCase().includes("hitting")) loveScore -= 2;
+            if (item.toLowerCase().includes("dude")) loveScore -= 3;
+
+            if (item.toLowerCase().includes("intoxicated")) loveScore -= 2;
+            if (item.toLowerCase().includes("dancing")) loveScore -= 2;
+            if (item.toLowerCase().includes("twerking")) loveScore -= 8;
+
+
+            if (item.toLowerCase().includes("slutty")) loveScore -= 2;
+            if (item.toLowerCase().includes("instagram")) loveScore -= 1;
+            if (item.toLowerCase().includes("tiktok")) loveScore -= 2;
+            if (item.toLowerCase().includes("facebook")) loveScore -= 1;
         });
 
         if (loveTestItems.length === 0) {
