@@ -546,12 +546,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const maxScore = loveTestItems.length * 2;
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
     
-        loveMeterBar.style.backgroundColor = determineColor(meterPercentage);
+        const newHeight = meterPercentage < 50 ? 40 : 60; // Adjust height up or down
+        loveMeterBar.style.height = `${newHeight}%`;
+    
+        setTimeout(() => {
+            loveMeterBar.style.height = '50%'; // Settle back to 50% after 2 seconds
+        }, 2000);
+    
+        const color = determineColor(meterPercentage);
+        loveMeterBar.style.background = generateGradient(color);
     
         loveMeter.classList.add('swirl');
-        loveMeterBar.classList.add('shake'); // Add shake class to loveMeterBar
+        loveMeterBar.classList.add('shake');
     
-        // Remove the shake class after the animation ends
         loveMeterBar.addEventListener('animationend', () => {
             loveMeterBar.classList.remove('shake');
         }, { once: true });
@@ -559,6 +566,14 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => loveMeter.classList.remove('swirl'), 500);
     
         loveScoreDisplay.textContent = `Score: ${loveScore}`;
+    }
+    
+    function generateGradient(baseColor) {
+        const [r, g, b] = baseColor.match(/\w\w/g).map(c => parseInt(c, 16));
+        const lighterColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
+        const darkerColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
+    
+        return `linear-gradient(to bottom, ${lighterColor}, ${darkerColor})`;
     }
     
     function determineColor(meterPercentage) {

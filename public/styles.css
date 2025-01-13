@@ -2614,29 +2614,25 @@ background-color: #000000e5;
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 50%; /* Always at 50% fullness */
-  background-color: #ff0000;
-  border-radius: 0 0 25px 25px; /* Rounded bottom */
-  transition: background-color 0.3s ease;
+  height: 50%; /* Base height */
+  background: linear-gradient(to bottom, #ff0000, #cc0000); /* Default gradient */
+  border-radius: 0 0 25px 25px;
+  transition: background-color 0.3s ease, height 2s ease-in-out;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
-/* Animation for the liquid shaking */
 @keyframes shake-liquid {
   0%, 100% {
-      transform: skewX(0deg);
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
-  25% {
-      transform: skewX(10deg);
+  33% {
+      clip-path: polygon(0% 0%, 100% 5%, 100% 100%, 0% 100%);
   }
-  50% {
-      transform: skewX(-10deg);
-  }
-  75% {
-      transform: skewX(5deg);
+  66% {
+      clip-path: polygon(0% 5%, 100% 0%, 100% 100%, 0% 100%);
   }
 }
 
-/* Applying the animation when the test tube shakes */
 .shake {
   animation: shake-liquid 1s ease-in-out;
 }
@@ -3383,16 +3379,15 @@ width: 70%;
 .fancyHeader {
   font-family: "Anton", sans-serif;
   font-weight: 400;
-
 font-weight: 400;
 font-style: normal;
-font-size: 2.5em;
+font-size: 2.8em;
 text-align: center;
 /* color: #333; */
 position: relative;
 margin: 20px 0;
 font-style: normal;
--webkit-text-fill-color: white;
+/* -webkit-text-fill-color: white; */
 -webkit-text-stroke: 1.5px;
 -webkit-text-stroke-color: black;
 }
@@ -3424,8 +3419,8 @@ font-size: 2.2em;
 
 @media (max-width: 768px) {
 #fancyHeaderEntries {
-  margin-top: -3.4%;
-font-size: 2.8em; 
+  /* margin-top: -3.4%; */
+font-size: 2.7em; 
 }
 }
 .hidden {
