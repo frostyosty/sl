@@ -2678,7 +2678,6 @@ background-color: #000000e5;
 
 
 
-
 /* button styles */
 
 /* button 1 blue*/
@@ -3300,6 +3299,15 @@ background-color: #000000e5;
 
 
 /* UTILITY */
+
+
+@media (max-width: 768px) { /* Adjust the max-width value to target the desired screen size */
+  #tabContentsContainer {
+      margin-top: 30px;
+  }
+}
+
+
 
 /* black text  */
     .black-text {
