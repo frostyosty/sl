@@ -522,7 +522,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (item.toLowerCase().includes("love")) loveScore += 2;
             if (item.toLowerCase().includes("happy")) loveScore += 1;
-            if (item.toLowerCase().includes("hate")) loveScore -= 2;
+            if (item.toLowerCase().includes("grind")) loveScore -= 2;
+            if (item.toLowerCase().includes("sex")) loveScore -= 2;
+            if (item.toLowerCase().includes("kiss")) loveScore -= 1;
+            if (item.toLowerCase().includes("whore")) loveScore -= 3;
+            if (item.toLowerCase().includes("bitch")) loveScore -= 4;
+            if (item.toLowerCase().includes("fuck")) loveScore -= 5;
+            if (item.toLowerCase().includes("slept")) loveScore -= 2;
+            if (item.toLowerCase().includes("sleep")) loveScore -= 2;
+            if (item.toLowerCase().includes("making")) loveScore -= 3;
         });
 
         if (loveTestItems.length === 0) {
