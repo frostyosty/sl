@@ -2666,7 +2666,33 @@ background-color: #000000e5;
 
 
 
+#skullAndBones {
+  position: absolute;
+  top: -50px; /* Start above the love meter */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  width: 50px; /* Adjust size as needed */
+  height: 50px;
+  background: url('path/to/skull-and-bones.png') no-repeat center;
+  background-size: contain;
+  opacity: 0;
+  pointer-events: none; /* Prevent interaction */
+}
 
+@keyframes emergeAndFade {
+  0% {
+      top: -50px;
+      opacity: 0;
+  }
+  50% {
+      top: 0;
+      opacity: 1;
+  }
+  100% {
+      top: -100px;
+      opacity: 0;
+  }
+}
 
 
 

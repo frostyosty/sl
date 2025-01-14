@@ -545,16 +545,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const currentGradient = currentStyle.backgroundImage;
         element.style.transition = 'background 3s ease-in-out';
         
-        // Apply the current gradient to ensure the transition starts from it
         element.style.backgroundImage = currentGradient;
         requestAnimationFrame(() => {
             element.style.background = generateGradient(newColor);
         });
     
-        // Reset the transition after 3 seconds
+        if (loveScore <= -10) {
+            triggerSkullAndBonesAnimation();
+        }
+    
         setTimeout(() => {
             element.style.transition = 'background 0.3s ease-in-out, height 2s ease-in-out';
         }, 3000);
+    }
+    
+    function triggerSkullAndBonesAnimation() {
+        const skullAndBones = document.getElementById('skullAndBones');
+        skullAndBones.style.animation = 'emergeAndFade 3s ease-in-out';
+        
+        // Reset the animation after it's done to allow re-triggering
+        skullAndBones.addEventListener('animationend', () => {
+            skullAndBones.style.animation = '';
+        }, { once: true });
     }
 
 function generateGradient(baseColor) {
