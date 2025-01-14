@@ -589,14 +589,13 @@ document.addEventListener("DOMContentLoaded", () => {
             updateLoveTestTable();
         }, { once: true });
     }
-
     function updateLoveMeter() {
         const maxScore = loveTestItems.length * 2;
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
     
         const newHeight = meterPercentage < 50 ? 40 : 60;
         loveMeterBar.style.height = `${newHeight}%`;
-        
+    
         setTimeout(() => {
             loveMeterBar.style.height = '50%';
         }, 2000);
@@ -613,7 +612,64 @@ document.addEventListener("DOMContentLoaded", () => {
     
         setTimeout(() => loveMeter.classList.remove('swirl'), 500);
     
-        loveScoreDisplay.textContent = `Score: ${loveScore}`;
+        let verdict;
+        if (loveScore >= 0) {
+            verdict = `Score: ${loveScore}`;
+        } else if (loveScore === -1) {
+            verdict = "Might not be love";
+        } else if (loveScore === -2) {
+            verdict = "Probably not the one";
+        } else if (loveScore === -3) {
+            verdict = "Slightly doubtful";
+        } else if (loveScore === -4) {
+            verdict = "I'd be worried";
+        } else if (loveScore === -5) {
+            verdict = "It's looking bleak";
+        } else if (loveScore === -6) {
+            verdict = "Signs are not good";
+        } else if (loveScore === -7) {
+            verdict = "Questioning the match";
+        } else if (loveScore === -8) {
+            verdict = "Doubts creeping in";
+        } else if (loveScore === -9) {
+            verdict = "Could be a slut";
+        } else if (loveScore === -10) {
+            verdict = "You should reconsider";
+        } else if (loveScore === -11) {
+            verdict = "Hard no";
+        } else if (loveScore === -12) {
+            verdict = "Compatibility issues";
+        } else if (loveScore === -13) {
+            verdict = "Probably a slut";
+        } else if (loveScore === -14) {
+            verdict = "Things seem off";
+        } else if (loveScore === -15) {
+            verdict = "Definitely a whore";
+        } else if (loveScore === -16) {
+            verdict = "Serious mismatch";
+        } else if (loveScore === -17) {
+            verdict = "Well that last one was disgusting";
+        } else if (loveScore === -18) {
+            verdict = "Major differences";
+        } else if (loveScore === -19) {
+            verdict = "Something's deeply wrong";
+        } else if (loveScore === -20) {
+            verdict = "Run the other way!";
+        } else if (loveScore === -21) {
+            verdict = "Avoid avoid avoid";
+        } else if (loveScore === -22) {
+            verdict = "Pure evil";
+        } else if (loveScore === -23) {
+            verdict = "No redeeming features";
+        } else if (loveScore === -24) {
+            verdict = "Beware the snakes";
+        } else if (loveScore === -25) {
+            verdict = "Unimaginably bad!";
+        } else {
+            verdict = "Worst whore ever";
+        }
+    
+        loveScoreDisplay.textContent = verdict;
     }
 
     function smoothGradientTransition(element, newColor) {
