@@ -277,18 +277,26 @@ async function updateFilters() {
         console.log("Entries fetched:", entries);
 
         tbody.innerHTML = entries.length > 0
-            ? entries.map(entry => `
-                <tr>
-                    <td>${entry.name || '-'}</td>
-                    <td>${entry.description || '-'}</td>
-                    <td>${entry.approx_date || '-'}</td>
-                    <td>${entry.approx_age || '-'}</td>
-                    <td>${entry.ethnicity || '-'}</td>
-                    <td>Picture Placeholder</td>
-                    <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
-                </tr>
-            `).join("")
-            : "<tr><td colspan='7'>No entries found for this filter.</td></tr>";
+        ? entries.map((entry, index) => `
+            <tr style="opacity: 0; transform: translateY(-10px);">
+                <td>${entry.name || '-'}</td>
+                <td>${entry.description || '-'}</td>
+                <td>${entry.approx_date || '-'}</td>
+                <td>${entry.approx_age || '-'}</td>
+                <td>${entry.ethnicity || '-'}</td>
+                <td>Picture Placeholder</td>
+                <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
+            </tr>
+        `).join("")
+        : "<tr><td colspan='7'>No entries found for this filter.</td></tr>";
+    
+    setTimeout(() => {
+        Array.from(tbody.querySelectorAll("tr")).forEach(row => {
+            row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+            row.style.opacity = "1";
+            row.style.transform = "translateY(0)";
+        });
+    }, 100);
 
     } catch (error) {
         console.error('Error fetching entries:', error);
@@ -389,6 +397,40 @@ document.getElementById('filter-item').addEventListener('input', async (e) => {
 
 // UTILITY
 
+
+
+// adding removing rows
+
+function addRowWithAnimation(tableId, rowData) {
+    const table = document.getElementById(tableId);
+    const row = table.insertRow();
+    row.style.display = 'none';
+    row.style.transition = 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out';
+    row.style.transform = 'translateY(-100%)';
+    row.style.opacity = '0';
+    rowData.forEach(data => {
+        const cell = row.insertCell();
+        cell.textContent = data;
+    });
+    requestAnimationFrame(() => {
+        row.style.display = '';
+        row.style.transform = 'translateY(0)';
+        row.style.opacity = '1';
+    });
+}
+
+function removeRowWithAnimation(tableId, rowIndex) {
+    const table = document.getElementById(tableId);
+    const row = table.rows[rowIndex];
+    row.style.transition = 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out';
+    row.style.transform = 'translateY(100%)';
+    row.style.opacity = '0';
+    row.addEventListener('transitionend', () => table.deleteRow(rowIndex));
+}
+
+
+
+
 // prevent form submission on enter and trigger updateFilters instead
 document.getElementById('entry-filters-form').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
@@ -458,17 +500,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function updateLoveTestTable() {
-        loveTestTableBody.innerHTML = "";
-        loveScore = 0;
-
+        const loveTestTableBody = document.querySelector("#love-test-table tbody");
+        loveTestTableBody.innerHTML = ''; // Clear the existing table
+    
         loveTestItems.forEach((item, index) => {
             const row = document.createElement("tr");
-            const cell = document.createElement("td");
-            cell.textContent = item;
-            cell.style.cursor = "pointer";
-            cell.addEventListener("click", () => removeItemFromLoveTest(index));
-            row.appendChild(cell);
+            row.innerHTML = `
+                <td>${item}</td>
+                <td><button onclick="removeItemFromLoveTest(${index})">Remove</button></td>
+            `;
+    
+            row.style.opacity = "0";
+            row.style.transform = "translateY(-10px)";
             loveTestTableBody.appendChild(row);
+
+            requestAnimationFrame(() => {
+                row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                row.style.opacity = "1";
+                row.style.transform = "translateY(0)";
+            });
 
             if (item.toLowerCase().includes("love")) loveScore += 2;
             if (item.toLowerCase().includes("happy")) loveScore += 1;
