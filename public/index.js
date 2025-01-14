@@ -570,9 +570,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
         const newHeight = meterPercentage < 50 ? 40 : 60; // Adjust height up or down
         loveMeterBar.style.height = `${newHeight}%`;
-    
         setTimeout(() => {
-            loveMeterBar.style.height = '50%'; // Settle back to 50% after 2 seconds
+            loveMeterBar.style.height = '50%';
         }, 2000);
     
         const color = determineColor(meterPercentage);
