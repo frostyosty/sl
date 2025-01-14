@@ -569,13 +569,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }, { once: true });
     }
 
-function generateGradient(baseColor) {
-    const [r, g, b] = baseColor.match(/\w\w/g).map(c => parseInt(c, 16));
-    const lighterColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
-    const darkerColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
+    function generateGradient(baseColor) {
+        const [r, g, b] = baseColor.match(/\w\w/g).map(c => parseInt(c, 16));
+        const lighterColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
+        const darkerColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
 
-    return `linear-gradient(to bottom, ${lighterColor}, ${darkerColor})`;
-}
+        return `linear-gradient(to bottom, ${lighterColor}, ${darkerColor})`;
+    }
     
     function determineColor(meterPercentage) {
         const lowColor = '#8b4513';
