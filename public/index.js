@@ -367,7 +367,7 @@ document.getElementById('filter-item').addEventListener('input', async (e) => {
         console.log('Suggestions:', suggestions);
 
         if (Array.isArray(suggestions)) {
-            const matched = suggestions.filter(item => item.name.toLowerCase().includes(query)); // assuming suggestions have a `name` field
+            const matched = suggestions.filter(item => item.name && item.name.toLowerCase().includes(query)); // check if item.name exists
             if (matched.length === 0) {
                 console.warn('Item not found');
             } else {
