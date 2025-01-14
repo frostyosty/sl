@@ -2294,8 +2294,9 @@ background-color: #000000e5;
 }
 
 #entry-table {
-  /* width: 100%; */
-  /* border-collapse: collapse; */
+  width: 100%;
+  max-width: 100%;
+  table-layout: auto;
   background-color: rgb(224 203 243 / 60%)
 }
 
@@ -2312,6 +2313,8 @@ background-color: #000000e5;
   padding: 8px 5px;
   text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 #entry-table tr:hover td {
