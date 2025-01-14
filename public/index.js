@@ -526,7 +526,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
     
         const color = determineColor(meterPercentage);
-        loveMeterBar.style.background = generateGradient(color);
+        smoothGradientTransition(loveMeterBar, color);
     
         loveMeter.classList.add('swirl');
         loveMeterBar.classList.add('shake');
@@ -539,14 +539,31 @@ document.addEventListener("DOMContentLoaded", () => {
     
         loveScoreDisplay.textContent = `Score: ${loveScore}`;
     }
+
+    function smoothGradientTransition(element, newColor) {
+        const currentStyle = window.getComputedStyle(element);
+        const currentGradient = currentStyle.backgroundImage;
+        element.style.transition = 'background 3s ease-in-out';
+        
+        // Apply the current gradient to ensure the transition starts from it
+        element.style.backgroundImage = currentGradient;
+        requestAnimationFrame(() => {
+            element.style.background = generateGradient(newColor);
+        });
     
-    function generateGradient(baseColor) {
-        const [r, g, b] = baseColor.match(/\w\w/g).map(c => parseInt(c, 16));
-        const lighterColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
-        const darkerColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
-    
-        return `linear-gradient(to bottom, ${lighterColor}, ${darkerColor})`;
+        // Reset the transition after 3 seconds
+        setTimeout(() => {
+            element.style.transition = 'background 0.3s ease-in-out, height 2s ease-in-out';
+        }, 3000);
     }
+
+function generateGradient(baseColor) {
+    const [r, g, b] = baseColor.match(/\w\w/g).map(c => parseInt(c, 16));
+    const lighterColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
+    const darkerColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
+
+    return `linear-gradient(to bottom, ${lighterColor}, ${darkerColor})`;
+}
     
     function determineColor(meterPercentage) {
         const lowColor = '#8b4513';
