@@ -110,81 +110,75 @@
 
 
   
+<div id="add" class="tabcontent">
+
+  <!--       TABLE SUBMISSION SECTION  -->
+                  
+                  <!-- submit section -->
+                  <div id="entry-submit-section" class="block">
+                    <div class="header fancyHeader">Add a Slut</div>
+                    <form id="entry-form">
+                      <div class="entries-submit-row">
+                          <!-- Name Entry -->
+                          <label for="name">Name:</label>
+                          <input type="text" id="name" placeholder="Enter Name" required>
+                      </div>
+                  
+                      <div class="entries-submit-row">
+                          <!-- Description Entry -->
+                          <label for="description">Description:</label>
+                          <input type="text" id="description" placeholder="Enter Description" required>
+                      </div>
+                  
+                      <div class="entries-submit-row">
+                          <!-- Approximate Date -->
+                          <label for="approx-date">Approximate Date:</label>
+                          <input type="date" id="approx-date" required>
+                          <button type="button" onclick="setToday()">Today</button>
+                          <button type="button" onclick="setYesterday()">Yesterday</button>
+                      </div>
+                  
+                      <div class="entries-submit-row">
+                          <!-- Approximate Age -->
+                          <label>Approximate Age:</label>
+                          <div>
+                              <input type="radio" id="age-18" name="approx-age" value="18">
+                              <label for="age-18">18</label>
+                              <input type="radio" id="age-21" name="approx-age" value="21" checked>
+                              <label for="age-21">21</label>
+                              <input type="radio" id="age-25" name="approx-age" value="25">
+                              <label for="age-25">25</label>
+                          </div>
+                      </div>
+                  
+                      <div class="entries-submit-row">
+                          <!-- Ethnicity -->
+                          <label for="ethnicity">Ethnicity:</label>
+                          <input type="text" id="ethnicity" placeholder="Enter Ethnicity" required>
+                      </div>
+                  
+                      <div class="entries-submit-row">
+                          <!-- Submit Button -->
+                          <button type="submit" class="button-style-3-gold button-general-formatting">Submit Entry</button>
+                      </div>
+                  </form>
+                    
+                  <div id="entry-message-container"></div>
+                
+                </div>
+  <!--       closing add section div below -->
+              </div>
+  
+              
+
+
+              
     
 
 <!--       MAIN TABLE -->
 <!--       VARIABLES NEEDED        name description  approx_date approx_age ethnicity created_at and ip -->
 
 
-          <div id="find" class="tabcontent">
-
-<!-- have not used side by side container this iteration but could use later to put side by side -->
-<!--             <div id="entry-side-by-side-container"> -->
-                    <div class="header fancyHeader" id="fancyHeaderEntries">Check If Slut</div>
-                      <!-- filters Section -->
-                      <div id="entry-filters" class="block">
-
-                        <div id="entry-filters-wrapper">
-                        <!-- <div class="header fancyHeader">Filter</div> --muted as not really needed -->
-                          <form id="entry-filters-form">
-
-                              <div class="entries-filters-row">
-<!--                                   <label>Time Range:</label> -->
-                                  <div>
-                                    <input type="radio" id="filter-any" name="time-range" value="all" checked>
-                                    <label for="filter-any">Any</label>
-                                    <input type="radio" id="filter-this-week" name="time-range" value="week">
-                                    <label for="filter-this-week">This Week</label>
-                                    <input type="radio" id="filter-this-month" name="time-range" value="month">
-                                    <label for="filter-this-month">Month</label>
-                                    <input type="radio" id="filter-this-year" name="time-range" value="year">
-                                    <label for="filter-this-year">Year</label>
-                                  </div>
-                               </div>
-<!--                               <div class="entries-filters-row"> -->
-                              </div>
-                              <div class="entries-filters-row">
-                                  <!-- <label for="filter-item">Filter:</label> -->
-                                  <input list="item-list" id="filter-item" placeholder="Type or select an item to filter for">
-                                  <datalist id="item-list"></datalist>
-                              </div>
-                              <!-- APPLY FILTER BUTTON IF NEEDED IN THE FUTURE -->
-                              <!-- <button type="submit" id="apply-filter-submit" class="button-style-3-purple-v2 button-general-formatting">Apply Filters</button> -->
-                          </form>
-
-                        </div>
-                        <!-- below is closing div for side by side -->
-<!--                       </div> -->
-
-
-
-            
-                <div id="entry-table-container">
-                  <div class="header fancyHeader" id="fancyHeaderEntries">Known Sluts</div>
-                  <table id="entry-table" class="block">
-                      <thead>
-                          <tr>
-                              <th>Name</th>
-                              <th>Allegation</th>
-                              <th>Happened on</th>
-                              <th>Age</th>                            
-                              <th></th>
-                              <th></th>
-                              <th>Filed</th>
-                          </tr>
-                      </thead>
-                      <tbody id="entry-table-body">
-                          <!-- table rows injected here -->
-                      </tbody>
-                  </table>
-              
-                  
-
-<!--   closing entries div -->
-                </div>
-      
-<!-- closing find container div -->
-            </div>
 
 
 
@@ -218,67 +212,84 @@
 
 
 
+    <div id="find" class="tabcontent">
 
-
-<div id="add" class="tabcontent">
-
-<!--       TABLE SUBMISSION SECTION  -->
-                
-                <!-- submit section -->
-                <div id="entry-submit-section" class="block">
-                  <div class="header fancyHeader">Add a Slut</div>
-                  <form id="entry-form">
-                    <div class="entries-submit-row">
-                        <!-- Name Entry -->
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" placeholder="Enter Name" required>
-                    </div>
-                
-                    <div class="entries-submit-row">
-                        <!-- Description Entry -->
-                        <label for="description">Description:</label>
-                        <input type="text" id="description" placeholder="Enter Description" required>
-                    </div>
-                
-                    <div class="entries-submit-row">
-                        <!-- Approximate Date -->
-                        <label for="approx-date">Approximate Date:</label>
-                        <input type="date" id="approx-date" required>
-                        <button type="button" onclick="setToday()">Today</button>
-                        <button type="button" onclick="setYesterday()">Yesterday</button>
-                    </div>
-                
-                    <div class="entries-submit-row">
-                        <!-- Approximate Age -->
-                        <label>Approximate Age:</label>
-                        <div>
-                            <input type="radio" id="age-18" name="approx-age" value="18">
-                            <label for="age-18">18</label>
-                            <input type="radio" id="age-21" name="approx-age" value="21" checked>
-                            <label for="age-21">21</label>
-                            <input type="radio" id="age-25" name="approx-age" value="25">
-                            <label for="age-25">25</label>
-                        </div>
-                    </div>
-                
-                    <div class="entries-submit-row">
-                        <!-- Ethnicity -->
-                        <label for="ethnicity">Ethnicity:</label>
-                        <input type="text" id="ethnicity" placeholder="Enter Ethnicity" required>
-                    </div>
-                
-                    <div class="entries-submit-row">
-                        <!-- Submit Button -->
-                        <button type="submit" class="button-style-3-gold button-general-formatting">Submit Entry</button>
-                    </div>
-                </form>
                   
-                <div id="entry-message-container"></div>
-              
-              </div>
-<!--       closing add section div below -->
-            </div>
-  
+                      <div id="entry-table-container">
+                        <div class="header fancyHeader" id="fancyHeaderEntries">Known Sluts</div>
+                        <table id="entry-table" class="block">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Allegation</th>
+                                    <th>Happened on</th>
+                                    <th>Age</th>                            
+                                    <th></th>
+                                    <th></th>
+                                    <th>Filed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entry-table-body">
+                                <!-- table rows injected here -->
+                            </tbody>
+                        </table>
+                    
+                        
+      
+      <!--   closing entry table div -->
+                      </div>
+            
+
+
+
+
+      <!-- have not used side by side container this iteration but could use later to put side by side -->
+      <!--             <div id="entry-side-by-side-container"> -->
+        <div class="header fancyHeader" id="fancyHeaderEntries">Check If Slut</div>
+        <!-- filters Section -->
+        <div id="entry-filters" class="block">
+
+          <div id="entry-filters-wrapper">
+          <!-- <div class="header fancyHeader">Filter</div> --muted as not really needed -->
+            <form id="entry-filters-form">
+
+                <div class="entries-filters-row">
+<!--                                   <label>Time Range:</label> -->
+                    <div>
+                      <input type="radio" id="filter-any" name="time-range" value="all" checked>
+                      <label for="filter-any">Any</label>
+                      <input type="radio" id="filter-this-week" name="time-range" value="week">
+                      <label for="filter-this-week">This Week</label>
+                      <input type="radio" id="filter-this-month" name="time-range" value="month">
+                      <label for="filter-this-month">Month</label>
+                      <input type="radio" id="filter-this-year" name="time-range" value="year">
+                      <label for="filter-this-year">Year</label>
+                    </div>
+                 </div>
+<!--                               <div class="entries-filters-row"> -->
+                </div>
+                <div class="entries-filters-row">
+                    <!-- <label for="filter-item">Filter:</label> -->
+                    <input list="item-list" id="filter-item" placeholder="Type or select an item to filter for">
+                    <datalist id="item-list"></datalist>
+                </div>
+                <!-- APPLY FILTER BUTTON IF NEEDED IN THE FUTURE -->
+                <!-- <button type="submit" id="apply-filter-submit" class="button-style-3-purple-v2 button-general-formatting">Apply Filters</button> -->
+            </form>
+
+          </div>
+          <!-- below is closing div for side by side -->
+<!--                       </div> -->
+
+
+
+
+
+
+      <!-- closing find container div -->
+                  </div>
+
+
 
 
 
