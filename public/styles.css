@@ -2353,7 +2353,7 @@ background-color: #000000e5;
 #entry-table th {
   background: rgba(204, 41, 41, 0.1);
   font-weight: 700;
-  color: #cc2929;
+  /* color: #cc2929; */
 }
 
 #entry-table tr:last-child td {
@@ -2692,10 +2692,20 @@ background-color: #000000e5;
   transition: background-color 0.3s ease, height 2s ease-in-out;
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   background-size: 200% 200%;
-  transition: height 2s ease, background 3s ease-in-out;
-  animation: gradient-sway 6s ease-in-out infinite;
+  animation: gradient-rotate 6s ease-in-out infinite;
 }
 
+@keyframes gradient-rotate {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
 @keyframes gradient-sway {
   0% {
       background-position: 0% 50%;

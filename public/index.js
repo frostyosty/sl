@@ -505,20 +505,21 @@ document.addEventListener("DOMContentLoaded", () => {
     
         loveTestItems.forEach((item, index) => {
             const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${item}</td>
-                <td><button onclick="removeItemFromLoveTest(${index})">Remove</button></td>
-            `;
+            row.innerHTML = `<td>${item}</td>`;
     
             row.style.opacity = "0";
             row.style.transform = "translateY(-10px)";
             loveTestTableBody.appendChild(row);
-
+    
             requestAnimationFrame(() => {
                 row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
                 row.style.opacity = "1";
                 row.style.transform = "translateY(0)";
             });
+    
+            // Add click event to remove the row
+            row.addEventListener("click", () => removeItemFromLoveTest(index, row));
+
 
             if (item.toLowerCase().includes("love")) loveScore += 2;
             if (item.toLowerCase().includes("happy")) loveScore += 1;
@@ -559,17 +560,24 @@ document.addEventListener("DOMContentLoaded", () => {
         updateColspan();
     }
 
-    function removeItemFromLoveTest(index) {
-        loveTestItems.splice(index, 1);
-        updateLoveTestTable();
+    function removeItemFromLoveTest(index, row) {
+        row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+        row.style.opacity = "0";
+        row.style.transform = "translateY(-10px)";
+    
+        row.addEventListener("transitionend", () => {
+            loveTestItems.splice(index, 1);
+            updateLoveTestTable();
+        }, { once: true });
     }
 
     function updateLoveMeter() {
         const maxScore = loveTestItems.length * 2;
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
     
-        const newHeight = meterPercentage < 50 ? 40 : 60; // Adjust height up or down
+        const newHeight = meterPercentage < 50 ? 40 : 60;
         loveMeterBar.style.height = `${newHeight}%`;
+        
         setTimeout(() => {
             loveMeterBar.style.height = '50%';
         }, 2000);
@@ -590,14 +598,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function smoothGradientTransition(element, newColor) {
-        const currentStyle = window.getComputedStyle(element);
-        const currentGradient = currentStyle.backgroundImage;
         element.style.transition = 'background 3s ease-in-out';
-        
-        element.style.backgroundImage = currentGradient;
-        requestAnimationFrame(() => {
-            element.style.background = generateGradient(newColor);
-        });
+        element.style.background = generateGradient(newColor);
     
         if (loveScore <= -10) {
             triggerSkullAndBonesAnimation();
@@ -607,6 +609,8 @@ document.addEventListener("DOMContentLoaded", () => {
             element.style.transition = 'background 0.3s ease-in-out, height 2s ease-in-out';
         }, 3000);
     }
+    
+
     
     function triggerSkullAndBonesAnimation() {
         const skullAndBones = document.getElementById('skullAndBones');
@@ -622,26 +626,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const [r, g, b] = baseColor.match(/\w\w/g).map(c => parseInt(c, 16));
         const lighterColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
         const darkerColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
-
         return `linear-gradient(to bottom, ${lighterColor}, ${darkerColor})`;
     }
     
     function determineColor(meterPercentage) {
         const lowColor = '#8b4513';
         const highColor = '#ff0000';
-        const negativeColor = '#008000'; // Green for very negative scores
-        const extremeNegativeColor = '#000000'; // Black for extreme negatives
-        let color;
+        const negativeColor = '#008000';
+        const extremeNegativeColor = '#000000';
     
         if (loveScore <= -10) {
-            color = extremeNegativeColor;
+            return extremeNegativeColor;
         } else if (loveScore < -5) {
-            color = negativeColor;
+            return negativeColor;
         } else {
-            color = interpolateColor(lowColor, highColor, meterPercentage / 100);
+            return interpolateColor(lowColor, highColor, meterPercentage / 100);
         }
-    
-        return color;
     }
     
 
