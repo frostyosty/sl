@@ -1,4 +1,4 @@
-async function fetchEntries(item = '', timeRange = '')  {
+async function fetchEntries(item = '', timeRange = '') {
     const recentEntriesContainer = document.querySelector("#entry-table-container");
     const tableBody = document.querySelector("#entry-table-body");
 
@@ -49,6 +49,7 @@ async function fetchEntries(item = '', timeRange = '')  {
 
         entries.forEach(entry => {
             const row = document.createElement('tr');
+            row.classList.add('desktop-row');
             row.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
@@ -59,6 +60,24 @@ async function fetchEntries(item = '', timeRange = '')  {
                 <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
             `;
             tableBody.appendChild(row);
+
+            const mobileRow1 = document.createElement('tr');
+            mobileRow1.classList.add('mobile-row');
+            mobileRow1.innerHTML = `
+                <td>${entry.name || '-'}</td>
+                <td>${entry.description || '-'}</td>
+                <td>${entry.approx_date || '-'}</td>
+            `;
+            tableBody.appendChild(mobileRow1);
+
+            const mobileRow2 = document.createElement('tr');
+            mobileRow2.classList.add('mobile-row');
+            mobileRow2.innerHTML = `
+                <td>${entry.approx_age || '-'}</td>
+                <td>${entry.ethnicity || '-'}</td>
+                <td>Picture Placeholder</td>
+            `;
+            tableBody.appendChild(mobileRow2);
         });
         console.log("Recent entries table updated.");
     } catch (error) {
