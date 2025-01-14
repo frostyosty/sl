@@ -2315,8 +2315,8 @@ background-color: #000000e5;
       font-weight: bold;
   }
 
-  /* To split the rows into two sections */
-  #entry-table tbody tr td:nth-child(1),
+
+  /* #entry-table tbody tr td:nth-child(1),
   #entry-table tbody tr td:nth-child(2),
   #entry-table tbody tr td:nth-child(3) {
       display: inline-block;
@@ -2328,7 +2328,7 @@ background-color: #000000e5;
   #entry-table tbody tr td:nth-child(6) {
       display: inline-block;
       width: 32%;
-  }
+  } */
 }
 @media (min-width: 769px) {
   #entry-table {
