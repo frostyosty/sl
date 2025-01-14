@@ -43,7 +43,7 @@ async function submitEntry(req, res) {
 
 // initial get entries
 async function fetchEntries(req, res) {
-    const { item, timeRange, location } = req.query;
+    const { item, timeRange } = req.query;
     console.log('fetchEntries called with:', req.query);
 
     try {
@@ -92,21 +92,6 @@ async function fetchEntries(req, res) {
             console.log('Time range offset:', dateOffset);
             query += ` AND created_at >= DATE('now', ?)`;
             params.push(dateOffset);
-        }
-
-        // Filter by location with fuzzy matching
-        if (location && location !== 'global') {
-            console.log('Building query for location filter:', location);
-            const allLocations = (await db.execute(`SELECT DISTINCT approx_date FROM entries`)).rows.map(row => row.approx_date);
-
-            const closestMatchLocation = getFuzzyMatch(location, 'location', allLocations);
-            if (!closestMatchLocation) {
-                console.error('No fuzzy match found for location:', location);
-                return res.status(400).json({ message: `No match found for location: ${location}` });
-            }
-
-            query += ` AND approx_date = ?`;
-            params.push(closestMatchLocation);
         }
 
         // Sorting and limiting results
@@ -317,7 +302,7 @@ export default async function handler(req, res) {
         } else if (type === 'unique-items-fuzzy') {
             return getUniqueItemsFuzzy(req, res);
         } else if (type === 'entries-with-filters') {
-            if (!req.query.item && !req.query.timeRange && !req.query.location) {
+            if (!req.query.item && !req.query.timeRange) {
                 return res.status(400).json({ message: 'Missing required filters' });
             }
             return fetchEntriesWithFilters(req, res);

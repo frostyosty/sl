@@ -1,4 +1,4 @@
-async function fetchEntries(item = '', timeRange = '', location = '') {
+async function fetchEntries(item = '', timeRange = '')  {
     const recentEntriesContainer = document.querySelector("#entry-table-container");
     const tableBody = document.querySelector("#entry-table-body");
 
@@ -25,7 +25,6 @@ async function fetchEntries(item = '', timeRange = '', location = '') {
         const params = new URLSearchParams();
         if (item) params.append('item', item);
         if (timeRange) params.append('timeRange', timeRange);
-        if (location) params.append('location', location);
 
         const url = `/api/entries?type=fetchEntries&${params.toString()}`;
         console.log("Fetching entries from URL:", url);
@@ -191,46 +190,35 @@ document.addEventListener("DOMContentLoaded", () => {
 // filter stuff
 
 // event listeners to the entry table
-document.getElementById('entry-table-body').addEventListener('click', (event) => {
-    const cell = event.target;
-    const column = cell.cellIndex;
+// document.getElementById('entry-table-body').addEventListener('click', (event) => {
+//     const cell = event.target;
+//     const column = cell.cellIndex;
 
-    if (column === 0 || column === 1) { // items given or received columns
-        const items = cell.innerText.split(',').map(item => item.trim());
-        const clickX = event.clientX - cell.getBoundingClientRect().left; // click position in cell
-        let cumulativeWidth = 0;
-        const clickedItem = items.find(item => {
-            const tempSpan = document.createElement('span');
-            tempSpan.style.visibility = 'hidden';
-            tempSpan.style.position = 'absolute';
-            tempSpan.textContent = item + ", ";
-            document.body.appendChild(tempSpan);
-            const itemWidth = tempSpan.getBoundingClientRect().width;
-            cumulativeWidth += itemWidth;
-            document.body.removeChild(tempSpan);
-            return clickX <= cumulativeWidth;
-        });
+//     if (column === 0 || column === 1) { // items given or received columns
+//         const items = cell.innerText.split(',').map(item => item.trim());
+//         const clickX = event.clientX - cell.getBoundingClientRect().left; // click position in cell
+//         let cumulativeWidth = 0;
+//         const clickedItem = items.find(item => {
+//             const tempSpan = document.createElement('span');
+//             tempSpan.style.visibility = 'hidden';
+//             tempSpan.style.position = 'absolute';
+//             tempSpan.textContent = item + ", ";
+//             document.body.appendChild(tempSpan);
+//             const itemWidth = tempSpan.getBoundingClientRect().width;
+//             cumulativeWidth += itemWidth;
+//             document.body.removeChild(tempSpan);
+//             return clickX <= cumulativeWidth;
+//         });
 
-        if (clickedItem) {
-            document.getElementById('filter-item').value = clickedItem; // set clicked item in filter
-            updateFilters();
-        } else {
-            console.error("no item detected at clicked position.");
-        }
-    } else if (column === 3) { // location column
-        const location = cell.innerText.trim();
-        const filterLocationToggle = document.getElementById('filter-location-toggle');
-        if (location !== "global") {
-            filterLocationToggle.checked = false;
-            document.getElementById('local-location').value = location;
-        } else {
-            filterLocationToggle.checked = true;
-            document.getElementById('local-location').value = "";
-        }
-        toggleLocationDisplay();
-        updateFilters();
-    }
-});
+//         if (clickedItem) {
+//             document.getElementById('filter-item').value = clickedItem; // set clicked item in filter
+//             updateFilters();
+//         } else {
+//             console.error("no item detected at clicked position.");
+//         }
+//         updateFilters();
+//     }
+// });
 
 // update filters on any change
 document.querySelectorAll('input[name="time-range"]').forEach(radio => {
@@ -243,21 +231,8 @@ document.getElementById('filter-item').addEventListener('input', () => {
     debounceTimerForEntriesItemFilter = setTimeout(() => updateFilters(), 300);
 });
 
-document.getElementById('local-location').addEventListener('input', () => {
-    const inputValue = document.getElementById('local-location').value;
-    if (!inputValue.match(/^[a-zA-Z\s]*$/)) {
-        console.error('invalid location input:', inputValue);
-        return;
-    }
-    updateFilters();
-});
 
-document.getElementById('filter-location-toggle').addEventListener('change', () => {
-    const globalTickBox = document.getElementById('filter-location-toggle').checked;
-    const locationInput = document.getElementById('local-location');
-    if (globalTickBox) locationInput.value = '';
-    updateFilters();
-});
+
 async function updateFilters() {
     try {
         const form = document.getElementById('entry-filters-form');
@@ -265,19 +240,15 @@ async function updateFilters() {
         // Retrieve time range or default to 'all' if not selected
         const timeRange = form.querySelector('input[name="time-range"]:checked')?.value || "all";
         
-        // Check if the location toggle exists and is checked; default to 'global' if not found
-        const locationToggle = form.querySelector('#filter-location-toggle');
-        const location = locationToggle ? (locationToggle.checked ? "global" : form.querySelector('#local-location')?.value || "") : "";
 
         // Retrieve the item filter value if present
         const itemElement = form.querySelector('#filter-item');
         const item = itemElement ? itemElement.value : null;
 
-        console.log("Filter details:", { timeRange, location, item });
+        console.log("Filter details:", { timeRange, item });
 
         const queryParams = new URLSearchParams();
         queryParams.append('timeRange', timeRange);
-        queryParams.append('location', location);
         if (item) queryParams.append('item', item);
 
         const tbody = document.getElementById("entry-table-body");
@@ -416,25 +387,6 @@ document.getElementById('filter-item').addEventListener('input', async (e) => {
     }
 });
 
-// filter location
-
-// show/hide location input depending on toggle state
-function toggleLocationDisplay() {
-    const localInput = document.getElementById('local-location');
-    const filterLocationToggle = document.getElementById('filter-location-toggle');
-    if (filterLocationToggle.checked) {
-        localInput.style.display = 'none'; // hide for global
-    } else {
-        localInput.style.display = 'block';
-    }
-}
-document.getElementById('filter-location-toggle').addEventListener('change', toggleLocationDisplay);
-
-// get location from toggle/input
-const locationOfEntry = document.getElementById('filter-location-toggle').checked
-    ? 'Global'
-    : document.getElementById('local-location').value || 'Unknown';
-
 // UTILITY
 
 // prevent form submission on enter and trigger updateFilters instead
@@ -470,13 +422,6 @@ function mergeEntryTableCells(tableBodyId, columnIndex) {
         }
     });
 }
-
-
-
-
-
-
-
 
 
 
