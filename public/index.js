@@ -258,14 +258,18 @@ document.getElementById('filter-location-toggle').addEventListener('change', () 
     if (globalTickBox) locationInput.value = '';
     updateFilters();
 });
-
 async function updateFilters() {
     try {
         const form = document.getElementById('entry-filters-form');
+        
+        // Retrieve time range or default to 'all' if not selected
         const timeRange = form.querySelector('input[name="time-range"]:checked')?.value || "all";
-        const locationToggle = form.querySelector('#filter-location-toggle').checked;
-        const location = locationToggle ? "global" : form.querySelector('#local-location')?.value || "";
+        
+        // Check if the location toggle exists and is checked; default to 'global' if not found
+        const locationToggle = form.querySelector('#filter-location-toggle');
+        const location = locationToggle ? (locationToggle.checked ? "global" : form.querySelector('#local-location')?.value || "") : "";
 
+        // Retrieve the item filter value if present
         const itemElement = form.querySelector('#filter-item');
         const item = itemElement ? itemElement.value : null;
 
@@ -278,7 +282,7 @@ async function updateFilters() {
 
         const tbody = document.getElementById("entry-table-body");
         const entryTable = document.querySelector("#entry-table");
-        
+
         const spinner = document.createElement("div");
         spinner.classList.add("csf-spinner");
         spinner.innerHTML = `
@@ -294,7 +298,6 @@ async function updateFilters() {
         tbody.appendChild(spinner);
         entryTable.style.opacity = "0.5";
         entryTable.style.pointerEvents = "none";
-        // tbody.appendChild(spinner);
 
         const response = await fetch(`/api/entries?type=entries-with-filters&${queryParams.toString()}`);
         if (!response.ok) throw new Error(`Fetch failed with status: ${response.status}`);
@@ -315,6 +318,7 @@ async function updateFilters() {
                 </tr>
             `).join("")
             : "<tr><td colspan='7'>No entries found for this filter.</td></tr>";
+
     } catch (error) {
         console.error('Error fetching entries:', error);
     } finally {
@@ -325,6 +329,7 @@ async function updateFilters() {
         if (spinner) spinner.remove();
     }
 }
+
 
 
 
