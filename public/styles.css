@@ -2719,6 +2719,7 @@ background-color: #000000e5;
 }
 
 #love-meter {
+  margin-top: 5px;
   border: 1px solid #000000c5;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(128, 128, 128, 0.3));
   width: 50px;
