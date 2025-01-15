@@ -3496,19 +3496,19 @@ background-color: #000000e5;
 
 @media (max-width: 768px) {
   .desktop-row {
-      display: none;
-  }
+      display: none !important;
+      }
   .mobile-row {
-      display: table-row;
+      display: table-row !important;
   }
 }
 
 @media (min-width: 769px) {
   .desktop-row {
-      display: table-row;
+      display: table-row !important;
   }
   .mobile-row {
-      display: none;
+      display: none !important;
   }
 }
 

@@ -73,9 +73,7 @@ async function fetchEntries(item = '', timeRange = '') {
             const mobileRow2 = document.createElement('tr');
             mobileRow2.classList.add('mobile-row');
             mobileRow2.innerHTML = `
-                <td>${entry.approx_date || '-'}</td>
-                <td>${entry.approx_age || '-'}</td>
-                <td>${entry.ethnicity || '-'}</td>
+                <td colspan="3">${entry.approx_date || '-'}, ${entry.approx_age || '-'}, ${entry.ethnicity || '-'}</td>
             `;
             tableBody.appendChild(mobileRow2);
         });
