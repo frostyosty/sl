@@ -10,10 +10,10 @@ async function fetchEntries(item = '', timeRange = '') {
     const spinner = document.createElement("div");
     spinner.classList.add("entry-spinner");
     spinner.innerHTML = `
-        <div class="spinner-letter">L</div>
-        <div class="spinner-letter">O</div>
-        <div class="spinner-letter">A</div>
-        <div class="spinner-letter">D</div>
+        <div class="csf-letter">L</div>
+        <div class="csf-letter">O</div>
+        <div class="csf-letter">A</div>
+        <div class="csf-letter">D</div>
     `;
     spinner.style.position = "relative";
     spinner.style.marginTop = "2px";
@@ -48,10 +48,9 @@ async function fetchEntries(item = '', timeRange = '') {
         console.log("Fetched entries:", entries);
 
         entries.forEach(entry => {
-            // Desktop row
-            const desktopRow = document.createElement('tr');
-            desktopRow.classList.add('desktop-row');
-            desktopRow.innerHTML = `
+            const row = document.createElement('tr');
+            row.classList.add('desktop-row');
+            row.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
                 <td>${entry.approx_date || '-'}</td>
@@ -60,25 +59,23 @@ async function fetchEntries(item = '', timeRange = '') {
                 <td>Picture Placeholder</td>
                 <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
             `;
-            tableBody.appendChild(desktopRow);
-        
-            // Mobile row 1
+            tableBody.appendChild(row);
+
             const mobileRow1 = document.createElement('tr');
             mobileRow1.classList.add('mobile-row');
             mobileRow1.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
+                <td></td>
             `;
             tableBody.appendChild(mobileRow1);
-        
-            // Mobile row 2
+
             const mobileRow2 = document.createElement('tr');
             mobileRow2.classList.add('mobile-row');
             mobileRow2.innerHTML = `
                 <td>${entry.approx_date || '-'}</td>
                 <td>${entry.approx_age || '-'}</td>
                 <td>${entry.ethnicity || '-'}</td>
-                <td>Picture Placeholder</td>
             `;
             tableBody.appendChild(mobileRow2);
         });
