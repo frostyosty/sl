@@ -48,9 +48,10 @@ async function fetchEntries(item = '', timeRange = '') {
         console.log("Fetched entries:", entries);
 
         entries.forEach(entry => {
-            const row = document.createElement('tr');
-            row.classList.add('desktop-row');
-            row.innerHTML = `
+            // Desktop row
+            const desktopRow = document.createElement('tr');
+            desktopRow.classList.add('desktop-row');
+            desktopRow.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
                 <td>${entry.approx_date || '-'}</td>
@@ -59,20 +60,22 @@ async function fetchEntries(item = '', timeRange = '') {
                 <td>Picture Placeholder</td>
                 <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
             `;
-            tableBody.appendChild(row);
-
+            tableBody.appendChild(desktopRow);
+        
+            // Mobile row 1
             const mobileRow1 = document.createElement('tr');
             mobileRow1.classList.add('mobile-row');
             mobileRow1.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
-                <td>${entry.approx_date || '-'}</td>
             `;
             tableBody.appendChild(mobileRow1);
-
+        
+            // Mobile row 2
             const mobileRow2 = document.createElement('tr');
             mobileRow2.classList.add('mobile-row');
             mobileRow2.innerHTML = `
+                <td>${entry.approx_date || '-'}</td>
                 <td>${entry.approx_age || '-'}</td>
                 <td>${entry.ethnicity || '-'}</td>
                 <td>Picture Placeholder</td>
@@ -255,12 +258,8 @@ document.getElementById('filter-item').addEventListener('input', () => {
 async function updateFilters() {
     try {
         const form = document.getElementById('entry-filters-form');
-        
-        // Retrieve time range or default to 'all' if not selected
-        const timeRange = form.querySelector('input[name="time-range"]:checked')?.value || "all";
-        
 
-        // Retrieve the item filter value if present
+        const timeRange = form.querySelector('input[name="time-range"]:checked')?.value || "all";
         const itemElement = form.querySelector('#filter-item');
         const item = itemElement ? itemElement.value : null;
 
@@ -271,21 +270,19 @@ async function updateFilters() {
         if (item) queryParams.append('item', item);
 
         const tbody = document.getElementById("entry-table-body");
-        const entryTable = document.querySelector("#entry-table");
 
+        // Show spinner
         const spinner = document.createElement("div");
         spinner.classList.add("csf-spinner");
-        spinner.innerHTML = `
-            <div class="csf-letter">C</div>
-            <div class="csf-letter">I</div>
-            <div class="csf-letter">B</div>
-        `;
+        spinner.innerHTML = `<div class="csf-letter">C</div><div class="csf-letter">I</div><div class="csf-letter">B</div>`;
         spinner.style.position = "absolute";
         spinner.style.top = "50%";
         spinner.style.left = "50%";
         spinner.style.transform = "translate(-50%, -50%)";
         tbody.style.position = "relative";
         tbody.appendChild(spinner);
+
+        const entryTable = document.querySelector("#entry-table");
         entryTable.style.opacity = "0.5";
         entryTable.style.pointerEvents = "none";
 
@@ -295,27 +292,33 @@ async function updateFilters() {
         const entries = await response.json();
         console.log("Entries fetched:", entries);
 
-        tbody.innerHTML = entries.length > 0
-        ? entries.map((entry, index) => `
-            <tr style="opacity: 0; transform: translateY(-10px);">
-                <td>${entry.name || '-'}</td>
-                <td>${entry.description || '-'}</td>
-                <td>${entry.approx_date || '-'}</td>
-                <td>${entry.approx_age || '-'}</td>
-                <td>${entry.ethnicity || '-'}</td>
-                <td>Picture Placeholder</td>
-                <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
-            </tr>
-        `).join("")
-        : "<tr><td colspan='7'>No entries found for this filter.</td></tr>";
-    
-    setTimeout(() => {
-        Array.from(tbody.querySelectorAll("tr")).forEach(row => {
-            row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-            row.style.opacity = "1";
-            row.style.transform = "translateY(0)";
+        // Animate row removal
+        const currentRows = Array.from(tbody.rows);
+        currentRows.forEach((row, index) => {
+            removeRowWithAnimation(tbody.id, index);
         });
-    }, 100);
+
+        // Delay to allow row removal animation to complete
+        setTimeout(() => {
+            tbody.innerHTML = ""; // Clear rows after animation
+
+            // Add new rows with animation
+            entries.forEach(entry => {
+                addRowWithAnimation(tbody.id, [
+                    entry.name || '-',
+                    entry.description || '-',
+                    entry.approx_date || '-',
+                    entry.approx_age || '-',
+                    entry.ethnicity || '-',
+                    'Picture Placeholder',
+                    new Date(entry.created_at).toLocaleDateString() || '-'
+                ]);
+            });
+
+            if (entries.length === 0) {
+                addRowWithAnimation(tbody.id, ["No entries found for this filter.", '', '', '', '', '', '']);
+            }
+        }, 500); // Matches the row removal animation duration
 
     } catch (error) {
         console.error('Error fetching entries:', error);
@@ -327,6 +330,7 @@ async function updateFilters() {
         if (spinner) spinner.remove();
     }
 }
+
 
 
 
@@ -574,9 +578,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 </tr>
             `;
         }
-
+        
         updateLoveMeter();
         updateColspan();
+        
+        if (window.innerWidth <= 768) {
+            const loveTestSection = document.getElementById('love test');
+            loveTestSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     function removeItemFromLoveTest(index, row) {
