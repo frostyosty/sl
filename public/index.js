@@ -47,9 +47,18 @@ async function fetchEntries(item = '', timeRange = '') {
 
         console.log("Fetched entries:", entries);
 
-        entries.forEach(entry => {
+        const colors = [
+            '#ffe6e6', '#ffcccc', '#ffb3b3', '#ff9999',
+            '#ff8080', '#ff6666', '#ff4d4d', '#ff3333',
+            '#ff1a1a', '#ff0000'
+        ];
+
+        entries.forEach((entry, index) => {
+            const color = colors[index % colors.length];
+
             const row = document.createElement('tr');
             row.classList.add('desktop-row');
+            row.style.backgroundColor = color;
             row.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
@@ -63,6 +72,7 @@ async function fetchEntries(item = '', timeRange = '') {
 
             const mobileRow1 = document.createElement('tr');
             mobileRow1.classList.add('mobile-row');
+            mobileRow1.style.backgroundColor = color;
             mobileRow1.innerHTML = `
                 <td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
@@ -72,8 +82,9 @@ async function fetchEntries(item = '', timeRange = '') {
 
             const mobileRow2 = document.createElement('tr');
             mobileRow2.classList.add('mobile-row');
+            mobileRow2.style.backgroundColor = color;
             mobileRow2.innerHTML = `
-                <td colspan="3">${entry.approx_date || '-'}, ${entry.approx_age || '-'}, ${entry.ethnicity || '-'}</td>
+                <td colspan="3">${entry.approx_age || '-'}, ${entry.ethnicity || '-'}, ${entry.approx_date || '-'}</td>
             `;
             tableBody.appendChild(mobileRow2);
         });
@@ -84,6 +95,7 @@ async function fetchEntries(item = '', timeRange = '') {
         spinner.remove();
     }
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchEntries(); // Fetch all entries initially
@@ -587,14 +599,20 @@ document.addEventListener("DOMContentLoaded", () => {
         row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
         row.style.opacity = "0";
         row.style.transform = "translateY(-10px)";
-    
+        
         row.addEventListener("transitionend", () => {
+            // Increase the score by 2 (or adjust as needed) and add an extra +1
+            loveScore += 2 + 1;
+    
+            // Remove the item from the love test items array
             loveTestItems.splice(index, 1);
+    
+            // Update the table and meter to reflect the changes
             updateLoveTestTable();
         }, { once: true });
     }
     function updateLoveMeter() {
-        const maxScore = loveTestItems.length * 2;
+        const maxScore = loveTestItems.length * 2; // Assuming each item originally adds 2 to the score
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
     
         const newHeight = meterPercentage < 50 ? 40 : 60;
@@ -616,9 +634,16 @@ document.addEventListener("DOMContentLoaded", () => {
     
         setTimeout(() => loveMeter.classList.remove('swirl'), 500);
     
+
         let verdict;
         if (loveScore >= 0) {
-            verdict = `Score: ${loveScore}`;
+            verdict = `Could be worse`;
+        } else if (loveScore === 1) {
+            verdict = "That's an improvement";
+        } else if (loveScore === 2) {
+            verdict = "I'm glad you removed that last one";
+        } else if (loveScore >= 3) {
+            verdict = "Nobody's perfect but this one will do";
         } else if (loveScore === -1) {
             verdict = "Might not be love";
         } else if (loveScore === -2) {
@@ -673,7 +698,14 @@ document.addEventListener("DOMContentLoaded", () => {
             verdict = "Worst whore ever";
         }
     
+        if (loveScoreDisplay.classList.contains('fade')) {
+            loveScoreDisplay.classList.remove('fade');
+        }
+    
         loveScoreDisplay.textContent = verdict;
+        setTimeout(() => {
+            loveScoreDisplay.classList.add('fade');
+        }, 10); // delay so the class is applied after text change
     }
 
     function smoothGradientTransition(element, newColor) {

@@ -2842,6 +2842,35 @@ background-color: #000000e5;
 
 
 
+/* Style for the verdict */
+#loveScoreDisplay {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #444;
+  bottom: 10%;
+  width: 100%;
+  transition: opacity 1s ease, transform 1s ease;
+  opacity: 0;
+}
+
+#loveScoreDisplay.fade {
+  opacity: 1; /* Fade in */
+  transform: translateY(-20px);
+}
+#loveScoreDisplay.fade-out {
+  opacity: 0; /* Fade out */
+  transform: translateY(-30px);
+}
+
+#loveScoreDisplay {
+  font-family: 'Arial', sans-serif;
+  background: rgba(255, 255, 255, 0.8); /* Light background to make it stand out */
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 1s ease-in-out;
+}
 
 
 
