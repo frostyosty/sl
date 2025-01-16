@@ -2688,6 +2688,9 @@ background-color: #000000e5;
 #love-test-table-wrapper {
   width: 70%;
   position: relative;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
 }
 
 #love-test-table {
@@ -2704,6 +2707,22 @@ background-color: #000000e5;
     background-position: 100% 0%;
   }
 }
+
+
+
+
+#curly-bracket {
+  border-left: 3px solid black; /* Adjust thickness and color as needed */
+  border-right: 3px solid black;
+  height: 50px; /* Initial height */
+  width: 10px;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(to bottom, transparent 30%, black 30%, black 70%, transparent 70%);
+}
+
 
 
 

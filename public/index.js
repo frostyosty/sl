@@ -575,8 +575,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.toLowerCase().includes("sex")) loveScore -= 2;
             if (item.toLowerCase().includes("kiss")) loveScore -= 1;
             if (item.toLowerCase().includes("whore")) loveScore -= 3;
-            if (item.toLowerCase().includes("bitch")) loveScore -= 4;
-            if (item.toLowerCase().includes("fuck")) loveScore -= 5;
+            if (item.toLowerCase().includes("bitch")) loveScore -= 1;
+            if (item.toLowerCase().includes("fuck")) loveScore -= 1;
             if (item.toLowerCase().includes("slept")) loveScore -= 2;
             if (item.toLowerCase().includes("sleep")) loveScore -= 2;
             if (item.toLowerCase().includes("making")) loveScore -= 3;
@@ -587,7 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (item.toLowerCase().includes("intoxicated")) loveScore -= 2;
             if (item.toLowerCase().includes("dancing")) loveScore -= 2;
-            if (item.toLowerCase().includes("twerking")) loveScore -= 8;
+            if (item.toLowerCase().includes("twerking")) loveScore -= 1;
 
 
             if (item.toLowerCase().includes("slutty")) loveScore -= 2;
@@ -604,6 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
         
+        updateCurlyBracketHeight();
         updateLoveMeter();
         updateColspan();
         
@@ -613,17 +614,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    
+
     function removeItemFromLoveTest(index, row) {
+        const item = loveTestItems[index];
         row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
         row.style.opacity = "0";
         row.style.transform = "translateY(-10px)";
         
         row.addEventListener("transitionend", () => {
             console.log("Transition ended");
+
+        // Reverse the scoring logic
+        if (item.toLowerCase().includes("love")) loveScore -= 2;
+        if (item.toLowerCase().includes("happy")) loveScore -= 1;
+        if (item.toLowerCase().includes("grind")) loveScore += 2;
+        if (item.toLowerCase().includes("sex")) loveScore += 3;
+        if (item.toLowerCase().includes("kiss")) loveScore += 2;
+        if (item.toLowerCase().includes("whore")) loveScore += 2;
+        if (item.toLowerCase().includes("bitch")) loveScore += 2;
+        if (item.toLowerCase().includes("fuck")) loveScore += 1;
+        if (item.toLowerCase().includes("slept")) loveScore += 2;
+        if (item.toLowerCase().includes("sleep")) loveScore += 2;
+        if (item.toLowerCase().includes("making")) loveScore += 3;
+
+        if (item.toLowerCase().includes("lewd")) loveScore += 2;
+        if (item.toLowerCase().includes("hitting")) loveScore += 2;
+        if (item.toLowerCase().includes("dude")) loveScore += 3;
+
+        if (item.toLowerCase().includes("intoxicated")) loveScore += 2;
+        if (item.toLowerCase().includes("dancing")) loveScore += 2;
+        if (item.toLowerCase().includes("twerking")) loveScore += 1;
+
+
+        if (item.toLowerCase().includes("slutty")) loveScore += 2;
+        if (item.toLowerCase().includes("instagram")) loveScore += 1;
+        if (item.toLowerCase().includes("tiktok")) loveScore += 2;
+        if (item.toLowerCase().includes("facebook")) loveScore += 1;
     
-            // Increase the score by 2 (or adjust as needed) and add an extra +1
-            loveScore += 2 + 1;
-            console.log("Updated loveScore:", loveScore);
+        console.log("Updated loveScore:", loveScore);
     
             // Remove the item from the love test items array
             loveTestItems.splice(index, 1);
@@ -788,10 +817,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return `#${result.join('')}`;
     }
 
+    function updateCurlyBracketHeight() {
+        const loveTestTable = document.getElementById("love-test-table");
+        const curlyBracket = document.getElementById("curly-bracket");
+    
+        curlyBracket.style.height = `${loveTestTable.offsetHeight}px`;
+    }
+
     function updateColspan() {
         const columnCount = loveTestTable.querySelector("tbody tr")?.children.length || 1;
         loveTestHeader.colSpan = columnCount;
     }
+
 
     updateColspan();
 });
