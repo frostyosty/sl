@@ -1,10 +1,18 @@
-async function fetchEntries(item = '', timeRange = '') {
+let currentPage = 0;
+const pageSize = 10; // Number of entries per batch
+
+async function fetchEntries(item = '', timeRange = '', loadMore = false) {
     const recentEntriesContainer = document.querySelector("#entry-table-container");
     const tableBody = document.querySelector("#entry-table-body");
 
     if (!tableBody) {
         console.error("Table body not found. Check the HTML structure and ensure the script runs after the table is loaded.");
         return;
+    }
+
+    if (!loadMore) {
+        tableBody.innerHTML = '';
+        currentPage = 0; // Reset pagination if not loading more
     }
 
     const spinner = document.createElement("div");
@@ -18,20 +26,22 @@ async function fetchEntries(item = '', timeRange = '') {
     spinner.style.position = "relative";
     spinner.style.marginTop = "2px";
 
-    tableBody.innerHTML = '';
     recentEntriesContainer.appendChild(spinner);
 
     try {
-        const params = new URLSearchParams();
-        if (item) params.append('item', item);
-        if (timeRange) params.append('timeRange', timeRange);
+        const params = new URLSearchParams({
+            item,
+            timeRange,
+            page: currentPage,
+            size: pageSize
+        });
 
         const url = `/api/entries?type=fetchEntries&${params.toString()}`;
         console.log("Fetching entries from URL:", url);
 
         const response = await fetch(url);
         const text = await response.text();
-        
+
         if (!response.ok) {
             console.error("Error fetching entries:", text);
             throw new Error(`Error: ${text}`);
@@ -46,12 +56,12 @@ async function fetchEntries(item = '', timeRange = '') {
         }
 
         console.log("Fetched entries:", entries);
-
-        const colors = ['#ffe6e6', '#ffcccc', '#ffb3b3']; // Three shades of pink
-        const pattern = [0, 1, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 0, 2, 1, 0, 1, 2]; // Pattern indices
+        // const colors = ['#ffe6e6', '#ffcccc', '#ffb3b3']; // Three shades of pink
+        const colors = ['#e6e6ff', '#b3b3ff', '#9999ff']; // Purple shades
+        const pattern = [0, 1, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 0, 2, 1, 0, 1, 2];
 
         entries.forEach((entry, index) => {
-            const color = colors[pattern[index % pattern.length]];
+            const color = colors[pattern[(currentPage * pageSize + index) % pattern.length]];
 
             const row = document.createElement('tr');
             row.classList.add('desktop-row');
@@ -85,6 +95,15 @@ async function fetchEntries(item = '', timeRange = '') {
             `;
             tableBody.appendChild(mobileRow2);
         });
+
+        if (entries.length === pageSize) {
+            const loadMoreRow = document.createElement('tr');
+            loadMoreRow.innerHTML = `<td colspan="7" style="text-align:center; cursor:pointer; color:blue;">Load More</td>`;
+            loadMoreRow.addEventListener('click', () => fetchEntries(item, timeRange, true));
+            tableBody.appendChild(loadMoreRow);
+        }
+
+        currentPage++;
         console.log("Recent entries table updated.");
     } catch (error) {
         console.error("Error fetching entries:", error);
@@ -92,6 +111,7 @@ async function fetchEntries(item = '', timeRange = '') {
         spinner.remove();
     }
 }
+
 
 
 
@@ -579,7 +599,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (loveTestItems.length === 0) {
             loveTestTableBody.innerHTML = `
                 <tr>
-                    <td>Click on an item in the above table to add to your love check</td>
+                    <td>Click on an item in the table to add to your love check</td>
                 </tr>
             `;
         }
@@ -599,16 +619,21 @@ document.addEventListener("DOMContentLoaded", () => {
         row.style.transform = "translateY(-10px)";
         
         row.addEventListener("transitionend", () => {
+            console.log("Transition ended");
+    
             // Increase the score by 2 (or adjust as needed) and add an extra +1
             loveScore += 2 + 1;
+            console.log("Updated loveScore:", loveScore);
     
             // Remove the item from the love test items array
             loveTestItems.splice(index, 1);
+            console.log("Updated loveTestItems:", loveTestItems);
     
             // Update the table and meter to reflect the changes
             updateLoveTestTable();
         }, { once: true });
     }
+    
     function updateLoveMeter() {
         const maxScore = loveTestItems.length * 2; // Assuming each item originally adds 2 to the score
         const meterPercentage = maxScore > 0 ? (loveScore / maxScore) * 100 : 0;
