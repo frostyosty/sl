@@ -17,12 +17,10 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
 
     const spinner = document.createElement("div");
     spinner.classList.add("entry-spinner");
-    spinner.innerHTML = `
-        <div class="csf-letter">L</div>
-        <div class="csf-letter">O</div>
-        <div class="csf-letter">A</div>
-        <div class="csf-letter">D</div>
-    `;
+    spinner.innerHTML = `<div class="csf-letter">L</div>
+                         <div class="csf-letter">O</div>
+                         <div class="csf-letter">A</div>
+                         <div class="csf-letter">D</div>`;
     spinner.style.position = "relative";
     spinner.style.marginTop = "2px";
 
@@ -56,7 +54,7 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
         }
 
         console.log("Fetched entries:", entries);
-        // const colors = ['#ffe6e6', '#ffcccc', '#ffb3b3']; // Three shades of pink
+
         const colors = ['#e6e6ff', '#b3b3ff', '#9999ff']; // Purple shades
         const pattern = [0, 1, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 0, 2, 1, 0, 1, 2];
 
@@ -66,36 +64,34 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
             const row = document.createElement('tr');
             row.classList.add('desktop-row');
             row.style.backgroundColor = color;
-            row.innerHTML = `
-                <td>${entry.name || '-'}</td>
+            row.innerHTML = 
+                `<td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
                 <td>${entry.approx_date || '-'}</td>
                 <td>${entry.approx_age || '-'}</td>
                 <td>${entry.ethnicity || '-'}</td>
                 <td>Picture Placeholder</td>
-                <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>
-            `;
+                <td>${new Date(entry.created_at).toLocaleDateString() || '-'}</td>`;
             tableBody.appendChild(row);
 
             const mobileRow1 = document.createElement('tr');
             mobileRow1.classList.add('mobile-row');
             mobileRow1.style.backgroundColor = color;
-            mobileRow1.innerHTML = `
-                <td>${entry.name || '-'}</td>
+            mobileRow1.innerHTML = 
+                `<td>${entry.name || '-'}</td>
                 <td>${entry.description || '-'}</td>
-                <td></td>
-            `;
+                <td></td>`;
             tableBody.appendChild(mobileRow1);
 
             const mobileRow2 = document.createElement('tr');
             mobileRow2.classList.add('mobile-row');
             mobileRow2.style.backgroundColor = color;
-            mobileRow2.innerHTML = `
-                <td colspan="3">${entry.approx_age || '-'}, ${entry.ethnicity || '-'}, ${entry.approx_date || '-'}</td>
-            `;
+            mobileRow2.innerHTML = 
+                `<td colspan="3">${entry.approx_age || '-'}, ${entry.ethnicity || '-'}, ${entry.approx_date || '-'}</td>`;
             tableBody.appendChild(mobileRow2);
         });
 
+        console.log(`Entries length: ${entries.length}, Page size: ${pageSize}`);
         if (entries.length === pageSize) {
             const loadMoreRow = document.createElement('tr');
             loadMoreRow.innerHTML = `<td colspan="7" style="text-align:center; cursor:pointer; color:blue;">Load More</td>`;
@@ -111,6 +107,7 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
         spinner.remove();
     }
 }
+
 
 
 
@@ -822,10 +819,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const curlyBracket = document.getElementById("curly-bracket");
         const rows = loveTestTable.querySelectorAll("tbody tr");
     
-        // Only consider rows from the second one onwards and show the bracket if there are 3 or more rows
         if (rows.length > 2) {
-            const height = Array.from(rows).slice(1).reduce((acc, row) => acc + row.offsetHeight, 0);
+            const height = Array.from(rows).slice(1).reduce((acc, row) => acc + row.offsetHeight, 0); // Ignore the first row (header)
+            const firstRowHeight = rows[0].offsetHeight; // Get the height of the first row (header)
+            
             curlyBracket.style.height = `${height}px`;
+            curlyBracket.style.top = `${firstRowHeight}px`; // Position it below the header row
             curlyBracket.style.display = 'block';
         } else {
             curlyBracket.style.display = 'none';
