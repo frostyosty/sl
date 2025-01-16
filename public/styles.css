@@ -2710,15 +2710,19 @@ background-color: #000000e5;
 
 
 #curly-bracket {
-  border-left: 3px solid black; /* Adjust thickness and color as needed */
-  border-right: 3px solid black;
-  height: 50px; /* Initial height */
+  right: -40px;
   width: 10px;
   position: absolute;
-  left: 100%;
   top: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(to bottom, transparent 30%, black 30%, black 70%, transparent 70%);
+  background: url('public/bracket.png') no-repeat;
+  background-size: cover;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #curly-bracket {
+      display: none;
+  }
 }
 
 

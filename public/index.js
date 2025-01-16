@@ -820,9 +820,18 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateCurlyBracketHeight() {
         const loveTestTable = document.getElementById("love-test-table");
         const curlyBracket = document.getElementById("curly-bracket");
+        const rows = loveTestTable.querySelectorAll("tbody tr");
     
-        curlyBracket.style.height = `${loveTestTable.offsetHeight}px`;
+        // Only consider rows from the second one onwards and show the bracket if there are 3 or more rows
+        if (rows.length > 2) {
+            const height = Array.from(rows).slice(1).reduce((acc, row) => acc + row.offsetHeight, 0);
+            curlyBracket.style.height = `${height}px`;
+            curlyBracket.style.display = 'block';
+        } else {
+            curlyBracket.style.display = 'none';
+        }
     }
+    
 
     function updateColspan() {
         const columnCount = loveTestTable.querySelector("tbody tr")?.children.length || 1;
