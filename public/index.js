@@ -47,14 +47,11 @@ async function fetchEntries(item = '', timeRange = '') {
 
         console.log("Fetched entries:", entries);
 
-        const colors = [
-            '#ffe6e6', '#ffcccc', '#ffb3b3', '#ff9999',
-            '#ff8080', '#ff6666', '#ff4d4d', '#ff3333',
-            '#ff1a1a', '#ff0000'
-        ];
+        const colors = ['#ffe6e6', '#ffcccc', '#ffb3b3']; // Three shades of pink
+        const pattern = [0, 1, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 0, 2, 1, 0, 1, 2]; // Pattern indices
 
         entries.forEach((entry, index) => {
-            const color = colors[index % colors.length];
+            const color = colors[pattern[index % pattern.length]];
 
             const row = document.createElement('tr');
             row.classList.add('desktop-row');
@@ -95,6 +92,7 @@ async function fetchEntries(item = '', timeRange = '') {
         spinner.remove();
     }
 }
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -657,7 +655,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (loveScore === -6) {
             verdict = "Signs are not good";
         } else if (loveScore === -7) {
-            verdict = "Questioning the match";
+            verdict = "Questions need answers";
         } else if (loveScore === -8) {
             verdict = "Doubts creeping in";
         } else if (loveScore === -9) {
@@ -677,9 +675,9 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (loveScore === -16) {
             verdict = "Serious mismatch";
         } else if (loveScore === -17) {
-            verdict = "Well that last one was disgusting";
+            verdict = "Absolutely disgusting";
         } else if (loveScore === -18) {
-            verdict = "Major differences";
+            verdict = "S-whore-ly not...";
         } else if (loveScore === -19) {
             verdict = "Something's deeply wrong";
         } else if (loveScore === -20) {
