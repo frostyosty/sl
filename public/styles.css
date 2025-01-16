@@ -2650,17 +2650,19 @@ background-color: #000000e5;
 
 
 #love-test-table {
-  margin-left: 7px;
+  margin: 10px 1px 2px 10px;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 10px 0;
   font-size: 16px;
   text-align: left;
   background: linear-gradient(90deg, rgba(250, 200, 200, 0.7), rgba(255, 240, 240, 0.9));
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  background: linear-gradient(90deg, rgba(240, 200, 200, 0.1), rgba(255, 230, 230, 0.1));
+  animation: gradient-move 5s infinite linear;
 }
 
 #love-test-table th,
@@ -2693,11 +2695,7 @@ background-color: #000000e5;
   position: relative;
 }
 
-#love-test-table {
-  width: 100%;
-  background: linear-gradient(90deg, rgba(240, 200, 200, 0.1), rgba(255, 230, 230, 0.1));
-  animation: gradient-move 5s infinite linear;
-}
+
 
 @keyframes gradient-move {
   0% {
