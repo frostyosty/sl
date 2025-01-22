@@ -623,31 +623,31 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Transition ended");
 
         // Reverse the scoring logic
-        if (item.toLowerCase().includes("love")) loveScore -= 2;
-        if (item.toLowerCase().includes("happy")) loveScore -= 1;
-        if (item.toLowerCase().includes("grind")) loveScore += 2;
-        if (item.toLowerCase().includes("sex")) loveScore += 3;
-        if (item.toLowerCase().includes("kiss")) loveScore += 2;
-        if (item.toLowerCase().includes("whore")) loveScore += 2;
-        if (item.toLowerCase().includes("bitch")) loveScore += 2;
-        if (item.toLowerCase().includes("fuck")) loveScore += 1;
-        if (item.toLowerCase().includes("slept")) loveScore += 2;
-        if (item.toLowerCase().includes("sleep")) loveScore += 2;
-        if (item.toLowerCase().includes("making")) loveScore += 3;
+        if (item.toLowerCase().includes("love")) loveScore += 2;
+        if (item.toLowerCase().includes("happy")) loveScore += 1;
+        if (item.toLowerCase().includes("grind")) loveScore -= 2;
+        if (item.toLowerCase().includes("sex")) loveScore -= 2;
+        if (item.toLowerCase().includes("kiss")) loveScore -= 1;
+        if (item.toLowerCase().includes("whore")) loveScore -= 3;
+        if (item.toLowerCase().includes("bitch")) loveScore -= 1;
+        if (item.toLowerCase().includes("fuck")) loveScore -= 1;
+        if (item.toLowerCase().includes("slept")) loveScore -= 2;
+        if (item.toLowerCase().includes("sleep")) loveScore -= 2;
+        if (item.toLowerCase().includes("making")) loveScore -= 3;
 
-        if (item.toLowerCase().includes("lewd")) loveScore += 2;
-        if (item.toLowerCase().includes("hitting")) loveScore += 2;
-        if (item.toLowerCase().includes("dude")) loveScore += 3;
+        if (item.toLowerCase().includes("lewd")) loveScore -= 2;
+        if (item.toLowerCase().includes("hitting")) loveScore -= 2;
+        if (item.toLowerCase().includes("dude")) loveScore -= 3;
 
-        if (item.toLowerCase().includes("intoxicated")) loveScore += 2;
-        if (item.toLowerCase().includes("dancing")) loveScore += 2;
-        if (item.toLowerCase().includes("twerking")) loveScore += 1;
+        if (item.toLowerCase().includes("intoxicated")) loveScore -= 2;
+        if (item.toLowerCase().includes("dancing")) loveScore -= 2;
+        if (item.toLowerCase().includes("twerking")) loveScore -= 1;
 
 
-        if (item.toLowerCase().includes("slutty")) loveScore += 2;
-        if (item.toLowerCase().includes("instagram")) loveScore += 1;
-        if (item.toLowerCase().includes("tiktok")) loveScore += 2;
-        if (item.toLowerCase().includes("facebook")) loveScore += 1;
+        if (item.toLowerCase().includes("slutty")) loveScore -= 2;
+        if (item.toLowerCase().includes("instagram")) loveScore -= 1;
+        if (item.toLowerCase().includes("tiktok")) loveScore -= 2;
+        if (item.toLowerCase().includes("facebook")) loveScore -= 1;
     
         console.log("Updated loveScore:", loveScore);
     
