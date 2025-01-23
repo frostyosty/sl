@@ -544,9 +544,51 @@ document.addEventListener("DOMContentLoaded", () => {
         updateLoveTestTable();
     });
 
+
+
+
+
+// scoring
+
+
+    const scoringRules = {
+        love: 2,
+        happy: 1,
+        grind: -2,
+        sex: -2,
+        kiss: -1,
+        whore: -3,
+        bitch: -1,
+        fuck: -1,
+        slept: -2,
+        sleep: -2,
+        making: -3,
+        lewd: -2,
+        hitting: -2,
+        dude: -3,
+        intoxicated: -2,
+        dancing: -2,
+        twerking: -1,
+        slutty: -2,
+        instagram: -1,
+        tiktok: -2,
+        facebook: -1,
+    };
+
+
+    function calculateScore(item) {
+        let score = 0;
+        Object.keys(scoringRules).forEach(keyword => {
+            if (item.toLowerCase().includes(keyword)) {
+                score += scoringRules[keyword];
+            }
+        });
+        return score;
+    }
     function updateLoveTestTable() {
         const loveTestTableBody = document.querySelector("#love-test-table tbody");
         loveTestTableBody.innerHTML = ''; // Clear the existing table
+        loveScore = 0; // Reset loveScore
     
         loveTestItems.forEach((item, index) => {
             const row = document.createElement("tr");
@@ -562,37 +604,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 row.style.transform = "translateY(0)";
             });
     
+            // Add the item's score to the total
+            loveScore += calculateScore(item);
+    
             // Add click event to remove the row
             row.addEventListener("click", () => removeItemFromLoveTest(index, row));
-
-
-            if (item.toLowerCase().includes("love")) loveScore += 2;
-            if (item.toLowerCase().includes("happy")) loveScore += 1;
-            if (item.toLowerCase().includes("grind")) loveScore -= 2;
-            if (item.toLowerCase().includes("sex")) loveScore -= 2;
-            if (item.toLowerCase().includes("kiss")) loveScore -= 1;
-            if (item.toLowerCase().includes("whore")) loveScore -= 3;
-            if (item.toLowerCase().includes("bitch")) loveScore -= 1;
-            if (item.toLowerCase().includes("fuck")) loveScore -= 1;
-            if (item.toLowerCase().includes("slept")) loveScore -= 2;
-            if (item.toLowerCase().includes("sleep")) loveScore -= 2;
-            if (item.toLowerCase().includes("making")) loveScore -= 3;
-
-            if (item.toLowerCase().includes("lewd")) loveScore -= 2;
-            if (item.toLowerCase().includes("hitting")) loveScore -= 2;
-            if (item.toLowerCase().includes("dude")) loveScore -= 3;
-
-            if (item.toLowerCase().includes("intoxicated")) loveScore -= 2;
-            if (item.toLowerCase().includes("dancing")) loveScore -= 2;
-            if (item.toLowerCase().includes("twerking")) loveScore -= 1;
-
-
-            if (item.toLowerCase().includes("slutty")) loveScore -= 2;
-            if (item.toLowerCase().includes("instagram")) loveScore -= 1;
-            if (item.toLowerCase().includes("tiktok")) loveScore -= 2;
-            if (item.toLowerCase().includes("facebook")) loveScore -= 1;
         });
-
+    
         if (loveTestItems.length === 0) {
             loveTestTableBody.innerHTML = `
                 <tr>
@@ -600,11 +618,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 </tr>
             `;
         }
-        
+    
         updateCurlyBracketHeight();
         updateLoveMeter();
         updateColspan();
-        
+    
         if (window.innerWidth <= 768) {
             const loveTestSection = document.getElementById('love test');
             loveTestSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -615,43 +633,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function removeItemFromLoveTest(index, row) {
         const item = loveTestItems[index];
+    
         row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
         row.style.opacity = "0";
         row.style.transform = "translateY(-10px)";
-        
+    
         row.addEventListener("transitionend", () => {
             console.log("Transition ended");
-
-        // Reverse the scoring logic
-        if (item.toLowerCase().includes("love")) loveScore += 2;
-        if (item.toLowerCase().includes("happy")) loveScore += 1;
-        if (item.toLowerCase().includes("grind")) loveScore -= 2;
-        if (item.toLowerCase().includes("sex")) loveScore -= 2;
-        if (item.toLowerCase().includes("kiss")) loveScore -= 1;
-        if (item.toLowerCase().includes("whore")) loveScore -= 3;
-        if (item.toLowerCase().includes("bitch")) loveScore -= 1;
-        if (item.toLowerCase().includes("fuck")) loveScore -= 1;
-        if (item.toLowerCase().includes("slept")) loveScore -= 2;
-        if (item.toLowerCase().includes("sleep")) loveScore -= 2;
-        if (item.toLowerCase().includes("making")) loveScore -= 3;
-
-        if (item.toLowerCase().includes("lewd")) loveScore -= 2;
-        if (item.toLowerCase().includes("hitting")) loveScore -= 2;
-        if (item.toLowerCase().includes("dude")) loveScore -= 3;
-
-        if (item.toLowerCase().includes("intoxicated")) loveScore -= 2;
-        if (item.toLowerCase().includes("dancing")) loveScore -= 2;
-        if (item.toLowerCase().includes("twerking")) loveScore -= 1;
-
-
-        if (item.toLowerCase().includes("slutty")) loveScore -= 2;
-        if (item.toLowerCase().includes("instagram")) loveScore -= 1;
-        if (item.toLowerCase().includes("tiktok")) loveScore -= 2;
-        if (item.toLowerCase().includes("facebook")) loveScore -= 1;
     
-        console.log("Updated loveScore:", loveScore);
+            // Reverse the item's score effect
+            loveScore -= calculateScore(item);
+            console.log("Updated loveScore:", loveScore);
     
-            // Remove the item from the love test items array
+            // Remove the item from the array
             loveTestItems.splice(index, 1);
             console.log("Updated loveTestItems:", loveTestItems);
     
@@ -683,7 +677,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
         setTimeout(() => loveMeter.classList.remove('swirl'), 500);
     
-
         let verdict;
         if (loveScore >= 0) {
             verdict = `Could be worse`;
@@ -746,15 +739,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             verdict = "Worst whore ever";
         }
-    
         if (loveScoreDisplay.classList.contains('fade')) {
             loveScoreDisplay.classList.remove('fade');
         }
-    
         loveScoreDisplay.textContent = verdict;
         setTimeout(() => {
             loveScoreDisplay.classList.add('fade');
-        }, 10); // delay so the class is applied after text change
+        }, 10);
     }
 
     function smoothGradientTransition(element, newColor) {
