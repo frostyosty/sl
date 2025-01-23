@@ -2196,6 +2196,7 @@ background-color: #000000e5;
 
 
 
+
 /* supply email send email overlay*/
 .supply-email-overlay {
   z-index: 999;
@@ -2257,6 +2258,7 @@ background-color: #000000e5;
   color: green;
   margin-top: 5px;
 }
+
 
 
 
@@ -2890,6 +2892,96 @@ background-color: #000000e5;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: all 1s ease-in-out;
 }
+
+
+
+
+
+
+
+/* Floating hearts container */
+.floating-hearts {
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* Individual hearts */
+.heart {
+  position: absolute;
+  font-size: 2rem;
+  color: red;
+  animation: floatUp 3s ease-out infinite;
+  opacity: 0.8;
+}
+
+/* Floating animation */
+@keyframes floatUp {
+  0% {
+      transform: translateY(0);
+      opacity: 1;
+  }
+  100% {
+      transform: translateY(-200px);
+      opacity: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3531,6 +3623,13 @@ background-color: #000000e5;
 
 
 /* UTILITY */
+
+
+
+/* Default font for the webpage */
+body {
+  font-family: math;
+}
 
 
 @media (max-width: 768px) { /* Adjust the max-width value to target the desired screen size */

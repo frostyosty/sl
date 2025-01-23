@@ -544,7 +544,24 @@ document.addEventListener("DOMContentLoaded", () => {
         updateLoveTestTable();
     });
 
+function showFloatingHearts() {
+    const heartContainer = document.createElement('div');
+    heartContainer.classList.add('floating-hearts');
+    document.body.appendChild(heartContainer);
 
+    for (let i = 0; i < 5; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.textContent = '❤';
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animationDelay = `${Math.random() * 2}s`;
+        heartContainer.appendChild(heart);
+    }
+
+    setTimeout(() => {
+        heartContainer.remove();
+    }, 3000); // Remove the hearts after animation
+}
 
 
 
@@ -629,25 +646,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    
 
     function removeItemFromLoveTest(index, row) {
         const item = loveTestItems[index];
+        const originalScore = calculateScore(item);
     
         row.style.transition = "opacity 0.5s ease, transform 0.5s ease";
         row.style.opacity = "0";
         row.style.transform = "translateY(-10px)";
     
         row.addEventListener("transitionend", () => {
-            console.log("Transition ended");
-    
-            // Reverse the item's score effect
-            loveScore -= calculateScore(item);
+            // Add one more to the reversal score
+            const reversedScore = originalScore < 0 ? -originalScore + 1 : originalScore + 1;
+            loveScore += reversedScore;
             console.log("Updated loveScore:", loveScore);
     
-            // Remove the item from the array
+            // Remove the item from the love test items array
             loveTestItems.splice(index, 1);
             console.log("Updated loveTestItems:", loveTestItems);
+    
+            // Trigger floating hearts animation if score is 0 or higher
+            if (loveScore >= 0) {
+                showFloatingHearts();
+            }
     
             // Update the table and meter to reflect the changes
             updateLoveTestTable();
@@ -747,6 +768,32 @@ document.addEventListener("DOMContentLoaded", () => {
             loveScoreDisplay.classList.add('fade');
         }, 10);
     }
+
+
+
+
+    // other stuff
+
+
+    function showFloatingHearts() {
+        const heartContainer = document.createElement('div');
+        heartContainer.classList.add('floating-hearts');
+        document.body.appendChild(heartContainer);
+    
+        for (let i = 0; i < 5; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.textContent = '❤';
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.animationDelay = `${Math.random() * 2}s`;
+            heartContainer.appendChild(heart);
+        }
+    
+        setTimeout(() => {
+            heartContainer.remove();
+        }, 3000); // Remove the hearts after animation
+    }
+
 
     function smoothGradientTransition(element, newColor) {
         element.style.transition = 'background 3s ease-in-out';
