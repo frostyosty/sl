@@ -17,10 +17,9 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
 
     const spinner = document.createElement("div");
     spinner.classList.add("entry-spinner");
-    spinner.innerHTML = `<div class="csf-letter">L</div>
-                         <div class="csf-letter">O</div>
-                         <div class="csf-letter">A</div>
-                         <div class="csf-letter">D</div>`;
+    spinner.innerHTML = `<div class="csf-letter">E</div>
+                         <div class="csf-letter"> </div>
+                         <div class="csf-letter">S</div>`;
     spinner.style.position = "relative";
     spinner.style.marginTop = "2px";
 
@@ -43,7 +42,7 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
         if (!response.ok) {
             console.error("Error fetching entries:", text);
             throw new Error(`Error: ${text}`);
-        }
+        }                         <div class="csf-letter">D</div>
 
         let entries;
         try {
@@ -295,8 +294,8 @@ async function updateFilters() {
 
         // Show spinner
         const spinner = document.createElement("div");
-        spinner.classList.add("csf-spinner");
-        spinner.innerHTML = `<div class="csf-letter">C</div><div class="csf-letter">I</div><div class="csf-letter">B</div>`;
+        spinner.classList.add("es-spinner");
+        spinner.innerHTML = `<div class="csf-letter">E</div><div class="csf-letter"> </div><div class="csf-letter">S</div>`;
         spinner.style.position = "absolute";
         spinner.style.top = "50%";
         spinner.style.left = "50%";
@@ -348,7 +347,7 @@ async function updateFilters() {
         const entryTable = document.querySelector("#entry-table");
         entryTable.style.opacity = "1";
         entryTable.style.pointerEvents = "auto";
-        const spinner = document.querySelector(".csf-spinner");
+        const spinner = document.querySelector(".es-spinner");
         if (spinner) spinner.remove();
     }
 }
