@@ -42,7 +42,7 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
         if (!response.ok) {
             console.error("Error fetching entries:", text);
             throw new Error(`Error: ${text}`);
-        }                         <div class="csf-letter">D</div>
+        }                        
 
         let entries;
         try {
