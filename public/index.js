@@ -17,12 +17,31 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
 
     const spinner = document.createElement("div");
     spinner.classList.add("entry-spinner");
-    spinner.innerHTML = `<div class="csf-letter">E</div>
-                         <div class="csf-letter"> </div>
-                         <div class="csf-letter">S</div>`;
-    spinner.style.position = "relative";
-    spinner.style.marginTop = "2px";
-
+    spinner.innerHTML = `
+      <div class="csf-letter">E</div>
+      <div class="csf-letter"> </div>
+      <div class="csf-letter">S</div>
+    `;
+    spinner.style.position = "absolute";
+    spinner.style.top = "50%";
+    spinner.style.left = "50%";
+    spinner.style.transform = "translate(-50%, -50%)";
+    spinner.style.display = "flex";
+    spinner.style.gap = "5px";
+    spinner.style.alignItems = "center";
+    spinner.style.justifyContent = "center";
+    spinner.style.padding = "10px 15px";
+    spinner.style.border = "2px solid rgba(0, 0, 0, 0.2)";
+    spinner.style.borderRadius = "8px";
+    spinner.style.background = "rgba(255, 255, 255, 0.8)";
+    spinner.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+    spinner.style.backdropFilter = "blur(5px)";
+    spinner.style.fontFamily = "Arial, sans-serif";
+    spinner.style.fontSize = "16px";
+    spinner.style.fontWeight = "bold";
+    spinner.style.color = "#333";
+    
+    recentEntriesContainer.style.position = "relative"; // make sure the container can position children absolutely
     recentEntriesContainer.appendChild(spinner);
 
     try {
