@@ -2711,15 +2711,19 @@ background-color: #000000e5;
 
 
 
-#curly-bracket {
-  right: -40px;
-  width: 10px;
-  position: absolute;
+#editOverlay {
+  z-index: 999; /* Keep it in front */
+  position: absolute; /* Make it position relative to its container */
   top: 0;
-  background: url('public/bracket.png') no-repeat;
-  background-size: cover;
-  display: none;
-  transform: scaleX(-1); /* flips the element horizontally */
+  left: 0;
+  width: 100%; /* Ensure it stretches to the full width of the container */
+  height: 100%; /* Ensure it stretches to the full height of the container */
+  background: rgba(0, 0, 0, 0.7); /* Dark background */
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  transform: scale(1); /* Default scale */
+  transition: transform 0.3s ease; /* Smooth transition for scale effect */
 }
 
 @media (max-width: 768px) {
