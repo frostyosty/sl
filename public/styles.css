@@ -3630,7 +3630,7 @@ background-color: #000000e5;
 /* UTILITY */
 
 .centeredDiv {
-  position: absolute;
+  /* position: absolute; */
   left: 50%;
 }
 
