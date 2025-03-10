@@ -3629,7 +3629,10 @@ background-color: #000000e5;
 
 /* UTILITY */
 
-
+.centeredDiv {
+  position: absolute;
+  left: 50%;
+}
 
 /* Default font for the webpage */
 body {
