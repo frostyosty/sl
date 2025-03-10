@@ -23,7 +23,7 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
       <div class="csf-letter">S</div>
     `;
     spinner.style.position = "absolute";
-    spinner.style.top = "200%";
+    spinner.style.top = "50px";
     spinner.style.left = "50%";
     spinner.style.transform = "translate(-50%, -50%)";
     spinner.style.display = "flex";

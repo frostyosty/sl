@@ -2719,6 +2719,7 @@ background-color: #000000e5;
   background: url('public/bracket.png') no-repeat;
   background-size: cover;
   display: none;
+  transform: scaleX(-1); /* flips the element horizontally */
 }
 
 @media (max-width: 768px) {
