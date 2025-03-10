@@ -3630,8 +3630,9 @@ background-color: #000000e5;
 /* UTILITY */
 
 .centeredDiv {
-  /* position: absolute; */
-  left: 50%;
+  position: relative;
+  left: 25%;
+  margin-bottom: 5px;
 }
 
 /* Default font for the webpage */
