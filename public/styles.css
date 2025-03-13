@@ -2434,10 +2434,10 @@ background-color: #000000e5;
   margin-top: 20px;
 }
 
-#entry-filters form, #entry-submit-section form {
+/* #entry-filters form, #entry-submit-section form { */
   /* display: grid; */
-  grid-gap: 10px;
-}
+  /* grid-gap: 10px; */
+/* } */
 
 #entry-filters input, #entry-submit-section input {
   padding: 8px;
@@ -3632,8 +3632,8 @@ background-color: #000000e5;
 .centeredDiv {
   position: relative;
   /* left: 20%; */
-  margin: 0 auto 10px auto;
-  width: 75%;
+  margin: 0 auto 15px auto;
+  width: 50%;
   font-style: italic;
   font-family: sans-serif;
 }
