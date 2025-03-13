@@ -23,7 +23,7 @@ async function fetchEntries(item = '', timeRange = '', loadMore = false) {
       <div class="csf-letter">S</div>
     `;
     spinner.style.position = "absolute";
-    spinner.style.top = "50px";
+    spinner.style.top = "100%";
     spinner.style.left = "50%";
     spinner.style.transform = "translate(-50%, -50%)";
     spinner.style.display = "flex";
@@ -316,7 +316,7 @@ async function updateFilters() {
         spinner.classList.add("es-spinner");
         spinner.innerHTML = `<div class="csf-letter">E</div><div class="csf-letter"> </div><div class="csf-letter">S</div>`;
         spinner.style.position = "absolute";
-        spinner.style.top = "50%";
+        spinner.style.top = "100%";
         spinner.style.left = "50%";
         spinner.style.transform = "translate(-50%, -50%)";
         tbody.style.position = "relative";
